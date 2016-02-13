@@ -22,3 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$plugin->version  = 2016021100;
+$plugin->release = "0.0.0";
+$plugin->maturity = MATURITY_ALPHA;
+$plugin->requires = 2014051200; // Moodle 2.7.
+$plugin->component = 'enrol_lmb';
+$plugin->cron = 600;
