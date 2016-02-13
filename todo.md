@@ -6,3 +6,5 @@ Settings
 
 
 Use MD5 to see if we have run a file, not timestamp
+
+Use progress object on parser?

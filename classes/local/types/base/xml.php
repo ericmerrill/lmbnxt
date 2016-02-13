@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Primary XML parser.
+ * Works on types of messages.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,30 +23,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb;
+namespace enrol_lmb\local\types;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Class for parsing a XML file.
+ * Class for working with message types.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class parser {
+abstract xml {
 
-    public function process_file($path) {
-        if (!is_readable($path)) {
-            return false;
-        }
+    abstract public static function get_paths();
 
-        $parser = new \progressive_parser();
-        $parser->set_file($path);
-
-        $processor = new parser_processor($restoreid);
-        $parser->set_processor($xmlprocessor);
-        //$parser->set_progress($progress);
-        $parser->process();
-    }
-}
+ }
