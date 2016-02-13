@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Primary XML parser.
+ * Processor for the XML parser.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -27,16 +27,23 @@ namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Class for parsing a XML file.
+ * Processes XML chunks from the parser.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class parser {
+class parse_processor extends grouped_parser_processor {
 
-    public function process_file($path) {
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->load_paths();
+    }
+
+    protected function load_paths() {
 
     }
 }
