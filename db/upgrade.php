@@ -22,13 +22,8 @@
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 function xmldb_enrol_lmb_upgrade($oldversion=0) {
 
-    // Things to migrate
-    // Settings
-    // - logtolocation > logpath
-    // - bannerxmllocation > xmlpath
-    // - bannerxmlfolder > extractpath
+
 
 }

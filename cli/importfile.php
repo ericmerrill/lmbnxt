@@ -28,8 +28,8 @@ define('CLI_SCRIPT', true);
 require(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->libdir.'/clilib.php');
 
-list($options, $unrecognized) = cli_get_params(array('force'=>false, 'filepath'=>null, 'silent'=>false, 'help'=>false),
-                                               array('f'=>'filepath', 's'=>'silent'));
+list($options, $unrecognized) = cli_get_params(array('force' => false, 'filepath' => null, 'silent' => false, 'help' => false),
+                                               array('f' => 'filepath', 's' => 'silent'));
 
 if ($unrecognized) {
     $unrecognized = implode("\n  ", $unrecognized);
@@ -37,8 +37,7 @@ if ($unrecognized) {
 }
 
 if ($options['help']) {
-    $help =
-    "LMB file import CLI tool.
+    $help = "LMB file import CLI tool.
 Process a file using the LMB plugin.
 
 Options:
