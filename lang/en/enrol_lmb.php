@@ -13,8 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * An activity to interface with WebEx.
+ * The language file.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,3 +24,11 @@
  */
 
 $string['pluginname'] = 'LMB NXT';
+
+// Settings.
+$string['logpath'] = 'Log file location';
+$string['logpath_help'] = 'This is the location you would like the log file to be saved to. This should be an absolute path on the server. The file specified should already exist, and needs to be writable by the webserver process.';
+$string['extractpath'] = 'Import folder location';
+$string['extractpath_help'] = 'The path (on the Moodle server) to the directory where a set of XML files will be located.';
+$string['xmlpath'] = 'Import file location';
+$string['xmlpath_help'] = 'The path (on the Moodle server) where the XML file that you would like to import resides.';

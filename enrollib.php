@@ -13,8 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * An activity to interface with WebEx.
+ * Global library functions.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>

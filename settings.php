@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The primary controller for file based imports.
+ * Admin settings file.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,25 +23,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Controller class for importing files and folders.
- *
- * @package    enrol_lmb
- * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2016 Oakland University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class controller {
+$settings = new admin_category('enrolsettingscat', get_string('pluginname', 'enrol_lmb'), $settings->hidden);
+$settingslmb = new admin_settingpage('enrolsettingslmb', get_string('settings'), 'moodle/site:config');
 
+if ($ADMIN->fulltree) {
+    $settingslmb->add(new admin_setting_configfile('enrol_lmb/logpath', get_string('logpath', 'enrol_lmb'),
+        get_string('logpath_help', 'enrol_lmb'), ''));
 
-    public static function import_file($path = null) {
-        if (!$path) {
-            $path = get_config('enrol_lmb', 'xmlpath');
-        }
+    $settingslmb->add(new admin_setting_configfile('enrol_lmb/xmlpath', get_string('xmlpath', 'enrol_lmb'),
+        get_string('xmlpath_help', 'enrol_lmb'), ''));
 
-    }
-
+    $settingslmb->add(new admin_setting_configdirectory('enrol_lmb/extractpath', get_string('extractpath', 'enrol_lmb'),
+        get_string('extractpath_help', 'enrol_lmb'), ''));
 }
+
+$settings->add('enrolsettingscat', $settingslmb);

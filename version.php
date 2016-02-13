@@ -13,8 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * An activity to interface with WebEx.
+ * An enrollment plugin for interfacing with Banner.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>

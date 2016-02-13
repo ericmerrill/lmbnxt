@@ -13,8 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * An activity to interface with WebEx.
+ * Upgrade file.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,5 +24,11 @@
  */
 
 function xmldb_enrol_lmb_upgrade($oldversion=0) {
+
+    // Things to migrate
+    // Settings
+    // - logtolocation > logpath
+    // - bannerxmllocation > xmlpath
+    // - bannerxmlfolder > extractpath
 
 }
