@@ -38,4 +38,4 @@ abstract class xml {
 
     abstract public static function get_paths();
 
- }
+}

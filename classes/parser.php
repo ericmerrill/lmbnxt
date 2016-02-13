@@ -46,7 +46,7 @@ class parser {
 
         $processor = new parser_processor($restoreid);
         $parser->set_processor($xmlprocessor);
-        //$parser->set_progress($progress);
+        // TODO $parser->set_progress($progress);.
         $parser->process();
     }
 }
