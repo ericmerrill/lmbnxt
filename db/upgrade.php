@@ -24,6 +24,4 @@
  */
 function xmldb_enrol_lmb_upgrade($oldversion=0) {
 
-
-
 }
