@@ -24,6 +24,7 @@
  */
 
 namespace enrol_lmb\local\types\base;
+use enrol_lmb\local;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -37,6 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 abstract class xml {
     protected $data = null;
+    protected $xmlobj = null;
     protected $mappings = null;
 
     const TYPE = 'base';
@@ -46,6 +48,7 @@ abstract class xml {
     }
 
     public function start_object() {
+        $this->xmlobj = new local\xml_node();
         $this->data = new \stdClass();
     }
 
@@ -53,9 +56,18 @@ abstract class xml {
 
     public function end_object() {
     print "END";
-        var_dump($this->data);
+        print_r($this->xmlobj);
+
+
+
+        //var_dump($this->data);
         $this->data = null;
 
+    }
+
+    public function mark_path_finished($path) {
+    //print $path;
+        $this->xmlobj->mark_node_finished($path);
     }
 
     protected function load_mappings() {

@@ -57,7 +57,9 @@ class xml extends types\base\xml {
             throw new \coding_exception("Person data object not started");
         }
 
-        print "<pre>";print_r($data);print "</pre>";
+        //print "<pre>";print_r($data);print "</pre>";
+
+        $this->xmlobj->build_from_array($data['tags']);
 
         $this->apply_mappings($data['tags']);
         //print "<pre>XXX";print_r($data);print "</pre>";

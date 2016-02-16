@@ -88,6 +88,7 @@ class parse_processor extends \simplified_parser_processor {
     }
 
     public function process_chunk($data) {
+    print "<pre>P";print_r($data['path']);print "</pre>\n";
         if ($this->path_is_selected($data['path'])) {
             //$this->process_pending_startend_notifications($data['path'], 'start');
             if ($proc = $this->get_path_processor($data['path'])) {
@@ -118,9 +119,17 @@ class parse_processor extends \simplified_parser_processor {
      * For selected paths, notifies the processor that the current object has ended.
      */
     public function after_path($path) {
+        print "<pre>E";print_r($path);print "</pre>\n";
+
         if ($this->path_is_selected($path)) {
             if ($proc = $this->get_path_processor($path)) {
                 $proc->end_object();
+            }
+        } else if ($parent = $this->selected_parent_exists($path)) {
+            if ($proc = $this->get_path_processor($parent)) {
+                $path = str_replace($parent.'/', '', $path);
+                $patharray = explode('/', $path);
+                $proc->mark_path_finished($patharray);
             }
         }
     }
@@ -134,6 +143,7 @@ class parse_processor extends \simplified_parser_processor {
     }
 
     protected function dispatch_chunk($path) {
+    print "<pre>D";print_r($path['path']);print "</pre>\n";
         // Nothing to do. Required for abstract.
     }
 
