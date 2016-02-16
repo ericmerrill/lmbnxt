@@ -42,7 +42,6 @@ class parser extends \progressive_parser {
             return false;
         }
 
-        //$parser = new \progressive_parser();
         $this->set_file($path);
 
         $processor = new parse_processor();
@@ -61,7 +60,6 @@ class parser extends \progressive_parser {
                 $this->topush['tags'] = array();
             }
             $this->topush['tags'][$this->currtag['name']] = $this->currtag;
-            //}
             $this->currtag = array();
         }
 

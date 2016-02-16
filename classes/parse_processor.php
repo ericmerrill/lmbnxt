@@ -56,6 +56,8 @@ class parse_processor extends \simplified_parser_processor {
             $this->expand_path($parent, $data);
             print_r($data);
         }
+
+        // Do nothing.
     }
 
     protected function notify_path_start($path) {
