@@ -42,6 +42,8 @@ class controller {
             $path = get_config('enrol_lmb', 'xmlpath');
         }
 
+        $parser = new parser();
+        $parser->process_file($path);
     }
 
 }

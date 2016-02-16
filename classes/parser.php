@@ -26,6 +26,7 @@
 namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot.'/backup/util/xml/parser/progressive_parser.class.php');
 /**
  * Class for parsing a XML file.
  *
@@ -34,19 +35,53 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class parser {
+class parser extends \progressive_parser {
 
     public function process_file($path) {
         if (!is_readable($path)) {
             return false;
         }
 
-        $parser = new \progressive_parser();
-        $parser->set_file($path);
+        //$parser = new \progressive_parser();
+        $this->set_file($path);
 
-        $processor = new parser_processor($restoreid);
-        $parser->set_processor($xmlprocessor);
+        $processor = new parse_processor();
+        $this->set_processor($processor);
         // TODO $parser->set_progress($progress);.
-        $parser->process();
+        $this->process();
+    }
+
+    protected function end_tag($parser, $tag) {
+
+        // Ending rencently started tag, add value to current tag
+        if ($this->level == $this->prevlevel) {
+            $this->currtag['cdata'] = $this->postprocess_cdata($this->accum);
+            if (isset($this->topush['tags'][$this->currtag['name']])) {
+                $this->publish($this->topush);
+                $this->topush['tags'] = array();
+            }
+            $this->topush['tags'][$this->currtag['name']] = $this->currtag;
+            //}
+            $this->currtag = array();
+        }
+
+        // Leaving one level, publish all the information available
+        if ($this->level < $this->prevlevel) {
+            if (!empty($this->topush['tags'])) {
+                $this->publish($this->topush);
+            }
+            $this->currtag = array();
+            $this->topush = array();
+        }
+
+        // For the records
+        $this->prevlevel = $this->level;
+
+        // Inform processor we have finished one tag
+        $this->inform_end($this->path);
+
+        // Normal update of parser internals
+        $this->level--;
+        $this->path = \progressive_parser::dirname($this->path);
     }
 }

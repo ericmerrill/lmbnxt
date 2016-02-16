@@ -36,8 +36,36 @@ defined('MOODLE_INTERNAL') || die();
  */
 class types {
 
-    public static function register_processor_paths(\enrol_lmb\parse_processor $processor) {
+    protected static $types = array('person');
 
+    public static function register_processor_paths(\enrol_lmb\parse_processor $processor) {
+        $types = array('person');
+        foreach ($types as $type) {
+            $class = '\\enrol_lmb\\local\\types\\'.$type.'\\xml';
+            $paths = $class::get_paths();
+            foreach ($paths as $path) {
+                $processor->register_path($type, $path, true);
+            }
+        }
+
+
+
+        /*$processor->register_path('person', '/person/sourcedid');
+        $processor->register_path('person', '/person/sourcedid/source');
+        $processor->register_path('person', '/person/sourcedid/id');
+        $processor->register_path('person', '/person/userid');
+        $processor->register_path('person', '/person/email');
+        $processor->register_path('person', '/person/name');
+        $processor->register_path('person', '/person/name/fn');
+        $processor->register_path('person', '/person/name/n');
+        $processor->register_path('person', '/person/name/n/family');
+        $processor->register_path('person', '/person/name/n/given');
+        $processor->register_path('person', '/person/name/n/partname');
+        $processor->register_path('person', '/person/demographics/gender');
+        $processor->register_path('person', '/person/institutionrole');
+        $processor->register_path('person', '/person/extension/luminisperson');
+        $processor->register_path('person', '/person/extension/luminisperson/academicmajor');
+        $processor->register_path('person', '/person/extension/luminisperson/customrole');*/
     }
 
 }
