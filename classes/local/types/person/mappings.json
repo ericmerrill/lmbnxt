@@ -1,0 +1,19 @@
+{
+  "sourcedid": {
+    "source": "sdidsource",
+    "id": "sdid"
+  },
+  "name": {
+    "fn": "fullname",
+    "n": {
+      "family": "familyname",
+      "given": "givenname",
+      "partname": {
+        "lmbinternal": true,
+        "reqattrs": [{"name": "partnametype", "value": "MiddleName"}],
+        "objname": "middle"
+      }
+    }
+  },
+  "email": "email"
+}

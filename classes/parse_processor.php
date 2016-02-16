@@ -38,6 +38,7 @@ require_once($CFG->dirroot.'/backup/util/xml/parser/processors/simplified_parser
 class parse_processor extends \simplified_parser_processor {
     protected $pathclasses = array();
     protected $merged = array();
+    protected $typeprocessors = array();
 
     public function __construct() {
         parent::__construct();
@@ -49,45 +50,104 @@ class parse_processor extends \simplified_parser_processor {
         local\types::register_processor_paths($this);
     }
 
-    public function process_chunk($data) {
-        if ($this->path_is_selected($data['path'])) {
-            print_r($data);
-        } else if ($parent = $this->selected_parent_exists($data['path'])) {
-            $this->expand_path($parent, $data);
-            print_r($data);
-        }
-
-        // Do nothing.
-    }
-
-    protected function notify_path_start($path) {
-        // Nothing to do.
-    }
-
-    protected function notify_path_end($path) {
-        // Nothing to do.
-    }
-
-    protected function dispatch_chunk($path) {
-        // Nothing to do.
-    }
-
     public function register_path($type, $path, $grouped = false) {
         if ($grouped) {
             $this->pathclasses[$path] = $type;
-            $this->pathclasses[$path] = '/enterprise'.$type;
+            $this->pathclasses['/enterprise'.$path] = $type;
         }
 
         $this->add_path($path);
         $this->add_path('/enterprise'.$path);
     }
 
+    /**
+     * Returns the classpath type for a path.
+     */
+    protected function get_path_type($path) {
+        if (isset($this->pathclasses[$path])) {
+            return $this->pathclasses[$path];
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the processor for the path. Creates if doesn't exist.
+     */
+    protected function get_path_processor($path) {
+        if (!$type = $this->get_path_type($path)) {
+            return false;
+        }
+
+        if (!isset($this->typeprocessors[$type])) {
+            $class = '\\enrol_lmb\\local\\types\\'.$type.'\\xml';
+            $this->typeprocessors[$type] = new $class();
+        }
+
+        return $this->typeprocessors[$type];
+    }
+
+    public function process_chunk($data) {
+        if ($this->path_is_selected($data['path'])) {
+            //$this->process_pending_startend_notifications($data['path'], 'start');
+            if ($proc = $this->get_path_processor($data['path'])) {
+                $proc->process_data($data);
+            }
+        } else if ($parent = $this->selected_parent_exists($data['path'])) {
+            $this->expand_path($parent, $data);
+            if ($proc = $this->get_path_processor($data['path'])) {
+                $proc->process_data($data);
+            }
+        }
+
+        // Do nothing.
+    }
+
+    /**
+     * For selected paths, notifies the processor that a new object is starting.
+     **/
+    public function before_path($path) {
+        if ($this->path_is_selected($path)) {
+            if ($proc = $this->get_path_processor($path)) {
+                $proc->start_object();
+            }
+        }
+    }
+
+    /**
+     * For selected paths, notifies the processor that the current object has ended.
+     */
+    public function after_path($path) {
+        if ($this->path_is_selected($path)) {
+            if ($proc = $this->get_path_processor($path)) {
+                $proc->end_object();
+            }
+        }
+    }
+
+    protected function notify_path_start($path) {
+        // Nothing to do. Required for abstract.
+    }
+
+    protected function notify_path_end($path) {
+        // Nothing to do. Required for abstract.
+    }
+
+    protected function dispatch_chunk($path) {
+        // Nothing to do. Required for abstract.
+    }
+
+
+    /**
+     * Normalizes the data object to the passes path level.
+     */
     protected function expand_path($grouped, &$data) {
         $path = $data['path'];
 
         $hierarchyarr = explode('/', str_replace($grouped . '/', '', $path));
         $hierarchyarr = array_reverse($hierarchyarr, false);
         foreach ($hierarchyarr as $element) {
+            $data['level']--;
             $data['tags'] = array($element => $data['tags']);
         }
         $data['path'] = $grouped;

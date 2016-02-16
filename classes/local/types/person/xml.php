@@ -24,6 +24,7 @@
  */
 
 namespace enrol_lmb\local\types\person;
+use enrol_lmb\local\types;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,10 +36,31 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class xml {
+class xml extends types\base\xml {
+
+    protected $mappingjson;
+
+    protected $mappings;
+
+    const TYPE = 'person';
+
+    public function __construct() {
+        $this->load_mappings();
+    }
 
     public static function get_paths() {
         return array('/person');
+    }
+
+    public function process_data($data) {
+        if (is_null($this->data)) {
+            throw new \coding_exception("Person data object not started");
+        }
+
+        print "<pre>";print_r($data);print "</pre>";
+
+        $this->apply_mappings($data['tags']);
+        //print "<pre>XXX";print_r($data);print "</pre>";
     }
 
 }
