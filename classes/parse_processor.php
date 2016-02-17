@@ -45,6 +45,9 @@ class parse_processor extends \simplified_parser_processor {
     /** @var xml_node The most recently completed node, basically for testing */
     protected $previousnode = null;
 
+    /** @var controller A reference to the controller object */
+    protected $controller;
+
     /**
      * Basic constructor.
      */
@@ -62,6 +65,9 @@ class parse_processor extends \simplified_parser_processor {
      */
     public function register_path($path) {
         // We register both the path that the path in /enterprise/, as it is a common wrapper.
+        // We also need to use lmb as a master wrapper, in case there are multiple parts in the incoming.
+        $this->add_path(strtoupper('/lmb'.$path));
+        $this->add_path(strtoupper('/lmb/enterprise'.$path));
         $this->add_path(strtoupper($path));
         $this->add_path(strtoupper('/enterprise'.$path));
     }
@@ -117,7 +123,9 @@ class parse_processor extends \simplified_parser_processor {
         $this->previousnode = $node;
 
         // Dispatch a completed node.
-
+        if ($this->controller) {
+            $this->controller->process_xml_object($node);
+        }
     }
 
     /**

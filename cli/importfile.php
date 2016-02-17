@@ -60,4 +60,5 @@ $silent = (bool)$options['silent'];
 $force = (bool)$options['force'];
 $filepath = $options['filepath'];
 
-\enrol_lmb\controller::import_file($filepath);
+$controller = new \enrol_lmb\controller();
+$controller->import_file($filepath);

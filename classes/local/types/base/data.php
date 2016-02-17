@@ -14,3 +14,51 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Data model object.
+ *
+ * @package    enrol_lmb
+ * @author     Eric Merrill <merrill@oakland.edu>
+ * @copyright  2016 Oakland University
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace enrol_lmb\local\types\base;
+use enrol_lmb\local;
+
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Object that represents the internal data structure.
+ *
+ * @package    enrol_lmb
+ * @author     Eric Merrill <merrill@oakland.edu>
+ * @copyright  2016 Oakland University
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+abstract class data {
+
+    protected $record;
+
+    protected $dbkeys;
+
+    public function __construct() {
+        $this->record = new \stdClass();
+    }
+
+    public function __get($name) {
+        return $this->record->$name;
+    }
+
+    public function __set($name, $value) {
+        $this->record->$name = $value;
+    }
+
+    public function __unset($name) {
+        unset($this->record->$name);
+    }
+
+    public function __isset($name) {
+        isset($this->record->$name);
+    }
+}

@@ -176,4 +176,47 @@ class parser extends \progressive_parser {
         $this->level--;
         $this->path = \progressive_parser::dirname($this->path);
     }
+
+
+    /*
+     * Process the XML, delegating found chunks to the @progressive_parser_processor
+     */
+    public function process() {
+        if (empty($this->processor)) {
+            throw new progressive_parser_exception('undefined_parser_processor');
+        }
+        if (empty($this->file) && empty($this->contents)) {
+            throw new progressive_parser_exception('undefined_xml_to_parse');
+        }
+        if (is_null($this->xml_parser)) {
+            throw new progressive_parser_exception('progressive_parser_already_used');
+        }
+        if ($this->file) {
+            $fh = fopen($this->file, 'r');
+            // We need to wrap tags around the imcoming file, incase of multiple part messages.
+
+            $first = fread($fh, 1024);
+            $wellformed = false;
+            if (preg_match('|<\\?xml|i', $first) || preg_match('|<!DOCTYPE|i', $first)) {
+                $wellformed = true;
+            } else {
+                $first = '<lmb>'.$first;
+            }
+
+
+            $this->parse($first, false);
+            while ($buffer = fread($fh, 8192)) {
+                $this->parse($buffer, false);
+            }
+            if (!$wellformed) {
+                $this->parse('</lmb>', false);
+            }
+            $this->parse('', true);
+            fclose($fh);
+        } else {
+            $this->parse('<lmb>'.$this->contents.'</lmb>', true);
+        }
+        xml_parser_free($this->xml_parser);
+        $this->xml_parser = null;
+    }
 }

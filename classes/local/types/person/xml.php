@@ -48,8 +48,13 @@ class xml extends types\base\xml {
         $this->load_mappings();
     }
 
-    public function process_xml_obj($obj) {
+    public function process_xml_to_data($xmlobj) {
+        $class = '\\enrol_lmb\\local\\types\\'.static::TYPE.'\\data';
+        $this->dataobj = new $class();
 
+        $this->apply_mappings($xmlobj);
+
+        return $this->dataobj;
     }
 
 }

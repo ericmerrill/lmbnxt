@@ -107,4 +107,25 @@ class xml_parser_testcase extends xml_helper {
         $this->assertAttributeEquals($controller, 'controller', $parser);
     }
 
+    public function test_multiple_objects() {
+        global $CFG;
+
+        $parser = new \enrol_lmb\parser();
+        $parser->add_type('tests');
+        $this->assertTrue($parser->process_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/multi_good_form.xml'));
+        $this->assertDebuggingNotCalled();
+
+        $processor = $parser->get_processor();
+        $node = $processor->get_previous_node();
+        $this->assertEquals('V2', $node->n1->get_value());
+
+        $parser = new \enrol_lmb\parser();
+        $parser->add_type('tests');
+        $this->assertTrue($parser->process_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/multi_poor_form.xml'));
+        $this->assertDebuggingNotCalled();
+
+        $processor = $parser->get_processor();
+        $node = $processor->get_previous_node();
+        $this->assertEquals('V2', $node->n1->get_value());
+    }
 }

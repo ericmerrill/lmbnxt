@@ -35,17 +35,40 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class controller {
+    protected $typeprocessors = array();
 
-
-    public static function import_file($path = null) {
+    public function import_file($path = null) {
         if (!$path) {
             $path = get_config('enrol_lmb', 'xmlpath');
         }
 
         $parser = new parser();
+        $parser->set_controller($this);
         $parser->process_file($path);
     }
 
+    // Takes a data object from an input source and does things to it.
+    public function process_data(local\types\base\data $data) {
+
+    }
+
+    public function process_xml_object(local\xml_node $xmlobj) {
+        $type = $xmlobj->get_name();
+
+        if (!isset($this->typeprocessors[$type])) {
+            $class = '\\enrol_lmb\\local\\types\\'.$type.'\\xml';
+            if (!class_exists($class)) {
+                return;
+            }
+            $this->typeprocessors[$type] = new $class();
+        }
+
+        $xmlproc = $this->typeprocessors[$type];
+
+        $obj = $xmlproc->process_xml_to_data($xmlobj);
+
+        print "<pre>";var_dump($obj);print "</pre>";
+    }
 
     /**
      * Returns the class type for a path.

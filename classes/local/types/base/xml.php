@@ -24,7 +24,7 @@
  */
 
 namespace enrol_lmb\local\types\base;
-use enrol_lmb\local;
+use enrol_lmb\local\types;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,10 +38,11 @@ defined('MOODLE_INTERNAL') || die();
  */
 abstract class xml {
     protected $mappings = null;
+    protected $dataobj = null;
 
     const TYPE = 'base';
 
-    abstract public function process_xml_obj($data);
+    abstract public function process_xml_to_data($xmlobd);
 
     protected function load_mappings() {
         global $CFG;
@@ -57,42 +58,43 @@ abstract class xml {
     /**
      * Uses the mapping file to process chunks of data.
      */
-    protected function apply_mappings($tags, $mappings = null) {
-        if (!is_array($tags)) {
-            debugging('Function \\enrol_lmb\\local\\types\\base::apply_mappings received non-array.', DEBUG_DEVELOPER);
-            return false;
-        }
-
+    protected function apply_mappings(\enrol_lmb\local\xml_node $xml, $mappings = null) {
         if (is_null($mappings)) {
             $mappings = $this->mappings;
         }
 
-        foreach ($tags as $name => $value) {
-            if (!array_key_exists($name, $mappings)) {
+        foreach ($mappings as $name => $mapping) {
+            if (!isset($xml->$name)) {
                 continue;
             }
 
-            if (is_string($mappings[$name])) {
-                $this->process_tag($value, $mappings[$name]);
-            } else if (is_array($mappings[$name])) {
-                if (array_key_exists('lmbinternal', $mappings[$name])) {
-                    $this->process_tag($value, $mappings[$name]);
+            if (is_string($mapping)) {
+                $this->process_tag($xml->$name, $mapping);
+            } else if (is_array($mapping)) {
+                if (array_key_exists('lmbinternal', $mapping)) {
+                    $this->process_tag($xml->$name, $mapping);
                 } else {
-                    $this->apply_mappings($value, $mappings[$name]);
+                    if (is_array($xml->$name)) {
+                        debugging("Assumed last mathching child for $name", DEBUG_DEVELOPER);
+                        $array = $xml->$name;
+                        $this->apply_mappings(end($array), $mapping);
+                    } else {
+                        $this->apply_mappings($xml->$name, $mapping);
+                    }
                 }
             }
         }
-
     }
 
-    protected function process_tag($value, $mapping) {
+    protected function process_tag($node, $mapping) {
         if (is_string($mapping)) {
-            if (is_array($value)) {
-                if (array_key_exists('cdata', $value)) {
-                    $this->data->$mapping = $value['cdata'];
+            if (is_object($node)) {
+                if ($node->has_data()) {
+                    $this->dataobj->$mapping = $node->get_value();
                 }
-            } else {
-                $this->data->$mapping = $value;
+            } else if (is_array($node)) {
+                debugging("Assumed last mathching child for $mapping", DEBUG_DEVELOPER);
+                $this->process_tag(end($node), $mapping);
             }
         } else if (is_array($mapping) && array_key_exists('lmbinternal', $mapping)) {
 

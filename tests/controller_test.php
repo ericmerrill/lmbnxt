@@ -34,20 +34,22 @@ class controller_test extends xml_helper {
         global $CFG;
         $this->resetAfterTest();
 
+        $controller = new \enrol_lmb\controller();
+
         // No file error.
         $this->resetDebugging();
-        \enrol_lmb\controller::import_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/does_not_exist.xml');
+        $controller->import_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/does_not_exist.xml');
         $this->assertDebuggingCalled();
 
         // Now a working file.
         $this->resetDebugging();
-        \enrol_lmb\controller::import_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/basic_file.xml');
+        $controller->import_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/basic_file.xml');
         $this->assertDebuggingNotCalled();
 
         // Now test config path.
         set_config('xmlpath', $CFG->dirroot.'/enrol/lmb/tests/fixtures/basic_file.xml', 'enrol_lmb');
         $this->resetDebugging();
-        \enrol_lmb\controller::import_file();
+        $controller->import_file();
         $this->assertDebuggingNotCalled();
     }
 
