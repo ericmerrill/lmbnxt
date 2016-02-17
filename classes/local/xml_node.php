@@ -84,12 +84,18 @@ class xml_node implements \Iterator {
             }
             if (array_key_exists('attrs', $data)) {
                 $this->attrs = $data['attrs'];
+                $keys = array_keys($this->attrs);
+                foreach ($keys as $key) {
+                    $this->attrs[strtolower($key)] = $this->attrs[$key];
+                    unset($this->attrs[$key]);
+                }
                 unset($data['attrs']);
             }
         }
 
         // Go through each remaining element.
         foreach ($data as $name => $value) {
+            $name = strtolower($name);
             // Check to see if we have a child with that name.
             if (array_key_exists($name, $this->children)) {
                 // Get the child.
@@ -135,7 +141,7 @@ class xml_node implements \Iterator {
             return;
         }
         // Get the next path name and move the pointer forward.
-        $child = array_shift($patharray);
+        $child = strtolower(array_shift($patharray));
         if (!array_key_exists($child, $this->children)) {
             // If we don't have a child, just discard the finish mark.
             return;
@@ -336,11 +342,6 @@ class xml_node implements \Iterator {
         $current = current($this->children);
         if ($current === false) {
             return false;
-        }
-        if (is_array($current)) {
-            if (!array_key_exists($this->arraykey, $current)) {
-                return false;
-            }
         }
 
         return true;

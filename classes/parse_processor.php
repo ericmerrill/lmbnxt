@@ -49,7 +49,7 @@ class parse_processor extends \simplified_parser_processor {
     protected $currentnode = null;
 
     /** @var xml_node The most recently completed node, basically for testing */
-    protected $lastnode = null;
+    protected $previousnode = null;
 
     /**
      * Basic constructor.
@@ -73,8 +73,8 @@ class parse_processor extends \simplified_parser_processor {
         $this->pathclasses[$path] = $type;
         $this->pathclasses['/enterprise'.$path] = $type;
 
-        $this->add_path($path);
-        $this->add_path('/enterprise'.$path);
+        $this->add_path(strtoupper($path));
+        $this->add_path(strtoupper('/enterprise'.$path));
     }
 
     /**
@@ -120,7 +120,7 @@ class parse_processor extends \simplified_parser_processor {
             // If we are starting a new group node, start a new collector.
             $this->currentnode = new local\xml_node();
             $parts = explode('/', $path);
-            $this->currentnode->set_name(end($parts));
+            $this->currentnode->set_name(strtolower(end($parts)));
         }
     }
 

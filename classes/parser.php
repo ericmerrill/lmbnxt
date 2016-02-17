@@ -38,6 +38,10 @@ require_once($CFG->dirroot.'/backup/util/xml/parser/progressive_parser.class.php
 class parser extends \progressive_parser {
     protected $controller;
 
+    public function __construct($case_folding = true) {
+        parent::__construct($case_folding);
+    }
+
     public function process_file($path) {
         if (!is_readable($path)) {
             debugging("XML path $path not readable.", DEBUG_DEVELOPER);
