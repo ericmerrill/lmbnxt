@@ -328,10 +328,6 @@ class xml_node implements \Iterator {
     }
 
     public function rewind() {
-        $current = current($this->children);
-        if (is_array($current)) {
-            reset($current);
-        }
         reset($this->children);
         $this->arraykey = 0;
     }

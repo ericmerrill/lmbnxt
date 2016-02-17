@@ -46,6 +46,21 @@ class xml_node_testcase extends xml_helper {
             $this->assertEquals($expected[$i]['n'], $key);
             $i++;
         }
+        $i = 0;
+        // Do it again to make sure reset worked.
+        foreach ($node as $key => $child) {
+            $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child);
+            $this->assertEquals($expected[$i]['v'], $child->get_value());
+            $this->assertEquals($expected[$i]['n'], $key);
+            $i++;
+        }
+    }
+
+    public function test_node_finished() {
+        $node = new \enrol_lmb\local\xml_node('parent');
+
+        // Just calling a non-existent child to make sure no error is thrown.
+        $node->mark_node_finished(array('child', 'subchild'));
     }
 
 }
