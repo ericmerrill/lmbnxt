@@ -52,6 +52,7 @@ class xml extends types\base\xml {
         $class = '\\enrol_lmb\\local\\types\\'.static::TYPE.'\\data';
         $this->dataobj = new $class();
 
+        // First we are going to use the simple static mappings.
         $this->apply_mappings($xmlobj);
 
         return $this->dataobj;

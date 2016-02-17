@@ -56,29 +56,42 @@ abstract class xml {
     }
 
     /**
-     * Uses the mapping file to process chunks of data.
+     * Uses the mapping file to process the XML object into an internal data object.
+     *
+     * Recusive.
+     *
+     * @param xml_node $xml The XML node to process
+     * @param array $mappings Current mapping object for recusion
      */
     protected function apply_mappings(\enrol_lmb\local\xml_node $xml, $mappings = null) {
         if (is_null($mappings)) {
+            // Start with the base mapping.
             $mappings = $this->mappings;
         }
 
+        // For through each mapping.
         foreach ($mappings as $name => $mapping) {
             if (!isset($xml->$name)) {
                 continue;
             }
 
             if (is_string($mapping)) {
-                $this->process_tag($xml->$name, $mapping);
+                // This means we just associate directly to a field.
+                $this->process_node_array_field($xml->$name, $mapping);
             } else if (is_array($mapping)) {
                 if (array_key_exists('lmbinternal', $mapping)) {
-                    $this->process_tag($xml->$name, $mapping);
+                    // Special array for processing a field.
+                    $this->process_node_array_field($xml->$name, $mapping);
                 } else {
+                    // This means that we are moving into a sub-level recursively.
                     if (is_array($xml->$name)) {
-                        debugging("Assumed last mathching child for $name", DEBUG_DEVELOPER);
+                        // Special case where there are multple matching records under the same name.
                         $array = $xml->$name;
-                        $this->apply_mappings(end($array), $mapping);
+                        foreach ($array as $part) {
+                            $this->apply_mappings($part, $mapping);
+                        }
                     } else {
+                        // Recursively move into the mapping and object.
                         $this->apply_mappings($xml->$name, $mapping);
                     }
                 }
@@ -86,18 +99,50 @@ abstract class xml {
         }
     }
 
-    protected function process_tag($node, $mapping) {
+    /**
+     * Process a terminal node of a mapping. Itterates if passed an array.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_node_array_field($node, $mapping) {
+        if (is_array($node)) {
+            foreach ($node as $n) {
+                $this->process_field($n, $mapping);
+            }
+        } else {
+            $this->process_field($node, $mapping);
+        }
+    }
+
+    /**
+     * Process a terminal node of a mapping.
+     *
+     * @param xml_node $node The XML node to process
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_field(\enrol_lmb\local\xml_node $node, $mapping) {
         if (is_string($mapping)) {
-            if (is_object($node)) {
-                if ($node->has_data()) {
-                    $this->dataobj->$mapping = $node->get_value();
-                }
-            } else if (is_array($node)) {
-                debugging("Assumed last mathching child for $mapping", DEBUG_DEVELOPER);
-                $this->process_tag(end($node), $mapping);
+            if ($node->has_data()) {
+                $this->dataobj->$mapping = $node->get_value();
             }
         } else if (is_array($mapping) && array_key_exists('lmbinternal', $mapping)) {
+            $matched = true;
+            if (isset($mapping['reqattrs'])) {
+                $matched = true;
+                // We must match all required attributes to include.
+                foreach ($mapping['reqattrs'] as $attr) {
+                    if ($node->get_attribute($attr['name']) != $attr['value']) {
+                        $matched = false;
+                        break;
+                    }
+                }
+            }
 
+            // If we matched, then set the value.
+            if ($matched) {
+                $this->dataobj->{$mapping['objname']} = $node->get_value();
+            }
         }
     }
 
