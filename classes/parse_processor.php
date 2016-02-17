@@ -36,33 +36,44 @@ require_once($CFG->dirroot.'/backup/util/xml/parser/processors/simplified_parser
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class parse_processor extends \simplified_parser_processor {
+    /** @var array Array to associate a path to a type class */
     protected $pathclasses = array();
-    protected $merged = array();
+
+    /** @var array An array of type processors */
     protected $typeprocessors = array();
+
+    /** @var array A cache of arrays that were finished */
     protected $finishedpaths = array();
 
+    /**
+     * Basic constructor.
+     */
     public function __construct() {
         parent::__construct();
 
-        $this->load_paths();
-    }
-
-    protected function load_paths() {
         local\types::register_processor_paths($this);
     }
 
-    public function register_path($type, $path, $grouped = false) {
-        if ($grouped) {
-            $this->pathclasses[$path] = $type;
-            $this->pathclasses['/enterprise'.$path] = $type;
-        }
+    /**
+     * Register a path for grouping.
+     *
+     * @param string $type The type the path will be registered to
+     * @param string $path The path to register
+     */
+    public function register_path($type, $path) {
+        // We register both the path that the path in /enterprise/, as it is a common wrapper.
+        $this->pathclasses[$path] = $type;
+        $this->pathclasses['/enterprise'.$path] = $type;
 
         $this->add_path($path);
         $this->add_path('/enterprise'.$path);
     }
 
     /**
-     * Returns the classpath type for a path.
+     * Returns the class type for a path.
+     *
+     * @param string $path The path to check for
+     * @return string|false The type string or false
      */
     protected function get_path_type($path) {
         if (isset($this->pathclasses[$path])) {
@@ -74,6 +85,9 @@ class parse_processor extends \simplified_parser_processor {
 
     /**
      * Gets the processor for the path. Creates if doesn't exist.
+     *
+     * @param string $path The path to check for
+     * @return object|false A xml processor or false if not available
      */
     protected function get_path_processor($path) {
         if (!$type = $this->get_path_type($path)) {
@@ -88,23 +102,29 @@ class parse_processor extends \simplified_parser_processor {
         return $this->typeprocessors[$type];
     }
 
+    /**
+     * Takes a chunk of parsed XML and processes it.
+     *
+     * @param array $data Data array from XML parser
+     */
     public function process_chunk($data) {
-        if ($this->path_is_selected($data['path'])) {
-            if ($proc = $this->get_path_processor($data['path'])) {
-                $proc->process_data($data);
-                foreach ($this->finishedpaths as $fpath) {
-                    $fpath = str_replace($data['path'].'/', '', $fpath);
-                    $patharray = explode('/', $fpath);
-                    $proc->mark_path_finished($patharray);
-                }
-            }
-            $this->finishedpaths = array();
-        } else if ($parent = $this->selected_parent_exists($data['path'])) {
+        $path = $data['path'];
+
+        // If this is a child path, expand it to the parent level.
+        if ($parent = $this->selected_parent_exists($path)) {
             $this->expand_path($parent, $data);
-            if ($proc = $this->get_path_processor($data['path'])) {
+            $path = $parent;
+        }
+
+        // Check to see if it is one of our grouped paths.
+        if ($this->path_is_selected($path)) {
+            if ($proc = $this->get_path_processor($path)) {
+
                 $proc->process_data($data);
+
+                // Dispatch all the pending finished notifications.
                 foreach ($this->finishedpaths as $fpath) {
-                    $fpath = str_replace($parent.'/', '', $fpath);
+                    $fpath = str_replace($path.'/', '', $fpath);
                     $patharray = explode('/', $fpath);
                     $proc->mark_path_finished($patharray);
                 }

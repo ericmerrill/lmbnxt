@@ -57,7 +57,7 @@ abstract class xml {
         foreach ($this->xmlobj as $name => $obj) {
             echo "$name => {$obj->get_value()}\n";
         }
-
+        print "<pre>";print_r($this->xmlobj);print "</pre>";
 
 
     }

@@ -44,7 +44,7 @@ class types {
             $class = '\\enrol_lmb\\local\\types\\'.$type.'\\xml';
             $paths = $class::get_paths();
             foreach ($paths as $path) {
-                $processor->register_path($type, $path, true);
+                $processor->register_path($type, $path);
             }
         }
     }
