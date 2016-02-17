@@ -13,8 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * An activity to interface with WebEx.
+ * Tests for the xml parser.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -22,17 +23,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 
-class xml_parser_testcase extends advanced_testcase {
+global $CFG;
+require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
+class xml_parser_testcase extends xml_helper {
     public function test_parser() {
         $this->resetAfterTest(true);
 
-        $parser = new \enrol_lmb\parser();
-        $parser->process_string('<person><n1 a1="va1">vn1</n1><n2><nc>vnc1</nc><nc>vnc2</nc></n2>'.
-                '<n3 a1="va1" a2="va2"><nc>vnc1</nc></n3></person>');
-        $processor = $parser->get_processor();
-        $node = $processor->get_previous_node();
+        $xml = '<person><n1 a1="va1">vn1</n1><n2><nc>vnc1</nc><nc>vnc2</nc><nc>vnc3</nc></n2>'.
+               '<n3 a1="va1" a2="va2"><nc>vnc1</nc></n3></person>';
+
+        $node = $this->get_node_for_xml($xml);
 
         // Check the root node.
         $this->assertEquals('person', $node->get_name());
@@ -53,9 +56,10 @@ class xml_parser_testcase extends advanced_testcase {
 
         // Children of n2.
         $this->assertInternalType('array', $node->n2->nc);
-        $this->assertCount(2, $node->n2->nc);
+        $this->assertCount(3, $node->n2->nc);
         $this->assertEquals('vnc1', $node->n2->nc[0]->get_value());
         $this->assertEquals('vnc2', $node->n2->nc[1]->get_value());
+        $this->assertEquals('vnc3', $node->n2->nc[2]->get_value());
 
         // Node n3.
         $this->assertTrue(isset($node->n3));
@@ -68,10 +72,6 @@ class xml_parser_testcase extends advanced_testcase {
 
         $this->assertFalse(isset($node->n4));
 
-
-
-
-        //$this->assertEquals(, 'person');
     }
 
 

@@ -136,7 +136,7 @@ class parse_processor extends \simplified_parser_processor {
      *
      * @return xml_node
      */
-    public  function get_previous_node() {
+    public function get_previous_node() {
         return $this->previousnode;
     }
 

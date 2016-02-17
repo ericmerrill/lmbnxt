@@ -54,7 +54,6 @@ class xml extends types\base\xml {
 
     public function process_xml_obj($obj) {
 
-
     }
 
 }

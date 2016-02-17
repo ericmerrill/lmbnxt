@@ -13,8 +13,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * An activity to interface with WebEx.
+ * Tests for the XML node.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -22,20 +23,27 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 
-class xml_node_testcase extends advanced_testcase {
+global $CFG;
+require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
+class xml_node_testcase extends xml_helper {
     public function test_itterator() {
-        // Test the parse itterator.
-        $parser = new \enrol_lmb\parser();
-        $parser->process_string('<person><n1>V1</n1><n2>V2</n2><n2>V3</n2><n3>V4</n3></person>');
-        $processor = $parser->get_processor();
-        $node = $processor->get_previous_node();
+        // Test the node itterator.
+        $xml = '<person><n1>V1</n1><n2>V2</n2><n2>V3</n2><n3>V4</n3><n2>V5</n2></person>';
+        $node = $this->get_node_for_xml($xml);
 
-        $i = 1;
-        foreach ($node as $child) {
+        $i = 0;
+        $expected = array(array('n' => 'n1', 'v' => 'V1'),
+                          array('n' => 'n2', 'v' => 'V2'),
+                          array('n' => 'n2', 'v' => 'V3'),
+                          array('n' => 'n2', 'v' => 'V5'),
+                          array('n' => 'n3', 'v' => 'V4'));
+        foreach ($node as $key => $child) {
             $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child);
-            $this->assertEquals('V'.$i, $child->get_value());
+            $this->assertEquals($expected[$i]['v'], $child->get_value());
+            $this->assertEquals($expected[$i]['n'], $key);
             $i++;
         }
     }

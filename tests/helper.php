@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * An activity to interface with WebEx.
+ * A XML helper testcase.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,8 +23,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('enrollib.php');
+defined('MOODLE_INTERNAL') || die();
+abstract class xml_helper extends advanced_testcase {
 
-class enrol_lmb_plugin extends enrol_plugin {
+    /**
+     * Returns a xml_node for a given xml string.
+     *
+     * @param string $xml The xml to work on
+     * @return xml_node|null The xml node
+     */
+    protected function get_node_for_xml($xml) {
+        $parser = new \enrol_lmb\parser();
+        $parser->process_string($xml);
+        $processor = $parser->get_processor();
+        $node = $processor->get_previous_node();
 
+        return $node;
+    }
 }
