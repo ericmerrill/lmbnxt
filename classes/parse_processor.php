@@ -121,7 +121,7 @@ class parse_processor extends \simplified_parser_processor {
 
         // Check to see if it is one of our grouped paths.
         if ($this->path_is_selected($path)) {
-                if (is_null($this->currentnode)) {
+            if (is_null($this->currentnode)) {
                 throw new \coding_exception("XML object not started");
             }
             // Add the data to the current node.
