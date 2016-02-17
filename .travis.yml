@@ -49,7 +49,9 @@ script:
 after_script:
   - moodle-plugin-ci codechecker
     # Only bother installing coveralls if we succeeded.
-  - composer create-project -n satooshi/php-coveralls coveralls master
+  #- composer create-project -n satooshi/php-coveralls coveralls master
+  - composer require satooshi/php-coveralls
+  - pwd
     # Create a coveralls file in the plugin dir, otherwise php-coveralls will get confused.
   - echo "coverage_clover: $(pwd)/build/logs/clover.xml" > moodle/enrol/lmb/.coveralls.yml
   - echo "json_path: $(pwd)/build/logs/coveralls-upload.json" >> moodle/enrol/lmb/.coveralls.yml
