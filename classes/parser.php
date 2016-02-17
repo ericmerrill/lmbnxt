@@ -75,6 +75,8 @@ class parser extends \progressive_parser {
         $this->set_processor($processor);
         // TODO $parser->set_progress($progress).
         $this->process();
+
+        return true;
     }
 
     public function process_string($string) {

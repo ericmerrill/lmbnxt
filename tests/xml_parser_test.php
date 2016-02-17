@@ -30,11 +30,8 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
 class xml_parser_testcase extends xml_helper {
     public function test_parser() {
-        $this->resetAfterTest(true);
-
         $xml = '<tests><n1 a1="va1">vn1</n1><n2><nc>vnc1</nc><nc>vnc2</nc><nc>vnc3</nc></n2>'.
                '<n3 a1="va1" a2="va2"><nc>vnc1</nc></n3></tests>';
-
         $node = $this->get_node_for_xml($xml);
 
         // Check the root node.
@@ -72,5 +69,42 @@ class xml_parser_testcase extends xml_helper {
 
     }
 
+    public function test_enterprise_path() {
+        $xml = '<enterprise><tests><n1>V</n1></tests></enterprise>';
+        $node = $this->get_node_for_xml($xml);
+
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node);
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
+        $this->assertEquals('V', $node->n1->get_value());
+    }
+
+    public function test_parse_file() {
+        global $CFG;
+
+        // No file error.
+        $this->resetDebugging();
+        $parser = new \enrol_lmb\parser();
+        $parser->add_type('tests');
+        $this->assertFalse($parser->process_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/does_not_exist.xml'));
+        $this->assertDebuggingCalled();
+
+        // Now a working file.
+        $parser = new \enrol_lmb\parser();
+        $parser->add_type('tests');
+        $this->assertTrue($parser->process_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/basic_file.xml'));
+        $processor = $parser->get_processor();
+        $node = $processor->get_previous_node();
+
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node);
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
+        $this->assertEquals('V', $node->n1->get_value());
+    }
+
+    public function test_set_controller() {
+        $parser = new \enrol_lmb\parser();
+        $controller = new \enrol_lmb\controller();
+        $parser->set_controller($controller);
+        $this->assertAttributeEquals($controller, 'controller', $parser);
+    }
 
 }
