@@ -39,6 +39,7 @@ class parse_processor extends \simplified_parser_processor {
     protected $pathclasses = array();
     protected $merged = array();
     protected $typeprocessors = array();
+    protected $finishedpaths = array();
 
     public function __construct() {
         parent::__construct();
@@ -88,17 +89,29 @@ class parse_processor extends \simplified_parser_processor {
     }
 
     public function process_chunk($data) {
-    print "<pre>P";print_r($data['path']);print "</pre>\n";
+    //print "<pre>P";print_r($data['path']);print "</pre>\n";
         if ($this->path_is_selected($data['path'])) {
             //$this->process_pending_startend_notifications($data['path'], 'start');
             if ($proc = $this->get_path_processor($data['path'])) {
                 $proc->process_data($data);
+                foreach ($this->finishedpaths as $fpath) {
+                    $fpath = str_replace($data['path'].'/', '', $fpath);
+                    $patharray = explode('/', $fpath);
+                    $proc->mark_path_finished($patharray);
+                }
             }
+            $this->finishedpaths = array();
         } else if ($parent = $this->selected_parent_exists($data['path'])) {
             $this->expand_path($parent, $data);
             if ($proc = $this->get_path_processor($data['path'])) {
                 $proc->process_data($data);
+                foreach ($this->finishedpaths as $fpath) {
+                    $fpath = str_replace($parent.'/', '', $fpath);
+                    $patharray = explode('/', $fpath);
+                    $proc->mark_path_finished($patharray);
+                }
             }
+            $this->finishedpaths = array();
         }
 
         // Do nothing.
@@ -106,7 +119,7 @@ class parse_processor extends \simplified_parser_processor {
 
     /**
      * For selected paths, notifies the processor that a new object is starting.
-     **/
+     */
     public function before_path($path) {
         if ($this->path_is_selected($path)) {
             if ($proc = $this->get_path_processor($path)) {
@@ -119,18 +132,14 @@ class parse_processor extends \simplified_parser_processor {
      * For selected paths, notifies the processor that the current object has ended.
      */
     public function after_path($path) {
-        print "<pre>E";print_r($path);print "</pre>\n";
+        parent::after_path($path);
 
         if ($this->path_is_selected($path)) {
             if ($proc = $this->get_path_processor($path)) {
                 $proc->end_object();
             }
         } else if ($parent = $this->selected_parent_exists($path)) {
-            if ($proc = $this->get_path_processor($parent)) {
-                $path = str_replace($parent.'/', '', $path);
-                $patharray = explode('/', $path);
-                $proc->mark_path_finished($patharray);
-            }
+            $this->finishedpaths[] = $path;
         }
     }
 
@@ -139,11 +148,11 @@ class parse_processor extends \simplified_parser_processor {
     }
 
     protected function notify_path_end($path) {
+        print "<pre>E";print_r($path);print "</pre>\n";
         // Nothing to do. Required for abstract.
     }
 
     protected function dispatch_chunk($path) {
-    print "<pre>D";print_r($path['path']);print "</pre>\n";
         // Nothing to do. Required for abstract.
     }
 

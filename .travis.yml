@@ -20,6 +20,7 @@ env:
   - DB=mysqli MOODLE_BRANCH=master
 
 before_install:
+  - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/
   - phpenv config-rm xdebug.ini
   - cd ../..
   - composer selfupdate
@@ -36,7 +37,21 @@ script:
   - moodle-plugin-ci csslint
   - moodle-plugin-ci shifter
   - moodle-plugin-ci validate
+    # Do junk for code coverage.
+  - mkdir -p moodle/enrol/lmb/build/logs
+  - export XML="<logging><log type=\"coverage-clover\" target=\"$(pwd)/moodle/enrol/lmb/build/logs/clover.xml\"/></logging>"
+  - export XML="$XML<filter><whitelist addUncoveredFilesFromWhitelist=\"true\" processUncoveredFilesFromWhitelist=\"false\"><directory suffix=\".php\">enrol/lmb</directory><exclude><directory suffix=\".php\">enrol/lmb/lang</directory><file>enrol/lmb/version.php</file></exclude></whitelist></filter>" 
+  - sed "/<testsuites>/  s|<testsuites>|$XML<testsuites>| " moodle/phpunit.xml > moodle/phpunit2.xml
+  - mv moodle/phpunit2.xml moodle/phpunit.xml
   - moodle-plugin-ci phpunit
 
 after_script:
   - moodle-plugin-ci codechecker
+    # Only bother installing coveralls if we succeeded.
+  - composer create-project -n satooshi/php-coveralls coveralls dev-master
+    # Create a coveralls file in the plugin dir, otherwise php-coveralls will get confused.
+  - echo "coverage_clover: $(pwd)/build/logs/clover.xml" > moodle/enrol/lmb/.coveralls.yml
+  - echo "json_path: $(pwd)/build/logs/coveralls-upload.json" >> moodle/enrol/lmb/.coveralls.yml
+    # Need to move into the plugin dir to run, because it uses the git info.
+  - cd moodle/enrol/lmb
+  - travis_retry php ../../../coveralls/bin/coveralls -v

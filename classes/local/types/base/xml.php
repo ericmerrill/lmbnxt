@@ -55,12 +55,12 @@ abstract class xml {
     abstract public function process_data($data);
 
     public function end_object() {
-    print "END";
-        print_r($this->xmlobj);
+
+        foreach ($this->xmlobj as $name => $obj) {
+            echo "$name => {$obj->get_value()}\n";
+        }
 
 
-
-        //var_dump($this->data);
         $this->data = null;
 
     }
