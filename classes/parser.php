@@ -36,26 +36,51 @@ require_once($CFG->dirroot.'/backup/util/xml/parser/progressive_parser.class.php
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class parser extends \progressive_parser {
+    /** @var controller A reference to the controller object */
     protected $controller;
 
+    /** @var array An array of registered types */
     protected $types = array();
 
+    /**
+     * Constructor.
+     *
+     * @param bool $case_folding If true, all tags and attributes converted to upper-case
+     */
     public function __construct($case_folding = true) {
         parent::__construct($case_folding);
 
         $this->load_types();
     }
 
+    /**
+     * Loads all of the standard types.
+     */
     protected function load_types() {
-        $this->types = local\types::get_types();
+        $types = local\types::get_types();
+        foreach ($types as $type) {
+            $this->add_type($type);
+        }
     }
 
+    /**
+     * Add a type to the parser.
+     *
+     * @param string $type The type to add
+     */
     public function add_type($type) {
         $this->types[] = $type;
     }
 
+    /**
+     * Creates a processor object to use with the parser.
+     *
+     * @return parse_processor The object to use
+     */
     protected function create_processor() {
         $processor = new parse_processor($this->controller);
+
+        // Now register each type as a path.
         foreach ($this->types as $type) {
             $processor->register_path('/'.$type);
         }
@@ -63,6 +88,12 @@ class parser extends \progressive_parser {
         return $processor;
     }
 
+    /**
+     * Processes an XML file.
+     *
+     * @param string $path The path to an XML file
+     * @return bool Success or failure
+     */
     public function process_file($path) {
         if (!is_readable($path)) {
             debugging("XML path $path not readable.", DEBUG_DEVELOPER);
@@ -73,19 +104,26 @@ class parser extends \progressive_parser {
 
         $processor = $this->create_processor();
         $this->set_processor($processor);
-        // TODO $parser->set_progress($progress).
+        // TODO Use a progress object.
         $this->process();
+        // TODO Exception catching.
 
         return true;
     }
 
+    /**
+     * Processes a string of XML.
+     *
+     * @param string $string The XML
+     */
     public function process_string($string) {
         $this->set_contents($string);
 
         $processor = $this->create_processor();
         $this->set_processor($processor);
-        // TODO $parser->set_progress($progress).
+        // TODO Use a progress object.
         $this->process();
+        // TODO Exception catching.
     }
 
     /**
@@ -106,8 +144,8 @@ class parser extends \progressive_parser {
         return $this->processor;
     }
 
+    // Inherited from progressive_parser.
     protected function end_tag($parser, $tag) {
-
         // Ending rencently started tag, add value to current tag
         if ($this->level == $this->prevlevel) {
             $this->currtag['cdata'] = $this->postprocess_cdata($this->accum);
