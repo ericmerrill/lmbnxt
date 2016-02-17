@@ -41,11 +41,6 @@ abstract class xml {
 
     const TYPE = 'base';
 
-    public static function get_paths() {
-        debugging('Function \\enrol_lmb\\local\\types\\base::get_paths must be implemented by child classes.', DEBUG_DEVELOPER);
-    }
-
-
     abstract public function process_xml_obj($data);
 
     protected function load_mappings() {

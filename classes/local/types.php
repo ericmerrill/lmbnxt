@@ -36,17 +36,11 @@ defined('MOODLE_INTERNAL') || die();
  */
 class types {
 
-    protected static $types = array('person');
+    //protected static $types = array('person');
 
-    public static function register_processor_paths(\enrol_lmb\parse_processor $processor) {
-        $types = array('person');
-        foreach ($types as $type) {
-            $class = '\\enrol_lmb\\local\\types\\'.$type.'\\xml';
-            $paths = $class::get_paths();
-            foreach ($paths as $path) {
-                $processor->register_path($type, $path);
-            }
-        }
+    public static function get_types() {
+        return array('person');
     }
+
 
 }

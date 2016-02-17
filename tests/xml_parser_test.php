@@ -32,13 +32,13 @@ class xml_parser_testcase extends xml_helper {
     public function test_parser() {
         $this->resetAfterTest(true);
 
-        $xml = '<person><n1 a1="va1">vn1</n1><n2><nc>vnc1</nc><nc>vnc2</nc><nc>vnc3</nc></n2>'.
-               '<n3 a1="va1" a2="va2"><nc>vnc1</nc></n3></person>';
+        $xml = '<tests><n1 a1="va1">vn1</n1><n2><nc>vnc1</nc><nc>vnc2</nc><nc>vnc3</nc></n2>'.
+               '<n3 a1="va1" a2="va2"><nc>vnc1</nc></n3></tests>';
 
         $node = $this->get_node_for_xml($xml);
 
         // Check the root node.
-        $this->assertEquals('person', $node->get_name());
+        $this->assertEquals('tests', $node->get_name());
 
         // Node n1.
         $this->assertTrue(isset($node->n1));

@@ -38,9 +38,29 @@ require_once($CFG->dirroot.'/backup/util/xml/parser/progressive_parser.class.php
 class parser extends \progressive_parser {
     protected $controller;
 
-    public function __construct($case_folding = true) {
+    protected $types = array();
 
+    public function __construct($case_folding = true) {
         parent::__construct($case_folding);
+
+        $this->load_types();
+    }
+
+    protected function load_types() {
+        $this->types = local\types::get_types();
+    }
+
+    public function add_type($type) {
+        $this->types[] = $type;
+    }
+
+    protected function create_processor() {
+        $processor = new parse_processor($this->controller);
+        foreach ($this->types as $type) {
+            $processor->register_path('/'.$type);
+        }
+
+        return $processor;
     }
 
     public function process_file($path) {
@@ -51,7 +71,7 @@ class parser extends \progressive_parser {
 
         $this->set_file($path);
 
-        $processor = new parse_processor($this->controller);
+        $processor = $this->create_processor();
         $this->set_processor($processor);
         // TODO $parser->set_progress($progress).
         $this->process();
@@ -60,7 +80,7 @@ class parser extends \progressive_parser {
     public function process_string($string) {
         $this->set_contents($string);
 
-        $processor = new parse_processor($this->controller);
+        $processor = $this->create_processor();
         $this->set_processor($processor);
         // TODO $parser->set_progress($progress).
         $this->process();

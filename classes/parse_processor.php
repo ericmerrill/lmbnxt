@@ -36,12 +36,6 @@ require_once($CFG->dirroot.'/backup/util/xml/parser/processors/simplified_parser
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class parse_processor extends \simplified_parser_processor {
-    /** @var array Array to associate a path to a type class */
-    protected $pathclasses = array();
-
-    /** @var array An array of type processors */
-    protected $typeprocessors = array();
-
     /** @var array A cache of arrays that were finished */
     protected $finishedpaths = array();
 
@@ -58,8 +52,6 @@ class parse_processor extends \simplified_parser_processor {
         parent::__construct();
 
         $this->controller = $controller;
-
-        local\types::register_processor_paths($this);
     }
 
     /**
@@ -68,11 +60,8 @@ class parse_processor extends \simplified_parser_processor {
      * @param string $type The type the path will be registered to
      * @param string $path The path to register
      */
-    public function register_path($type, $path) {
+    public function register_path($path) {
         // We register both the path that the path in /enterprise/, as it is a common wrapper.
-        $this->pathclasses[$path] = $type;
-        $this->pathclasses['/enterprise'.$path] = $type;
-
         $this->add_path(strtoupper($path));
         $this->add_path(strtoupper('/enterprise'.$path));
     }

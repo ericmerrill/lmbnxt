@@ -34,6 +34,7 @@ abstract class xml_helper extends advanced_testcase {
      */
     protected function get_node_for_xml($xml) {
         $parser = new \enrol_lmb\parser();
+        $parser->add_type('tests');
         $parser->process_string($xml);
         $processor = $parser->get_processor();
         $node = $processor->get_previous_node();

@@ -48,10 +48,6 @@ class xml extends types\base\xml {
         $this->load_mappings();
     }
 
-    public static function get_paths() {
-        return array('/person');
-    }
-
     public function process_xml_obj($obj) {
 
     }

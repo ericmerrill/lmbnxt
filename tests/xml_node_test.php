@@ -31,7 +31,7 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class xml_node_testcase extends xml_helper {
     public function test_itterator() {
         // Test the node itterator.
-        $xml = '<person><n1>V1</n1><n2>V2</n2><n2>V3</n2><n3>V4</n3><n2>V5</n2></person>';
+        $xml = '<tests><n1>V1</n1><n2>V2</n2><n2>V3</n2><n3>V4</n3><n2>V5</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
         $i = 0;
@@ -64,7 +64,7 @@ class xml_node_testcase extends xml_helper {
     }
 
     public function test_get_parent() {
-        $xml = '<person><n1><n2>V2</n2></n1></person>';
+        $xml = '<tests><n1><n2>V2</n2></n1></tests>';
         $parent = $this->get_node_for_xml($xml);
 
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $parent);
@@ -79,7 +79,7 @@ class xml_node_testcase extends xml_helper {
     }
 
     public function test_magic_get() {
-        $xml = '<person><n1>V1</n1><n2>V2</n2><n2>V3</n2></person>';
+        $xml = '<tests><n1>V1</n1><n2>V2</n2><n2>V3</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
@@ -94,7 +94,7 @@ class xml_node_testcase extends xml_helper {
     }
 
     public function test_magic_unset() {
-        $xml = '<person><n1>V1</n1><n2>V2</n2></person>';
+        $xml = '<tests><n1>V1</n1><n2>V2</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
@@ -110,7 +110,7 @@ class xml_node_testcase extends xml_helper {
     }
 
     public function test_attributes() {
-        $xml = '<person><n1 a1="v1" a2="v2">V1</n1><n2>V2</n2></person>';
+        $xml = '<tests><n1 a1="v1" a2="v2">V1</n1><n2>V2</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
         $this->assertEquals('v1', $node->n1->get_attribute('a1'));
@@ -127,17 +127,17 @@ class xml_node_testcase extends xml_helper {
     }
 
     public function test_name() {
-        $xml = '<person><n1 a1="v1" a2="v2">V1</n1><n2>V2</n2><n2>V3</n2></person>';
+        $xml = '<tests><n1 a1="v1" a2="v2">V1</n1><n2>V2</n2><n2>V3</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertEquals('person', $node->get_name());
+        $this->assertEquals('tests', $node->get_name());
         $this->assertEquals('n1', $node->n1->get_name());
         $this->assertEquals('n2', $node->n2[0]->get_name());
         $this->assertEquals('n2', $node->n2[1]->get_name());
     }
 
     public function test_has_data() {
-        $xml = '<person><n1 a1="v1" a2="v2"><c1>Something</c1></n1><n2><c1>Data</c1></n2><n3></n3></person>';
+        $xml = '<tests><n1 a1="v1" a2="v2"><c1>Something</c1></n1><n2><c1>Data</c1></n2><n3></n3></tests>';
         $node = $this->get_node_for_xml($xml);
 
         $this->assertTrue($node->n1->has_data());
@@ -151,7 +151,7 @@ class xml_node_testcase extends xml_helper {
     }
 
     public function test_mixed_case() {
-        $xml = '<peRson><node a1="v1" A2="V2">1</node><nOde>2</nOde><NODE>Val3</NODE></peRson>';
+        $xml = '<tEsts><node a1="v1" A2="V2">1</node><nOde>2</nOde><NODE>Val3</NODE></tEsts>';
         $node = $this->get_node_for_xml($xml);
 
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node);
