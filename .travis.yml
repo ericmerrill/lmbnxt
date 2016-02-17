@@ -31,16 +31,12 @@ install:
   - moodle-plugin-ci install
 
 script:
-  - pwd
-  - ls
   - moodle-plugin-ci phplint
   - moodle-plugin-ci phpcpd
   - moodle-plugin-ci phpmd
   - moodle-plugin-ci csslint
   - moodle-plugin-ci shifter
   - moodle-plugin-ci validate
-  - pwd
-  - ls
     # Do junk for code coverage.
   - mkdir -p moodle/enrol/lmb/build/logs
   - export XML="<logging><log type=\"coverage-clover\" target=\"$(pwd)/moodle/enrol/lmb/build/logs/clover.xml\"/></logging>"
@@ -55,11 +51,9 @@ after_script:
     # Only bother installing coveralls if we succeeded.
   #- composer create-project -n satooshi/php-coveralls coveralls master
   - composer require satooshi/php-coveralls
-  - pwd
-  - ls
     # Create a coveralls file in the plugin dir, otherwise php-coveralls will get confused.
   - echo "coverage_clover: $(pwd)/build/logs/clover.xml" > moodle/enrol/lmb/.coveralls.yml
   - echo "json_path: $(pwd)/build/logs/coveralls-upload.json" >> moodle/enrol/lmb/.coveralls.yml
     # Need to move into the plugin dir to run, because it uses the git info.
   - cd moodle/enrol/lmb
-  - travis_retry php ../../../coveralls/bin/coveralls -v
+  - travis_retry php ../../../vendor/bin/coveralls -v
