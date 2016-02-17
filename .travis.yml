@@ -23,7 +23,6 @@ before_install:
   - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/
   - phpenv config-rm xdebug.ini
   - cd ../..
-  - if [ -n "$GITHUB_APITOKEN" ]; then composer config github-oauth.github.com $GITHUB_APITOKEN; fi
   - composer selfupdate
   - composer create-project -n --no-dev moodlerooms/moodle-plugin-ci ci ^1
   - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
@@ -51,7 +50,7 @@ after_script:
   - moodle-plugin-ci codechecker
     # Only bother installing coveralls if we succeeded.
   #- composer create-project -n satooshi/php-coveralls coveralls master
-  - composer require satooshi/php-coveralls -g github-oauth.github.com $GITHUB_
+  - composer require satooshi/php-coveralls -g github-oauth.github.com $GITHUB_APITOKEN
     # Create a coveralls file in the plugin dir, otherwise php-coveralls will get confused.
   - echo "coverage_clover: $(pwd)/build/logs/clover.xml" > moodle/enrol/lmb/.coveralls.yml
   - echo "json_path: $(pwd)/build/logs/coveralls-upload.json" >> moodle/enrol/lmb/.coveralls.yml
