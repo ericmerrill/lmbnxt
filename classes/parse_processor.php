@@ -45,6 +45,9 @@ class parse_processor extends \simplified_parser_processor {
     /** @var array A cache of arrays that were finished */
     protected $finishedpaths = array();
 
+    /** @var xml_node The current node we are working on */
+    protected $currentnode = null;
+
     /**
      * Basic constructor.
      */
@@ -118,16 +121,14 @@ class parse_processor extends \simplified_parser_processor {
 
         // Check to see if it is one of our grouped paths.
         if ($this->path_is_selected($path)) {
-            if ($proc = $this->get_path_processor($path)) {
+            // Add the data to the current node.
+            $this->currentnode->build_from_array($data['tags']);
 
-                $proc->process_data($data);
-
-                // Dispatch all the pending finished notifications.
-                foreach ($this->finishedpaths as $fpath) {
-                    $fpath = str_replace($path.'/', '', $fpath);
-                    $patharray = explode('/', $fpath);
-                    $proc->mark_path_finished($patharray);
-                }
+            // Send all the currently buffered paths as finished.
+            foreach ($this->finishedpaths as $fpath) {
+                $fpath = str_replace($path.'/', '', $fpath);
+                $patharray = explode('/', $fpath);
+                $this->currentnode->mark_node_finished($patharray);
             }
             $this->finishedpaths = array();
         }
@@ -135,27 +136,31 @@ class parse_processor extends \simplified_parser_processor {
     }
 
     /**
-     * For selected paths, notifies the processor that a new object is starting.
+     * Receives notification of an upcoming path.
+     *
+     * @param string $path Path that is going to happen.
      */
     public function before_path($path) {
         if ($this->path_is_selected($path)) {
-            if ($proc = $this->get_path_processor($path)) {
-                $proc->start_object();
-            }
+            // If we are starting a new group node, start a new collector.
+            $this->currentnode = new local\xml_node();
         }
     }
 
     /**
-     * For selected paths, notifies the processor that the current object has ended.
+     * Notifications after paths have been processed.
+     *
+     * @param string $path Path that happened.
      */
     public function after_path($path) {
         parent::after_path($path);
 
         if ($this->path_is_selected($path)) {
-            if ($proc = $this->get_path_processor($path)) {
-                $proc->end_object();
-            }
+            // This is where our current node is complete, and can be dispatched.
+            print_r($this->currentnode);
+            $this->currentnode = null;
         } else if ($parent = $this->selected_parent_exists($path)) {
+            // Save the path for marking as finished. This has to be done after the upcoming chunk is processed.
             $this->finishedpaths[] = $path;
         }
     }
@@ -175,12 +180,17 @@ class parse_processor extends \simplified_parser_processor {
 
     /**
      * Normalizes the data object to the passes path level.
+     *
+     * @param string $grouped The normalize path
+     * @param array $data The base object
      */
     protected function expand_path($grouped, &$data) {
         $path = $data['path'];
 
+        // Strip the matching parts of the array.
         $hierarchyarr = explode('/', str_replace($grouped . '/', '', $path));
         $hierarchyarr = array_reverse($hierarchyarr, false);
+
         foreach ($hierarchyarr as $element) {
             $data['level']--;
             $data['tags'] = array($element => $data['tags']);
