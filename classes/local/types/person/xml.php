@@ -53,7 +53,7 @@ class xml extends types\base\xml {
     }
 
     public function process_data($data) {
-        if (is_null($this->data)) {
+        if (is_null($this->xmlobj)) {
             throw new \coding_exception("Person data object not started");
         }
 
@@ -61,7 +61,7 @@ class xml extends types\base\xml {
 
         $this->xmlobj->build_from_array($data['tags']);
 
-        $this->apply_mappings($data['tags']);
+        //$this->apply_mappings($data['tags']);
         //print "<pre>XXX";print_r($data);print "</pre>";
     }
 

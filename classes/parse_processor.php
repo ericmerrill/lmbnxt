@@ -89,9 +89,7 @@ class parse_processor extends \simplified_parser_processor {
     }
 
     public function process_chunk($data) {
-    //print "<pre>P";print_r($data['path']);print "</pre>\n";
         if ($this->path_is_selected($data['path'])) {
-            //$this->process_pending_startend_notifications($data['path'], 'start');
             if ($proc = $this->get_path_processor($data['path'])) {
                 $proc->process_data($data);
                 foreach ($this->finishedpaths as $fpath) {
@@ -114,7 +112,6 @@ class parse_processor extends \simplified_parser_processor {
             $this->finishedpaths = array();
         }
 
-        // Do nothing.
     }
 
     /**
@@ -148,7 +145,6 @@ class parse_processor extends \simplified_parser_processor {
     }
 
     protected function notify_path_end($path) {
-        print "<pre>E";print_r($path);print "</pre>\n";
         // Nothing to do. Required for abstract.
     }
 

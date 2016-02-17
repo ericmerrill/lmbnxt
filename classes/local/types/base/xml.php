@@ -29,7 +29,7 @@ use enrol_lmb\local;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Class for working with message types.
+ * Class for working with messages from XML.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -37,7 +37,6 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class xml {
-    protected $data = null;
     protected $xmlobj = null;
     protected $mappings = null;
 
@@ -49,7 +48,6 @@ abstract class xml {
 
     public function start_object() {
         $this->xmlobj = new local\xml_node();
-        $this->data = new \stdClass();
     }
 
     abstract public function process_data($data);
@@ -61,7 +59,6 @@ abstract class xml {
         }
 
 
-        $this->data = null;
 
     }
 
