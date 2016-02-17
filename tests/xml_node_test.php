@@ -93,4 +93,19 @@ class xml_node_testcase extends xml_helper {
         $this->assertNull($node->n3);
     }
 
+    public function test_magic_unset() {
+        $xml = '<person><n1>V1</n1><n2>V2</n2></person>';
+        $node = $this->get_node_for_xml($xml);
+
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n2);
+
+        unset($node->n2);
+        $this->assertFalse(isset($node->n2));
+        $this->assertNull($node->n2);
+
+        // Make sure no errors when unsetting something that doesn't exist.
+        unset($node->n3);
+    }
+
 }
