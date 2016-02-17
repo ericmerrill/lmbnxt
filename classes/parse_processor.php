@@ -54,8 +54,10 @@ class parse_processor extends \simplified_parser_processor {
     /**
      * Basic constructor.
      */
-    public function __construct() {
+    public function __construct($controller) {
         parent::__construct();
+
+        $this->controller = $controller;
 
         local\types::register_processor_paths($this);
     }
@@ -73,39 +75,6 @@ class parse_processor extends \simplified_parser_processor {
 
         $this->add_path($path);
         $this->add_path('/enterprise'.$path);
-    }
-
-    /**
-     * Returns the class type for a path.
-     *
-     * @param string $path The path to check for
-     * @return string|false The type string or false
-     */
-    protected function get_path_type($path) {
-        if (isset($this->pathclasses[$path])) {
-            return $this->pathclasses[$path];
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets the processor for the path. Creates if doesn't exist.
-     *
-     * @param string $path The path to check for
-     * @return object|false A xml processor or false if not available
-     */
-    protected function get_path_processor($path) {
-        if (!$type = $this->get_path_type($path)) {
-            return false;
-        }
-
-        if (!isset($this->typeprocessors[$type])) {
-            $class = '\\enrol_lmb\\local\\types\\'.$type.'\\xml';
-            $this->typeprocessors[$type] = new $class();
-        }
-
-        return $this->typeprocessors[$type];
     }
 
     /**
@@ -150,6 +119,8 @@ class parse_processor extends \simplified_parser_processor {
         if ($this->path_is_selected($path)) {
             // If we are starting a new group node, start a new collector.
             $this->currentnode = new local\xml_node();
+            $parts = explode('/', $path);
+            $this->currentnode->set_name(end($parts));
         }
     }
 

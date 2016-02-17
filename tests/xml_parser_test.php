@@ -34,11 +34,15 @@ class xml_parser_testcase extends advanced_testcase {
         $processor = $parser->get_processor();
         $node = $processor->get_previous_node();
 
+        // Check the root node.
+        $this->assertEquals('person', $node->get_name());
+
         // Node n1.
         $this->assertTrue(isset($node->n1));
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
         $this->assertTrue($node->n1->has_data());
         $this->assertEquals('vn1', $node->n1->get_value());
+        $this->assertEquals('n1', $node->n1->get_name());
         $this->assertEquals('va1', $node->n1->get_attribute('a1'));
 
         // Node n2.

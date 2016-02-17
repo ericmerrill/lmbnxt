@@ -36,6 +36,7 @@ require_once($CFG->dirroot.'/backup/util/xml/parser/progressive_parser.class.php
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class parser extends \progressive_parser {
+    protected $controller;
 
     public function process_file($path) {
         if (!is_readable($path)) {
@@ -45,7 +46,7 @@ class parser extends \progressive_parser {
 
         $this->set_file($path);
 
-        $processor = new parse_processor();
+        $processor = new parse_processor($this->controller);
         $this->set_processor($processor);
         // TODO $parser->set_progress($progress).
         $this->process();
@@ -54,10 +55,19 @@ class parser extends \progressive_parser {
     public function process_string($string) {
         $this->set_contents($string);
 
-        $processor = new parse_processor();
+        $processor = new parse_processor($this->controller);
         $this->set_processor($processor);
         // TODO $parser->set_progress($progress).
         $this->process();
+    }
+
+    /**
+     * Set the controller object.
+     *
+     * @param controller $controller Controller object
+     */
+    public function set_controller(controller $controller) {
+        $this->controller = $controller;
     }
 
     /**
@@ -65,7 +75,7 @@ class parser extends \progressive_parser {
      *
      * @return parse_procssor
      */
-    public  function get_processor() {
+    public function get_processor() {
         return $this->processor;
     }
 

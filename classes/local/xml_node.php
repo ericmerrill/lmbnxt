@@ -226,6 +226,24 @@ class xml_node implements \Iterator {
     }
 
     /**
+     * Sets this node's name.
+     *
+     * @param string $name The name to set
+     */
+    public function set_name($name) {
+        $this->name = $name;
+    }
+
+    /**
+     * Returns this node's name.
+     *
+     * @return string
+     */
+    public function get_name() {
+        return $this->name;
+    }
+
+    /**
      * Returns true if this node has a value or attributes.
      *
      * @return bool
