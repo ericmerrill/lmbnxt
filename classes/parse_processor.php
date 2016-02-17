@@ -120,7 +120,7 @@ class parse_processor extends \simplified_parser_processor {
             // If we are starting a new group node, start a new collector.
             $this->currentnode = new local\xml_node();
             $parts = explode('/', $path);
-            $this->currentnode->set_name(strtolower(end($parts)));
+            $this->currentnode->set_name(end($parts));
         }
     }
 

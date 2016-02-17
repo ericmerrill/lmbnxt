@@ -39,6 +39,7 @@ class parser extends \progressive_parser {
     protected $controller;
 
     public function __construct($case_folding = true) {
+
         parent::__construct($case_folding);
     }
 

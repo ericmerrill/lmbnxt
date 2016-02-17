@@ -84,17 +84,20 @@ class xml_node implements \Iterator {
             }
             if (array_key_exists('attrs', $data)) {
                 $this->attrs = $data['attrs'];
+                // Lowercase the attribute names.
                 $keys = array_keys($this->attrs);
                 foreach ($keys as $key) {
                     $this->attrs[strtolower($key)] = $this->attrs[$key];
                     unset($this->attrs[$key]);
                 }
+
                 unset($data['attrs']);
             }
         }
 
         // Go through each remaining element.
         foreach ($data as $name => $value) {
+            // Lowercase the child element names.
             $name = strtolower($name);
             // Check to see if we have a child with that name.
             if (array_key_exists($name, $this->children)) {
@@ -237,7 +240,7 @@ class xml_node implements \Iterator {
      * @param string $name The name to set
      */
     public function set_name($name) {
-        $this->name = $name;
+        $this->name = strtolower($name);
     }
 
     /**
