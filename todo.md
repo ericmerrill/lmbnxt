@@ -18,3 +18,6 @@ Settings
 * Progress object for parsing
 * Use MD5 to see if we have run a file, not timestamp
 * Option to reprocess from DB when settings change
+
+# TODO
+* Doc mappings.json
