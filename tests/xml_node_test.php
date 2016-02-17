@@ -108,4 +108,13 @@ class xml_node_testcase extends xml_helper {
         unset($node->n3);
     }
 
+    public function test_get_attribute() {
+        $xml = '<person><n1 a1="v1" a2="v2">V1</n1><n2>V2</n2></person>';
+        $node = $this->get_node_for_xml($xml);
+
+        $this->assertEquals('v1', $node->n1->get_attribute('a1'));
+        $this->assertEquals('v2', $node->n1->get_attribute('a2'));
+        $this->assertNull($node->n1->get_attribute('a3'));
+    }
+
 }
