@@ -29,28 +29,46 @@ class xml_parser_testcase extends advanced_testcase {
         $this->resetAfterTest(true);
 
         $parser = new \enrol_lmb\parser();
-        $parser->process_string('<person><n1>vn1</n1><n2><nc>vnc</nc><nc>vnc</nc></n2></person>');
+        $parser->process_string('<person><n1 a1="va1">vn1</n1><n2><nc>vnc1</nc><nc>vnc2</nc></n2>'.
+                '<n3 a1="va1" a2="va2"><nc>vnc1</nc></n3></person>');
         $processor = $parser->get_processor();
         $node = $processor->get_previous_node();
-        //print_r($node);
+
+        // Node n1.
         $this->assertTrue(isset($node->n1));
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
         $this->assertTrue($node->n1->has_data());
         $this->assertEquals('vn1', $node->n1->get_value());
+        $this->assertEquals('va1', $node->n1->get_attribute('a1'));
 
+        // Node n2.
         $this->assertTrue(isset($node->n2));
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n2);
         $this->assertFalse($node->n2->has_data());
         $this->assertNull($node->n2->get_value());
 
+        // Children of n2.
         $this->assertInternalType('array', $node->n2->nc);
+        $this->assertCount(2, $node->n2->nc);
+        $this->assertEquals('vnc1', $node->n2->nc[0]->get_value());
+        $this->assertEquals('vnc2', $node->n2->nc[1]->get_value());
 
-        $this->assertFalse(isset($node->n3));
+        // Node n3.
+        $this->assertTrue(isset($node->n3));
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n3);
+        $this->assertTrue($node->n3->has_data());
+        $this->assertInternalType('array', $node->n3->get_attributes());
+        $this->assertCount(2, $node->n3->get_attributes());
+        $this->assertEquals('va1', $node->n3->get_attributes()['a1']);
+        $this->assertEquals('va2', $node->n3->get_attributes()['a2']);
+
+        $this->assertFalse(isset($node->n4));
 
 
 
 
         //$this->assertEquals(, 'person');
     }
+
 
 }
