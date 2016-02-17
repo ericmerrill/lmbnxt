@@ -70,8 +70,6 @@ class xml_parser_testcase extends xml_helper {
         $this->assertEquals('va1', $node->n3->get_attributes()['a1']);
         $this->assertEquals('va2', $node->n3->get_attributes()['a2']);
 
-        $this->assertFalse(isset($node->n4));
-
     }
 
 

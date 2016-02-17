@@ -63,4 +63,34 @@ class xml_node_testcase extends xml_helper {
         $node->mark_node_finished(array('child', 'subchild'));
     }
 
+    public function test_get_parent() {
+        $xml = '<person><n1><n2>V2</n2></n1></person>';
+        $parent = $this->get_node_for_xml($xml);
+
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $parent);
+        $child1 = $parent->n1;
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child1);
+        $child2 = $child1->n2;
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child2);
+
+        $this->assertEquals($child1, $child2->get_parent());
+        $this->assertEquals($parent, $child1->get_parent());
+        $this->assertNull($parent->get_parent());
+    }
+
+    public function test_magic_get() {
+        $xml = '<person><n1>V1</n1><n2>V2</n2><n2>V3</n2></person>';
+        $node = $this->get_node_for_xml($xml);
+
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
+        $this->assertEquals('V1', $node->n1->get_value());
+        $this->assertInternalType('array', $node->n2);
+        $this->assertEquals('V2', $node->n2[0]->get_value());
+        $this->assertEquals('V3', $node->n2[1]->get_value());
+
+        // Make sure checks for non-existant child work.
+        $this->assertFalse(isset($node->n3));
+        $this->assertNull($node->n3);
+    }
+
 }
