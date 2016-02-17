@@ -37,7 +37,6 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class xml {
-    protected $xmlobj = null;
     protected $mappings = null;
 
     const TYPE = 'base';
@@ -46,26 +45,8 @@ abstract class xml {
         debugging('Function \\enrol_lmb\\local\\types\\base::get_paths must be implemented by child classes.', DEBUG_DEVELOPER);
     }
 
-    public function start_object() {
-        $this->xmlobj = new local\xml_node();
-    }
 
-    abstract public function process_data($data);
-
-    public function end_object() {
-
-        foreach ($this->xmlobj as $name => $obj) {
-            echo "$name => {$obj->get_value()}\n";
-        }
-        print "<pre>";print_r($this->xmlobj);print "</pre>";
-
-
-    }
-
-    public function mark_path_finished($path) {
-    //print $path;
-        $this->xmlobj->mark_node_finished($path);
-    }
+    abstract public function process_xml_obj($data);
 
     protected function load_mappings() {
         global $CFG;
