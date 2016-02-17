@@ -40,8 +40,7 @@ script:
     # Do junk for code coverage.
   - mkdir -p moodle/enrol/lmb/build/logs
   - export XML="<logging><log type=\"coverage-clover\" target=\"$(pwd)/moodle/enrol/lmb/build/logs/clover.xml\"/></logging>"
-  - export XML="$XML<filter><whitelist addUncoveredFilesFromWhitelist=\"true\" processUncoveredFilesFromWhitelist=\"false\"><directory suffix=\".php\">enrol/lmb</directory><exclude><directory suffix=\".php\">enrol/lmb/lang</directory><file>enrol/lmb/version.php</file></exclude></whitelist></filter>" 
-  - pwd
+  - export XML="$XML<filter><whitelist addUncoveredFilesFromWhitelist=\"true\" processUncoveredFilesFromWhitelist=\"false\"><directory suffix=\".php\">enrol/lmb</directory><exclude><directory suffix=\".php\">enrol/lmb/lang</directory><file>enrol/lmb/version.php</file></exclude></whitelist></filter>"
   - sed "/<testsuites>/  s|<testsuites>|$XML<testsuites>| " moodle/phpunit.xml > moodle/phpunit2.xml
   - mv moodle/phpunit2.xml moodle/phpunit.xml
   - phpenv config-add ~/xdebug.ini
