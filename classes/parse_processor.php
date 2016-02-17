@@ -48,6 +48,9 @@ class parse_processor extends \simplified_parser_processor {
     /** @var xml_node The current node we are working on */
     protected $currentnode = null;
 
+    /** @var xml_node The most recently completed node, basically for testing */
+    protected $lastnode = null;
+
     /**
      * Basic constructor.
      */
@@ -150,6 +153,22 @@ class parse_processor extends \simplified_parser_processor {
         }
     }
 
+    protected function process_complete_node($node) {
+        $this->previousnode = $node;
+
+        // Dispatch a completed node.
+
+    }
+
+    /**
+     * Returns the last completed XML node.
+     *
+     * @return xml_node
+     */
+    public  function get_previous_node() {
+        return $this->previousnode;
+    }
+
     /**
      * Notifications after paths have been processed.
      *
@@ -160,7 +179,7 @@ class parse_processor extends \simplified_parser_processor {
 
         if ($this->path_is_selected($path)) {
             // This is where our current node is complete, and can be dispatched.
-            print_r($this->currentnode);
+            $this->process_complete_node($this->currentnode);
             $this->currentnode = null;
         } else if ($parent = $this->selected_parent_exists($path)) {
             // Save the path for marking as finished. This has to be done after the upcoming chunk is processed.

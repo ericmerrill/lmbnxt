@@ -39,6 +39,7 @@ class parser extends \progressive_parser {
 
     public function process_file($path) {
         if (!is_readable($path)) {
+            debugging("XML path $path not readable.", DEBUG_DEVELOPER);
             return false;
         }
 
@@ -48,6 +49,24 @@ class parser extends \progressive_parser {
         $this->set_processor($processor);
         // TODO $parser->set_progress($progress).
         $this->process();
+    }
+
+    public function process_string($string) {
+        $this->set_contents($string);
+
+        $processor = new parse_processor();
+        $this->set_processor($processor);
+        // TODO $parser->set_progress($progress).
+        $this->process();
+    }
+
+    /**
+     * Returns the parse processor.
+     *
+     * @return parse_procssor
+     */
+    public  function get_processor() {
+        return $this->processor;
     }
 
     protected function end_tag($parser, $tag) {
