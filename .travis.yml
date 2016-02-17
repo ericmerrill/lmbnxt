@@ -43,6 +43,7 @@ script:
   - export XML="$XML<filter><whitelist addUncoveredFilesFromWhitelist=\"true\" processUncoveredFilesFromWhitelist=\"false\"><directory suffix=\".php\">enrol/lmb</directory><exclude><directory suffix=\".php\">enrol/lmb/lang</directory><file>enrol/lmb/version.php</file></exclude></whitelist></filter>" 
   - sed "/<testsuites>/  s|<testsuites>|$XML<testsuites>| " moodle/phpunit.xml > moodle/phpunit2.xml
   - mv moodle/phpunit2.xml moodle/phpunit.xml
+  - phpenv config-add ~/xdebug.ini
   - moodle-plugin-ci phpunit
 
 after_script:
