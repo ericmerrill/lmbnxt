@@ -128,4 +128,41 @@ class xml_parser_testcase extends xml_helper {
         $node = $processor->get_previous_node();
         $this->assertEquals('V2', $node->n1->get_value());
     }
+
+    public function test_parser_errors() {
+        global $CFG;
+
+        $parser = new \enrol_lmb\parser();
+
+        // Check no parser exception.
+        try {
+            $parser->process();
+            $this->assertFalse(true, "Expected exception not thrown.");
+        } catch (Exception $ex) {
+            $this->assertInstanceOf('progressive_parser_exception', $ex);
+            $this->assertStringStartsWith('error/undefined_parser_processor', $ex->getMessage());
+        }
+
+        // Check no file/contents exception.
+        $processor = new \enrol_lmb\parse_processor(null);
+        $parser->set_processor($processor);
+        try {
+            $parser->process();
+            $this->assertFalse(true, "Expected exception not thrown.");
+        } catch (Exception $ex) {
+            $this->assertInstanceOf('progressive_parser_exception', $ex);
+            $this->assertStringStartsWith('error/undefined_xml_to_parse', $ex->getMessage());
+        }
+
+        // Check already used exception.
+        $parser->set_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/multi_good_form.xml');
+        $parser->process();
+        try {
+            $parser->process();
+            $this->assertFalse(true, "Expected exception not thrown.");
+        } catch (Exception $ex) {
+            $this->assertInstanceOf('progressive_parser_exception', $ex);
+            $this->assertStringStartsWith('error/progressive_parser_already_used', $ex->getMessage());
+        }
+    }
 }

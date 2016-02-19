@@ -126,11 +126,14 @@ abstract class base {
      */
     protected function process_field(\enrol_lmb\local\xml_node $node, $mapping) {
         if (is_string($mapping)) {
+            // Simple string means that this is a strait mapping.
             if ($node->has_data()) {
                 $this->dataobj->$mapping = $node->get_value();
             }
         } else if (is_array($mapping) && array_key_exists('lmbinternal', $mapping)) {
+            // LMB internal mapping array.
             if (isset($mapping['function'])) {
+                // If a function is set, just call it, passing the node and mapping.
                 $func = $mapping['function'];
                 $this->$func($node, $mapping);
                 return;
@@ -138,6 +141,7 @@ abstract class base {
 
             $matched = true;
             if (isset($mapping['reqattrs'])) {
+                // This means we require attributes to continue.
                 $matched = true;
                 // We must match all required attributes to include.
                 foreach ($mapping['reqattrs'] as $attr) {
@@ -151,22 +155,24 @@ abstract class base {
             // If we matched, then set the value.
             if ($matched) {
                 $key = $mapping['objname'];
+                // If attr is set, then we match to an attribute value. Otherwise we match to the node value.
                 if (isset($mapping['attr'])) {
                     $value = $node->get_attribute($mapping['attr']);
                 } else {
                     $value = $node->get_value();
                 }
                 if (isset($mapping['type']) && $mapping['type'] == 'array') {
+                    // Type:array means we are going to store values in an array.
                     if (!isset($this->dataobj->$key)) {
                         $this->dataobj->$key = array();
                     }
-                    //$arr = $this->dataobj->$key;
-                    //$arr[] = $node->get_value();
                     $this->dataobj->{$key}[] = $value;
                 } else {
                     $this->dataobj->$key = $value;
                 }
             }
+        } else {
+            debugging('Non-lmbinternal array passed to process_field', DEBUG_DEVELOPER);
         }
     }
 

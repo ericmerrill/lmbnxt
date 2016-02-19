@@ -183,13 +183,13 @@ class parser extends \progressive_parser {
      */
     public function process() {
         if (empty($this->processor)) {
-            throw new progressive_parser_exception('undefined_parser_processor');
+            throw new \progressive_parser_exception('undefined_parser_processor');
         }
         if (empty($this->file) && empty($this->contents)) {
-            throw new progressive_parser_exception('undefined_xml_to_parse');
+            throw new \progressive_parser_exception('undefined_xml_to_parse');
         }
         if (is_null($this->xml_parser)) {
-            throw new progressive_parser_exception('progressive_parser_already_used');
+            throw new \progressive_parser_exception('progressive_parser_already_used');
         }
         if ($this->file) {
             $fh = fopen($this->file, 'r');
