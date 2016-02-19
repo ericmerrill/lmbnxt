@@ -23,19 +23,41 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\types\person;
-use enrol_lmb\local\types;
+namespace enrol_lmb\local\data;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Object that represents the internal data structure of a person object.
+ * Object that represents the internal data structure.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class data extends types\base\data {
+abstract class base {
 
+    protected $record;
+
+    protected $dbkeys;
+
+    public function __construct() {
+        $this->record = new \stdClass();
+    }
+
+    public function __get($name) {
+        return $this->record->$name;
+    }
+
+    public function __set($name, $value) {
+        $this->record->$name = $value;
+    }
+
+    public function __unset($name) {
+        unset($this->record->$name);
+    }
+
+    public function __isset($name) {
+        isset($this->record->$name);
+    }
 }

@@ -23,8 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\types\base;
-use enrol_lmb\local\types;
+namespace enrol_lmb\local\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,17 +35,21 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class xml {
+abstract class base {
     protected $mappings = null;
     protected $dataobj = null;
 
     const TYPE = 'base';
+    const MAPPING_PATH = FALSE;
 
     abstract public function process_xml_to_data($xmlobd);
 
     protected function load_mappings() {
         global $CFG;
-        $path = $CFG->dirroot.'/enrol/lmb/classes/local/types/'.static::TYPE.'/mappings.json';
+        if (!static::MAPPING_PATH) {
+            return;
+        }
+        $path = $CFG->dirroot.static::MAPPING_PATH;
 
         if (!file_exists($path)) {
             return false;

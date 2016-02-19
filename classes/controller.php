@@ -56,7 +56,7 @@ class controller {
         $type = $xmlobj->get_name();
 
         if (!isset($this->typeprocessors[$type])) {
-            $class = '\\enrol_lmb\\local\\types\\'.$type.'\\xml';
+            $class = '\\enrol_lmb\\local\\xml\\'.$type;
             if (!class_exists($class)) {
                 return;
             }

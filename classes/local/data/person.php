@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Works on types of messages.
+ * Data model object.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,24 +23,19 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local;
+namespace enrol_lmb\local\data;
+use enrol_lmb\local\types;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Class for working with message types.
+ * Object that represents the internal data structure of a person object.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class types {
-
-    //protected static $types = array('person');
-
-    public static function get_types() {
-        return array('person');
-    }
-
+class person extends base {
 
 }

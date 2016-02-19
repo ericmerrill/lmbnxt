@@ -23,8 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\types\person;
-use enrol_lmb\local\types;
+namespace enrol_lmb\local\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,20 +35,21 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class xml extends types\base\xml {
+class person extends base {
 
     protected $mappingjson;
 
     protected $mappings;
 
     const TYPE = 'person';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/person.json';
 
     public function __construct() {
         $this->load_mappings();
     }
 
     public function process_xml_to_data($xmlobj) {
-        $class = '\\enrol_lmb\\local\\types\\'.static::TYPE.'\\data';
+        $class = '\\enrol_lmb\\local\\data\\'.static::TYPE;
         $this->dataobj = new $class();
 
         // First we are going to use the simple static mappings.
