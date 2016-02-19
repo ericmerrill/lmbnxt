@@ -45,7 +45,7 @@ abstract class base {
         $this->record = new \stdClass();
     }
 
-    public function __get($name) {
+    public function &__get($name) {
         return $this->record->$name;
     }
 
@@ -58,6 +58,6 @@ abstract class base {
     }
 
     public function __isset($name) {
-        isset($this->record->$name);
+        return isset($this->record->{$name});
     }
 }

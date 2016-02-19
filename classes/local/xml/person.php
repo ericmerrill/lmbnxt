@@ -58,4 +58,35 @@ class person extends base {
         return $this->dataobj;
     }
 
+    protected function process_userid_node($node, $mapping) {
+        if (!$type = $node->get_attribute('useridtype')) {
+            return;
+        }
+
+        if (!isset($this->dataobj->userids)) {
+            $this->dataobj->userids = array();
+        }
+
+        $userid = new \stdClass();
+        $userid->userid = $node->get_value();
+        $userid->password = $node->get_attribute('password');
+        $userid->pwencryptiontype = $node->get_attribute('pwencryptiontype');
+
+        $this->dataobj->userids[$type] = $userid;
+    }
+
+    protected function process_telephone_node($node, $mapping) {
+        // Standard voice line.
+        if ($node->get_attribute('teltype') == 1) {
+            $this->dataobj->televoice = $node->get_value();
+            return;
+        }
+
+        // Mobile phone number.
+        if ($node->get_attribute('teltype') == 3) {
+            $this->dataobj->telemobile = $node->get_value();
+            return;
+        }
+    }
+
 }

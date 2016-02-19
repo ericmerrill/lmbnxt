@@ -130,6 +130,12 @@ abstract class base {
                 $this->dataobj->$mapping = $node->get_value();
             }
         } else if (is_array($mapping) && array_key_exists('lmbinternal', $mapping)) {
+            if (isset($mapping['function'])) {
+                $func = $mapping['function'];
+                $this->$func($node, $mapping);
+                return;
+            }
+
             $matched = true;
             if (isset($mapping['reqattrs'])) {
                 $matched = true;
@@ -144,7 +150,22 @@ abstract class base {
 
             // If we matched, then set the value.
             if ($matched) {
-                $this->dataobj->{$mapping['objname']} = $node->get_value();
+                $key = $mapping['objname'];
+                if (isset($mapping['attr'])) {
+                    $value = $node->get_attribute($mapping['attr']);
+                } else {
+                    $value = $node->get_value();
+                }
+                if (isset($mapping['type']) && $mapping['type'] == 'array') {
+                    if (!isset($this->dataobj->$key)) {
+                        $this->dataobj->$key = array();
+                    }
+                    //$arr = $this->dataobj->$key;
+                    //$arr[] = $node->get_value();
+                    $this->dataobj->{$key}[] = $value;
+                } else {
+                    $this->dataobj->$key = $value;
+                }
             }
         }
     }

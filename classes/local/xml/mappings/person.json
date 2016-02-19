@@ -3,11 +3,18 @@
     "source": "sdidsource",
     "id": "sdid"
   },
+  "userid": {
+    "lmbinternal": true,
+    "function": "process_userid_node"
+  },
   "name": {
     "fn": "fullname",
+    "nickname": "nickname",
     "n": {
       "family": "familyname",
       "given": "givenname",
+      "prefix": "prefix",
+      "suffix": "suffix",
       "partname": {
         "lmbinternal": true,
         "reqattrs": [{"name": "partnametype", "value": "MiddleName"}],
@@ -15,5 +22,37 @@
       }
     }
   },
-  "email": "email"
+  "demographics": {
+    "gender": "gender"
+  },
+  "email": "email",
+  "tel": {
+    "lmbinternal": true,
+    "function": "process_telephone_node"
+  },
+  "adr": {
+    "street": "streetadr",
+    "locality": "city",
+    "region": "region",
+    "pcode": "postalcode",
+    "country": "country"
+  },
+  "institutionrole": {
+    "lmbinternal": true,
+    "type": "array",
+    "attr": "institutionroletype",
+    "objname": "institutionrole"
+  },
+  "extension": {
+    "luminisperson": {
+      "academicmajor": "major",
+      "academictitle": "title",
+      "academicdegree": "degree",
+      "customrole": {
+        "lmbinternal": true,
+        "type": "array",
+        "objname": "customrole"
+      }
+    }
+  }
 }
