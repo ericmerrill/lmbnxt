@@ -63,8 +63,8 @@ class person extends base {
             return;
         }
 
-        if (!isset($this->dataobj->userids)) {
-            $this->dataobj->userids = array();
+        if (!isset($this->dataobj->userid)) {
+            $this->dataobj->userid = array();
         }
 
         $userid = new \stdClass();
@@ -72,7 +72,7 @@ class person extends base {
         $userid->password = $node->get_attribute('password');
         $userid->pwencryptiontype = $node->get_attribute('pwencryptiontype');
 
-        $this->dataobj->userids[$type] = $userid;
+        $this->dataobj->userid[$type] = $userid;
     }
 
     protected function process_telephone_node($node, $mapping) {

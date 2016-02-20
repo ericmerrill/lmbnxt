@@ -41,4 +41,20 @@ abstract class xml_helper extends advanced_testcase {
 
         return $node;
     }
+
+    /**
+     * Returns a xml_node for a given xml path.
+     *
+     * @param string $path The xml path to work on
+     * @return xml_node|null The xml node
+     */
+    protected function get_node_for_file($path) {
+        $parser = new \enrol_lmb\parser();
+        $parser->add_type('tests');
+        $parser->process_file($path);
+        $processor = $parser->get_processor();
+        $node = $processor->get_previous_node();
+
+        return $node;
+    }
 }

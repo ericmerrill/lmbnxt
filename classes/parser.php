@@ -179,7 +179,7 @@ class parser extends \progressive_parser {
 
 
     /*
-     * Process the XML, delegating found chunks to the @progressive_parser_processor
+     * Process the XML, delegating found chunks to the @progressive_parser_processor.
      */
     public function process() {
         if (empty($this->processor)) {
@@ -191,31 +191,49 @@ class parser extends \progressive_parser {
         if (is_null($this->xml_parser)) {
             throw new \progressive_parser_exception('progressive_parser_already_used');
         }
+
         if ($this->file) {
+            // If we are opening a file.
             $fh = fopen($this->file, 'r');
-            // We need to wrap tags around the imcoming file, incase of multiple part messages.
 
             $first = fread($fh, 1024);
             $wellformed = false;
             if (preg_match('|<\\?xml|i', $first) || preg_match('|<!DOCTYPE|i', $first)) {
+                // If it starts with XML or DOCTYPE, we are going to assume the doc is well formed.
                 $wellformed = true;
             } else {
+                // We need to wrap tags around the imcoming file, incase of multiple part messages.
                 $first = '<lmb>'.$first;
             }
 
-
+            // Process the first chunk.
             $this->parse($first, false);
+
             while ($buffer = fread($fh, 8192)) {
+                // Process the file, one 8k chunk at a time.
                 $this->parse($buffer, false);
             }
+
             if (!$wellformed) {
+                // If we prepended an open tag, appand the final tag.
                 $this->parse('</lmb>', false);
             }
+
+            // Close the processing of the file.
             $this->parse('', true);
             fclose($fh);
         } else {
-            $this->parse('<lmb>'.$this->contents.'</lmb>', true);
+            if (preg_match('|<\\?xml|i', $this->contents) || preg_match('|<!DOCTYPE|i', $this->contents)) {
+                // If it starts with XML or DOCTYPE, we are going to assume the doc is well formed.
+                $this->parse($this->contents, true);
+            } else {
+                // We need to wrap tags around the imcoming file, incase of multiple part messages.
+                $this->parse('<lmb>'.$this->contents.'</lmb>', true);
+            }
+
         }
+
+        // Clear the parser.
         xml_parser_free($this->xml_parser);
         $this->xml_parser = null;
     }
