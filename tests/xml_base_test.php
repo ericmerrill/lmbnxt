@@ -46,5 +46,7 @@ class xml_base_testcase extends xml_helper {
         $this->assertCount(2, $node->node7);
         $this->assertEquals('V71', $node->node7[0]);
         $this->assertEquals('V72', $node->node7[1]);
+        $this->assertFalse(isset($node->node9));
+        $this->assertEquals('V102', $node->node10);
     }
 }

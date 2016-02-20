@@ -47,8 +47,8 @@ class parser extends \progressive_parser {
      *
      * @param bool $case_folding If true, all tags and attributes converted to upper-case
      */
-    public function __construct($case_folding = true) {
-        parent::__construct($case_folding);
+    public function __construct() {
+        parent::__construct(true);
 
         $this->load_types();
     }
