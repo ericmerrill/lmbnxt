@@ -9,6 +9,7 @@
         <userid useridtype="UDCIdentifier" password="456789">UDCIdUserid</userid>
         <userid useridtype="Email ID" password="678901">EmailIDUserid</userid>
         <userid useridtype="Other ID" password="890123">OtherIDUserid</userid>
+        <userid password="890123">InvalidUserid</userid>
         <name>
             <fn>Test A User</fn>
             <nickname>Nick User</nickname>

@@ -58,3 +58,28 @@ abstract class xml_helper extends advanced_testcase {
         return $node;
     }
 }
+
+class xml_tester extends \enrol_lmb\local\xml\base {
+    const MAPPING_PATH = '/enrol/lmb/tests/fixtures/testmapping.json';
+
+    public function __construct() {
+        $this->load_mappings();
+    }
+
+    public function process_xml_to_data($xmlobj) {
+        $this->dataobj = new data_test();
+
+        // First we are going to use the simple static mappings.
+        $this->apply_mappings($xmlobj);
+
+        return $this->dataobj;
+    }
+
+    protected function process_node_5($node, $mapping) {
+        $this->dataobj->node5 = $node->get_value();
+    }
+}
+
+class data_test extends \enrol_lmb\local\data\base {
+
+}

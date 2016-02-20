@@ -127,6 +127,15 @@ class xml_parser_testcase extends xml_helper {
         $processor = $parser->get_processor();
         $node = $processor->get_previous_node();
         $this->assertEquals('V2', $node->n1->get_value());
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?><enterprise><tests><n1>V1</n1></tests>'.
+               '<tests><n1>V2</n1></tests></enterprise>';
+        $node = $this->get_node_for_xml($xml);
+        $this->assertEquals('V2', $node->n1->get_value());
+
+        $xml = '<tests><n1>V1</n1></tests><tests><n1>V2</n1></tests>';
+        $node = $this->get_node_for_xml($xml);
+        $this->assertEquals('V2', $node->n1->get_value());
     }
 
     public function test_parser_errors() {

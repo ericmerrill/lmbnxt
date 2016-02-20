@@ -1,0 +1,30 @@
+{
+  "n1": "node1",
+  "n2": {
+    "nc": "childnode"
+  },
+  "n3": {
+    "lmbinternal": true,
+    "reqattrs": [{"name": "testattr", "value": "test"}],
+    "objname": "node3"
+  },
+  "n4": {
+    "lmbinternal": true,
+    "reqattrs": [{"name": "testattr", "value": "misstest"}],
+    "objname": "node4"
+  },
+  "n5": {
+    "lmbinternal": true,
+    "function": "process_node_5"
+  },
+  "n6": {
+    "lmbinternal": true,
+    "attr": "attrval",
+    "objname": "node6"
+  },
+  "n7": {
+    "lmbinternal": true,
+    "type": "array",
+    "objname": "node7"
+  }
+}
