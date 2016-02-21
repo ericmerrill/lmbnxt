@@ -39,7 +39,11 @@ abstract class base {
 
     protected $record;
 
-    protected $dbkeys;
+    protected $dbkeys = array();
+
+    protected $additional = array();
+
+    protected $handlers = array();
 
     public function __construct() {
         $this->record = new \stdClass();

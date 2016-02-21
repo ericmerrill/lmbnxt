@@ -38,4 +38,17 @@ defined('MOODLE_INTERNAL') || die();
  */
 class person extends base {
 
+    protected $dbkeys = array('sdidsource', 'sdid', 'sctid', 'logonid', 'emailid', 'fullname', 'nickname',
+                              'familyname', 'givenname', 'email', 'rolestudent', 'rolestaff', 'rolefaculty',
+                              'rolealumni', 'roleprospectivestudent', 'additional');
+
+    protected $additional = array('phonevoice', 'phonemobile', 'middlename', 'gender', 'streetadr', 'city', 'region', 'postalcode',
+                                  'country', 'customroles');
+
+    protected $handlers = array('rolestudent' => 'handler_boolean',
+                                'rolestaff' => 'handler_boolean',
+                                'rolefaculty' => 'handler_boolean',
+                                'rolealumni' => 'handler_boolean',
+                                'roleprospectivestudent' => 'handler_boolean',
+                                'additional' => 'handler_additional');
 }
