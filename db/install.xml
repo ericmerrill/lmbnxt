@@ -15,8 +15,8 @@
     <TABLE NAME="enrol_lmb_person" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sdidsource" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="sdid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="sctid" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="logonid" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="emailid" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
