@@ -31,13 +31,19 @@ use \enrol_lmb\logging;
 
 class logging_testcase extends advanced_testcase {
 
-    public function test_logging() {
-        $logger = logging::instance();
-        $this->assertSame($logger, logging::instance());
+    public function test_instance() {
+        $log = logging::instance();
+        $this->assertSame($log, logging::instance());
 
         //expectOutputString
         //https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html#writing-tests-for-phpunit.output
     }
 
+    public function test_logging() {
+        $log = logging::instance();
+
+        $this->expectOutputString("Logged Line\n");
+        $log->log_line("Logged Line");
+    }
 
 }
