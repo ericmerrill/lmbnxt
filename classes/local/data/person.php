@@ -37,6 +37,11 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class person extends base {
+    /**
+     * The table name of this object.
+     */
+    const TABLE = 'enrol_lmb_person';
+
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('sdidsource', 'sdid', 'sctid', 'logonid', 'emailid', 'fullname', 'nickname',
                               'familyname', 'givenname', 'email', 'rolestudent', 'rolestaff', 'rolefaculty',

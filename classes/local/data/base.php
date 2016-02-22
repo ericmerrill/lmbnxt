@@ -52,6 +52,11 @@ abstract class base {
     protected $handlers = array();
 
     /**
+     * The table name of this object.
+     */
+    const TABLE = 'base';
+
+    /**
      * Basic constructor.
      */
     public function __construct() {
