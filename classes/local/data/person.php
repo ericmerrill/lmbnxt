@@ -42,8 +42,9 @@ class person extends base {
                               'familyname', 'givenname', 'email', 'rolestudent', 'rolestaff', 'rolefaculty',
                               'rolealumni', 'roleprospectivestudent', 'additional');
 
-    protected $additional = array('phonevoice', 'phonemobile', 'middlename', 'gender', 'streetadr', 'city', 'region', 'postalcode',
-                                  'country', 'customroles');
+    protected $additionalkeys = array('phonevoice', 'phonemobile', 'middlename', 'gender', 'streetadr', 'city', 'region',
+                                      'postalcode', 'country', 'customroles', 'userid', 'prefix', 'suffix', 'televoice',
+                                      'telemobile', 'major', 'title', 'customrole', 'degree');
 
     protected $handlers = array('rolestudent' => 'handler_boolean',
                                 'rolestaff' => 'handler_boolean',

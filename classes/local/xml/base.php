@@ -167,6 +167,8 @@ abstract class base {
                         $this->dataobj->$key = array();
                     }
                     $this->dataobj->{$key}[] = $value;
+                } else if (isset($mapping['type']) && $mapping['type'] == 'bool') {
+                    $this->dataobj->$key = (bool)$value;
                 } else {
                     $this->dataobj->$key = $value;
                 }

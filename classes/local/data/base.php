@@ -41,27 +41,56 @@ abstract class base {
 
     protected $dbkeys = array();
 
-    protected $additional = array();
+    protected $additionalkeys = array();
+
+    protected $additionaldata;
 
     protected $handlers = array();
 
     public function __construct() {
         $this->record = new \stdClass();
+        $this->additionaldata = new \stdClass();
     }
 
     public function &__get($name) {
-        return $this->record->$name;
+        if (in_array($name, $this->dbkeys)) {
+            return $this->record->$name;
+        } else if (in_array($name, $this->additionalkeys)) {
+            return $this->additionaldata->$name;
+        } else {
+            debugging("Cannot get property $name.", DEBUG_DEVELOPER);
+            return null;
+        }
     }
 
     public function __set($name, $value) {
-        $this->record->$name = $value;
+        if (in_array($name, $this->dbkeys)) {
+            $this->record->$name = $value;
+        } else if (in_array($name, $this->additionalkeys)) {
+            $this->additionaldata->$name = $value;
+        } else {
+            debugging("Cannot set property $name.", DEBUG_DEVELOPER);
+        }
     }
 
     public function __unset($name) {
-        unset($this->record->$name);
+        if (in_array($name, $this->dbkeys)) {
+            unset($this->record->$name);
+        } else if (in_array($name, $this->additionalkeys)) {
+            unset($this->additionaldata->$name);
+        } else {
+            debugging("Cannot unset property $name.", DEBUG_DEVELOPER);
+        }
     }
 
     public function __isset($name) {
-        return isset($this->record->{$name});
+        if (in_array($name, $this->dbkeys)) {
+            return isset($this->record->$name);
+        } else if (in_array($name, $this->additionalkeys)) {
+            return isset($this->additionaldata->$name);
+        } else {
+            debugging("Cannot check isset of property $name.", DEBUG_DEVELOPER);
+            return false;
+        }
     }
 }

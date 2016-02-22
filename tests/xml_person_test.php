@@ -69,7 +69,7 @@ class xml_person_testcase extends xml_helper {
         $this->assertEquals('Test', $person->givenname);
         $this->assertEquals('Mr.', $person->prefix);
         $this->assertEquals('Jr.', $person->suffix);
-        $this->assertEquals('A', $person->middle);
+        $this->assertEquals('A', $person->middlename);
         $this->assertEquals('2', $person->gender);
         $this->assertEquals('testuser@example.com', $person->email);
         $this->assertEquals('989-555-9898', $person->televoice);
