@@ -80,11 +80,11 @@ class xml_person_testcase extends xml_helper {
         $this->assertEquals('55555', $person->postalcode);
         $this->assertEquals('USA', $person->country);
 
-        $this->assertInternalType('array', $person->institutionrole);
-        $this->assertCount(3, $person->institutionrole);
-        $this->assertEquals('ProspectiveStudent', $person->institutionrole[0]);
-        $this->assertEquals('Staff', $person->institutionrole[1]);
-        $this->assertEquals('Student', $person->institutionrole[2]);
+        $this->assertEquals(1, $person->rolestaff);
+        $this->assertEquals(1, $person->rolestudent);
+        $this->assertEquals(1, $person->roleprospectivestudent);
+        $this->assertFalse(isset($person->rolefaculty));
+        $this->assertFalse(isset($person->rolealumni));
 
         $this->assertEquals('Undeclared', $person->major);
         $this->assertEquals('Lecturer', $person->title);

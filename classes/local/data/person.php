@@ -37,19 +37,20 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class person extends base {
-
+    /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('sdidsource', 'sdid', 'sctid', 'logonid', 'emailid', 'fullname', 'nickname',
                               'familyname', 'givenname', 'email', 'rolestudent', 'rolestaff', 'rolefaculty',
                               'rolealumni', 'roleprospectivestudent', 'additional');
 
-    protected $additionalkeys = array('phonevoice', 'phonemobile', 'middlename', 'gender', 'streetadr', 'city', 'region',
+    /** @var array Array of allowed additional keys */
+    /*protected $additionalkeys = array('phonevoice', 'phonemobile', 'middlename', 'gender', 'streetadr', 'city', 'region',
                                       'postalcode', 'country', 'customroles', 'userid', 'prefix', 'suffix', 'televoice',
-                                      'telemobile', 'major', 'title', 'customrole', 'degree');
+                                      'telemobile', 'major', 'title', 'customrole', 'degree');*/
 
+    /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array('rolestudent' => 'handler_boolean',
                                 'rolestaff' => 'handler_boolean',
                                 'rolefaculty' => 'handler_boolean',
                                 'rolealumni' => 'handler_boolean',
-                                'roleprospectivestudent' => 'handler_boolean',
-                                'additional' => 'handler_additional');
+                                'roleprospectivestudent' => 'handler_boolean');
 }

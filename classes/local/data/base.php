@@ -36,61 +36,103 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base {
-
+    /** @var object The database record object */
     protected $record;
 
+    /** @var array Array of keys that go in the database object */
     protected $dbkeys = array();
 
-    protected $additionalkeys = array();
+    /** @var array Array of allowed additional keys */
+    /*protected $additionalkeys = array();*/
 
+    /** @var object Object that contains additional data about the object */
     protected $additionaldata;
 
+    /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array();
 
+    /**
+     * Basic constructor.
+     */
     public function __construct() {
         $this->record = new \stdClass();
         $this->additionaldata = new \stdClass();
     }
 
+    /**
+     * Gets (by reference) the passed property.
+     *
+     * $param string $name Name of property to get
+     * @return mixed The property
+     */
     public function &__get($name) {
+        // First check the DB keys, then additional
         if (in_array($name, $this->dbkeys)) {
             return $this->record->$name;
-        } else if (in_array($name, $this->additionalkeys)) {
-            return $this->additionaldata->$name;
-        } else {
-            debugging("Cannot get property $name.", DEBUG_DEVELOPER);
-            return null;
         }
+        return $this->additionaldata->$name;
+
     }
 
+    /**
+     * Set a property, either in the db object, ot the additional data object
+     *
+     * $param string $name Name of property to set
+     * $param string $value The value
+     */
     public function __set($name, $value) {
-        if (in_array($name, $this->dbkeys)) {
-            $this->record->$name = $value;
-        } else if (in_array($name, $this->additionalkeys)) {
-            $this->additionaldata->$name = $value;
+        if (array_key_exists($name, $this->handlers)) {
+            $func = $this->handlers[$name];
+            $v = $this->$func($name, $value);
         } else {
-            debugging("Cannot set property $name.", DEBUG_DEVELOPER);
+            $v = $value;
         }
+
+        if (in_array($name, $this->dbkeys)) {
+            $this->record->$name = $v;
+        }
+        $this->additionaldata->$name = $v;
     }
 
+    /**
+     * Unset the passed property.
+     *
+     * $param string $name Name of property to unset
+     */
     public function __unset($name) {
         if (in_array($name, $this->dbkeys)) {
             unset($this->record->$name);
-        } else if (in_array($name, $this->additionalkeys)) {
-            unset($this->additionaldata->$name);
-        } else {
-            debugging("Cannot unset property $name.", DEBUG_DEVELOPER);
         }
+        unset($this->additionaldata->$name);
     }
 
+    /**
+     * Check if a property is set.
+     *
+     * $param string $name Name of property to set
+     * @return bool True if the property is set
+     */
     public function __isset($name) {
         if (in_array($name, $this->dbkeys)) {
             return isset($this->record->$name);
-        } else if (in_array($name, $this->additionalkeys)) {
-            return isset($this->additionaldata->$name);
-        } else {
-            debugging("Cannot check isset of property $name.", DEBUG_DEVELOPER);
-            return false;
         }
+        return isset($this->additionaldata->$name);
+    }
+
+    /**
+     * Concerts an incoming value to 1 or 0 for database storage.
+     *
+     * $param string $name Name of property to convert
+     * $param string $value The value
+     * @return int The new property value
+     */
+    protected function handler_boolean($name, $value) {
+        if ((bool)$value) {
+            $v = 1;
+        } else {
+            $v = 0;
+        }
+
+        return $v;
     }
 }

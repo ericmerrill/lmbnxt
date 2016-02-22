@@ -36,14 +36,33 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base {
+    /** @var array|null Array of mappings loaded from JSON */
     protected $mappings = null;
+
+    /** @var enrol_lmb\local\data\base The currently in progress data object */
     protected $dataobj = null;
 
+    /**
+     * Array of keys that go in the database object.
+     */
     const TYPE = 'base';
+
+    /**
+     * Path to this objects mappings.
+     */
     const MAPPING_PATH = FALSE;
 
-    abstract public function process_xml_to_data($xmlobd);
+    /**
+     * Processes the passed xml_node into a data object of the current type.
+     *
+     * @param xml_node $xmlobj The node to work on
+     * @return enrol_lmb\local\data\base
+     */
+    abstract public function process_xml_to_data($xmlobj);
 
+    /**
+     * Loads the mapping JSON into the this object.
+     */
     protected function load_mappings() {
         global $CFG;
         if (!static::MAPPING_PATH) {
@@ -52,7 +71,7 @@ abstract class base {
         $path = $CFG->dirroot.static::MAPPING_PATH;
 
         if (!file_exists($path)) {
-            return false;
+            return;
         }
         $json = file_get_contents($path);
         $this->mappings = json_decode($json, true);
@@ -111,7 +130,23 @@ abstract class base {
     protected function process_node_array_field($node, $mapping) {
         if (is_array($node)) {
             foreach ($node as $n) {
-                $this->process_field($n, $mapping);
+                $this->process_node_repeat_mapping($n, $mapping);
+            }
+        } else {
+            $this->process_node_repeat_mapping($node, $mapping);
+        }
+    }
+
+    /**
+     * Processes repetitive mappings if they exist.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_node_repeat_mapping($node, $mapping) {
+        if (is_array($mapping) && array_key_exists('lmbinternal', $mapping) && array_key_exists('repetition', $mapping)) {
+            foreach ($mapping['repetition'] as $repmap) {
+                $this->process_field($node, $repmap);
             }
         } else {
             $this->process_field($node, $mapping);

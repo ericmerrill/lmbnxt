@@ -36,18 +36,29 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class person extends base {
-
-    protected $mappingjson;
-
-    protected $mappings;
-
+    /**
+     * Array of keys that go in the database object.
+     */
     const TYPE = 'person';
+
+    /**
+     * Path to this objects mappings.
+     */
     const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/person.json';
 
+    /**
+     * Basic constructor.
+     */
     public function __construct() {
         $this->load_mappings();
     }
 
+    /**
+     * Processes the passed xml_node into a data object of the current type.
+     *
+     * @param xml_node $xmlobj The node to work on
+     * @return enrol_lmb\local\data\person
+     */
     public function process_xml_to_data($xmlobj) {
         $class = '\\enrol_lmb\\local\\data\\'.static::TYPE;
         $this->dataobj = new $class();
@@ -58,12 +69,20 @@ class person extends base {
         return $this->dataobj;
     }
 
+    /**
+     * Process userid nodes into the data object.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
     protected function process_userid_node($node, $mapping) {
         if (!$type = $node->get_attribute('useridtype')) {
+            // We need a type to do anything with this.
             return;
         }
 
         if (!isset($this->dataobj->userid)) {
+            // This is going to be an array, so create it.
             $this->dataobj->userid = array();
         }
 
@@ -75,6 +94,12 @@ class person extends base {
         $this->dataobj->userid[$type] = $userid;
     }
 
+    /**
+     * Process telephone nodes.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
     protected function process_telephone_node($node, $mapping) {
         // Standard voice line.
         if ($node->get_attribute('teltype') == 1) {

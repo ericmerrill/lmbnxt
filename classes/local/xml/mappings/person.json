@@ -37,43 +37,46 @@
     "pcode": "postalcode",
     "country": "country"
   },
-  "institutionrole": [
-    {
-      "lmbinternal": true,
-      "reqattrs": [{"name": "institutionroletype", "value": "Student"}],
-      "type": "bool",
-      "attr": "institutionroletype",
-      "objname": "rolestudent"
-    },
-    {
-      "lmbinternal": true,
-      "reqattrs": [{"name": "institutionroletype", "value": "Faculty"}],
-      "type": "bool",
-      "attr": "institutionroletype",
-      "objname": "rolefaculty"
-    },
-    {
-      "lmbinternal": true,
-      "reqattrs": [{"name": "institutionroletype", "value": "Staff"}],
-      "type": "bool",
-      "attr": "institutionroletype",
-      "objname": "rolestaff"
-    },
-    {
-      "lmbinternal": true,
-      "reqattrs": [{"name": "institutionroletype", "value": "Alumni"}],
-      "type": "bool",
-      "attr": "institutionroletype",
-      "objname": "rolealumni"
-    },
-    {
-      "lmbinternal": true,
-      "reqattrs": [{"name": "institutionroletype", "value": "ProspectiveStudent"}],
-      "type": "bool",
-      "attr": "institutionroletype",
-      "objname": "roleprospectivestudent"
-    }
-  ],
+  "institutionrole": {
+    "lmbinternal": true,
+    "repetition": [
+      {
+        "lmbinternal": true,
+        "reqattrs": [{"name": "institutionroletype", "value": "Student"}],
+        "type": "bool",
+        "attr": "institutionroletype",
+        "objname": "rolestudent"
+      },
+      {
+        "lmbinternal": true,
+        "reqattrs": [{"name": "institutionroletype", "value": "Faculty"}],
+        "type": "bool",
+        "attr": "institutionroletype",
+        "objname": "rolefaculty"
+      },
+      {
+        "lmbinternal": true,
+        "reqattrs": [{"name": "institutionroletype", "value": "Staff"}],
+        "type": "bool",
+        "attr": "institutionroletype",
+        "objname": "rolestaff"
+      },
+      {
+        "lmbinternal": true,
+        "reqattrs": [{"name": "institutionroletype", "value": "Alumni"}],
+        "type": "bool",
+        "attr": "institutionroletype",
+        "objname": "rolealumni"
+      },
+      {
+        "lmbinternal": true,
+        "reqattrs": [{"name": "institutionroletype", "value": "ProspectiveStudent"}],
+        "type": "bool",
+        "attr": "institutionroletype",
+        "objname": "roleprospectivestudent"
+      }
+    ]
+  },
   "extension": {
     "luminisperson": {
       "academicmajor": "major",
