@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * A XML helper testcase.
+ * Test helper classes.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -24,6 +24,15 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+
+/**
+ * A base testcase for XML tests.
+ *
+ * @package    enrol_lmb
+ * @author     Eric Merrill <merrill@oakland.edu>
+ * @copyright  2016 Oakland University
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 abstract class xml_helper extends advanced_testcase {
 
     /**
@@ -59,6 +68,14 @@ abstract class xml_helper extends advanced_testcase {
     }
 }
 
+/**
+ * A XML object that is testable.
+ *
+ * @package    enrol_lmb
+ * @author     Eric Merrill <merrill@oakland.edu>
+ * @copyright  2016 Oakland University
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class xml_tester extends \enrol_lmb\local\xml\base {
     const MAPPING_PATH = '/enrol/lmb/tests/fixtures/testmapping.json';
 
@@ -80,6 +97,75 @@ class xml_tester extends \enrol_lmb\local\xml\base {
     }
 }
 
+/**
+ * A data class that works for testing.
+ *
+ * @package    enrol_lmb
+ * @author     Eric Merrill <merrill@oakland.edu>
+ * @copyright  2016 Oakland University
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class data_test extends \enrol_lmb\local\data\base {
+
+}
+
+/**
+ * A logging helper for capturing and testing logging output.
+ *
+ * @package    enrol_lmb
+ * @author     Eric Merrill <merrill@oakland.edu>
+ * @copyright  2016 Oakland University
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class logging_helper extends \enrol_lmb\logging {
+    /** var string The captured output buffer */
+    protected $testoutputbuffer = '';
+
+    /**
+     * Basic constructor that makes a new object and stores it in the instance.
+     */
+    public function __construct() {
+        self::test_set_instance($this);
+        parent::__construct();
+    }
+
+    /**
+     * Overrides the default object and captures the output.
+     *
+     * @param string $line The line to print
+     */
+    protected function print_line($line) {
+        $this->testoutputbuffer .= $line."\n";
+    }
+
+    /**
+     * Returns the output buffer and clears its contents.
+     *
+     * @return string
+     */
+    public function test_get_flush_buffer() {
+        $output = $this->testoutputbuffer;
+        $this->testoutputbuffer = '';
+        return $output;
+    }
+
+    /**
+     * Overrides the default object and captures the output.
+     *
+     * @param mixed $in The instances to set, or null to clear.
+     */
+    public static function test_set_instance($in) {
+        // Make sure both logging and logging_helper have the same instance set.
+        \enrol_lmb\logging::$instance = $in;
+        self::$instance = $in;
+    }
+
+    /**
+     * Resets the depth of the object.
+     */
+    public function test_reset_level() {
+        // Make sure both logging and logging_helper have the same instance set.
+        $this->depth = 0;
+    }
 
 }

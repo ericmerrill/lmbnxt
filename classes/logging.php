@@ -122,17 +122,20 @@ class logging {
     // Output the start of a message block then increase level.
     public function start_message($line) {
         $this->log_line($line);
-        $this->depth += 1;
-        //print "<pre>";print_r($this->depth);print "</pre>";
+        $this->start_level();
     }
 
     // Add a depth level.
-    public function add_level() {
+    public function start_level() {
         $this->depth++;
     }
 
     // End a depth level.
     public function end_level() {
+        if ($this->depth <= 0) {
+            $this->depth = 0;
+            return;
+        }
         $this->depth--;
     }
 
@@ -140,7 +143,7 @@ class logging {
     public function end_message($error = self::ERROR_NONE) {
         $this->set_error_level($error);
 
-        $this->depth -= 1;
+        $this->end_level();
         $this->purge_buffer();
         $this->errorlevel = self::ERROR_NONE;
     }
@@ -155,8 +158,13 @@ class logging {
         if (!$noprefix) {
             $line = $this->get_line_prefix().$line;
         }
+        $this->print_line($line);
+    }
+
+    protected function print_line($line) {
         mtrace($line);
     }
+
 
 
     // Add a line to the message buffer.

@@ -31,35 +31,76 @@ use \enrol_lmb\logging;
 
 class logging_testcase extends advanced_testcase {
 
-    public function test_instance() {
+    public static function setUpBeforeClass() {
+        // This will create a logging tester and insert it into the factory instance.
+        $log = new logging_helper();
+    }
+
+    public function setUp() {
         $log = logging::instance();
+        $log->test_get_flush_buffer();
+
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+    }
+
+    public function test_instance() {
+        // We need to get the testable instance and hold it for a minute.
+        $testinstance = logging::instance();
+
+        // Clear the factory instance.
+        logging_helper::test_set_instance(null);
+
+        // Use the factory to get an instance.
+        $log = logging::instance();
+        $this->assertInstanceOf('\\enrol_lmb\\logging', $log);
+
+        // Make sure the factory will return the same instance again.
         $this->assertSame($log, logging::instance());
 
-        //expectOutputString
-        //https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html#writing-tests-for-phpunit.output
+        // Now put the testable back in place.
+        logging_helper::test_set_instance($testinstance);
+    }
+
+    public function test_true_output() {
+        // We need to get the testable instance and hold it for a minute.
+        $testinstance = logging::instance();
+
+        // Clear the factory instance.
+        logging_helper::test_set_instance(null);
+
+        // Use the factory to get an instance.
+        $log = logging::instance();
+        $this->assertInstanceOf('\\enrol_lmb\\logging', $log);
+
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+
+        $expected = "Logged Line\n".
+                    "Logged Line2\n".
+                    "None 1\n".
+                    "  None 1 sub\n";
+        $this->expectOutputString($expected);
+        $log->log_line("Logged Line");
+        $log->log_line("Logged Line2");
+        $log->start_message("None 1");
+        $log->log_line("None 1 sub");
+        $log->end_message();
+
+        // Now put the testable back in place.
+        logging_helper::test_set_instance($testinstance);
     }
 
     public function test_logging() {
         $log = logging::instance();
 
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
-
-        $this->expectOutputString("Logged Line\nLogged Line2\n");
         $log->log_line("Logged Line");
         $log->log_line("Logged Line2");
+        $this->assertEquals("Logged Line\nLogged Line2\n", $log->test_get_flush_buffer());
     }
 
-    public function test_notice() {
+    public function test_all() {
         $log = logging::instance();
 
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NOTICE);
-
-        $expected = "Notice 1\n".
-                    "  Notice 1 sub\n".
-                    "Notice 2\n".
-                    "  Notice 2 sub\n";
-
-        $this->expectOutputString($expected);
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
 
         $log->start_message("Notice 1");
         $log->log_line("Notice 1 sub", \enrol_lmb\logging::ERROR_NOTICE);
@@ -72,6 +113,192 @@ class logging_testcase extends advanced_testcase {
         $log->start_message("Notice 2");
         $log->log_line("Notice 2 sub", \enrol_lmb\logging::ERROR_NOTICE);
         $log->end_message();
+
+        $log->start_message("Warn 1");
+        $log->log_line("Warn 1 sub", \enrol_lmb\logging::ERROR_WARN);
+        $log->end_message();
+
+        $log->start_message("Major 1");
+        $log->log_line("Major 1 sub", \enrol_lmb\logging::ERROR_MAJOR);
+        $log->end_message();
+
+        $expected = "Notice 1\n".
+                    "  Notice 1 sub\n".
+                    "None 1\n".
+                    "  None 1 sub\n".
+                    "Notice 2\n".
+                    "  Notice 2 sub\n".
+                    "Warn 1\n".
+                    "  Warn 1 sub\n".
+                    "Major 1\n".
+                    "  Major 1 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
     }
 
+    public function test_notice() {
+        $log = logging::instance();
+
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_NOTICE);
+
+        $log->start_message("Notice 1");
+        $log->log_line("Notice 1 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->end_message();
+
+        $log->start_message("None 1");
+        $log->log_line("None 1 sub");
+        $log->end_message();
+
+        $log->start_message("Notice 2");
+        $log->log_line("Notice 2 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->end_message();
+
+        $log->start_message("Warn 1");
+        $log->log_line("Warn 1 sub", \enrol_lmb\logging::ERROR_WARN);
+        $log->end_message();
+
+        $log->start_message("Major 1");
+        $log->log_line("Major 1 sub", \enrol_lmb\logging::ERROR_MAJOR);
+        $log->end_message();
+
+        $expected = "Notice 1\n".
+                    "  Notice 1 sub\n".
+                    "Notice 2\n".
+                    "  Notice 2 sub\n".
+                    "Warn 1\n".
+                    "  Warn 1 sub\n".
+                    "Major 1\n".
+                    "  Major 1 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+    }
+
+    public function test_warn() {
+        $log = logging::instance();
+
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_WARN);
+
+        $log->start_message("Notice 1");
+        $log->log_line("Notice 1 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->end_message();
+
+        $log->start_message("None 1");
+        $log->log_line("None 1 sub");
+        $log->end_message();
+
+        $log->start_message("Notice 2");
+        $log->log_line("Notice 2 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->end_message();
+
+        $log->start_message("Warn 1");
+        $log->log_line("Warn 1 sub", \enrol_lmb\logging::ERROR_WARN);
+        $log->end_message();
+
+        $log->start_message("Major 1");
+        $log->log_line("Major 1 sub", \enrol_lmb\logging::ERROR_MAJOR);
+        $log->end_message();
+
+        $expected = "Warn 1\n".
+                    "  Warn 1 sub\n".
+                    "Major 1\n".
+                    "  Major 1 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+    }
+
+    public function test_major() {
+        $log = logging::instance();
+
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_MAJOR);
+
+        $log->start_message("Notice 1");
+        $log->log_line("Notice 1 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->end_message();
+
+        $log->start_message("None 1");
+        $log->log_line("None 1 sub");
+        $log->end_message();
+
+        $log->start_message("Notice 2");
+        $log->log_line("Notice 2 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->end_message();
+
+        $log->start_message("Warn 1");
+        $log->log_line("Warn 1 sub", \enrol_lmb\logging::ERROR_WARN);
+        $log->end_message();
+
+        $log->start_message("Major 1");
+        $log->log_line("Major 1 sub", \enrol_lmb\logging::ERROR_MAJOR);
+        $log->end_message();
+
+        $expected = "Major 1\n".
+                    "  Major 1 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+    }
+
+    public function test_depth() {
+        $log = logging::instance();
+
+        $log->start_message("Level 1");
+        $log->log_line("Level 1 sub");
+        $log->end_message();
+
+        $expected = "Level 1\n".
+                    "  Level 1 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+
+        $log->start_level();
+        $log->start_message("Level 2");
+        $log->log_line("Level 2 sub");
+        $log->end_message();
+
+        $expected = "  Level 2\n".
+                    "    Level 2 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+
+        $log->start_level();
+        $log->start_message("Level 3");
+        $log->log_line("Level 3 sub");
+        $log->end_message();
+
+        $expected = "    Level 3\n".
+                    "      Level 3 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+
+        $log->end_level();
+        $log->start_message("Level 2");
+        $log->log_line("Level 2 sub");
+        $log->end_message();
+
+        $expected = "  Level 2\n".
+                    "    Level 2 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+
+        $log->end_level();
+        $log->start_message("Level 1");
+        $log->log_line("Level 1 sub");
+        $log->end_message();
+
+        $expected = "Level 1\n".
+                    "  Level 1 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+
+        // Check that we can't get into "negative" levels.
+        $log->end_level();
+        $log->start_message("Level 1");
+        $log->log_line("Level 1 sub");
+        $log->end_message();
+
+        $expected = "Level 1\n".
+                    "  Level 1 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+
+        $log->start_level();
+        $log->start_message("Level 2");
+        $log->log_line("Level 2 sub");
+        $log->end_message();
+
+        $expected = "  Level 2\n".
+                    "    Level 2 sub\n";
+        $this->assertEquals($expected, $log->test_get_flush_buffer());
+
+        $log->test_reset_level();
+    }
 }
