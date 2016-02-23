@@ -58,7 +58,21 @@ Example:
 
 $silent = (bool)$options['silent'];
 $force = (bool)$options['force'];
-$filepath = $options['filepath'];
+
+if (!empty($filepath = $options['filepath'])) {
+    if (stripos($filepath, '/') !== 0) {
+        if (!empty($_SERVER['PWD'])) {
+            $filepath = $_SERVER['PWD'].'/'.$filepath;
+        }
+    }
+
+    if (!file_exists($filepath) || !is_readable($filepath)) {
+        mtrace("Source file {$filepath} is not readable. Try an absolute path.");
+        die;
+    }
+}
+
+
 
 $controller = new \enrol_lmb\controller();
 $controller->import_file($filepath);

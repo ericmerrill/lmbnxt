@@ -25,6 +25,7 @@
 
 namespace enrol_lmb\local\data;
 use enrol_lmb\local\types;
+use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -58,4 +59,17 @@ class person extends base {
                                 'rolefaculty' => 'handler_boolean',
                                 'rolealumni' => 'handler_boolean',
                                 'roleprospectivestudent' => 'handler_boolean');
+
+    /**
+     * Log a unique line to id this object.
+     */
+    public function log_id() {
+        $id = $this->__get('sdid');
+        $source = $this->__get('sdidsource');
+        if (empty($id) || empty($source)) {
+            logging::instance()->log_line("Person object has no id or source", logging::ERROR_MAJOR);
+        } else {
+            logging::instance()->log_line("Person ID \"{$id}\" from \"{$source}\"");
+        }
+    }
 }

@@ -65,6 +65,11 @@ abstract class base {
     }
 
     /**
+     * Log a unique line to id this object.
+     */
+    abstract public function log_id();
+
+    /**
      * Gets (by reference) the passed property.
      *
      * $param string $name Name of property to get

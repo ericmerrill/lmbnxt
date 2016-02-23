@@ -101,9 +101,9 @@ class logging {
 
         // If above threashold, output now, otherwise buffer.
         if ($this->errorlevel >= $this->outputerrorlevel) {
-            $this->output_line($line);
+            $this->output_line($line, $error);
         } else {
-            $this->buffer_line($line);
+            $this->buffer_line($line, $error);
         }
     }
 
@@ -153,11 +153,27 @@ class logging {
         return str_repeat('  ', $this->depth);
     }
 
-    // Output a line to the user.
-    protected function output_line($line, $noprefix = false) {
-        if (!$noprefix) {
-            $line = $this->get_line_prefix().$line;
+    protected function render_line($line, $error = self::ERROR_NONE) {
+        $prefix = '';
+        switch ($error) {
+            case self::ERROR_NOTICE:
+                $prefix = "NOTICE: ";
+                break;
+            case self::ERROR_WARN:
+                $prefix = "WARNING: ";
+                break;
+            case self::ERROR_MAJOR:
+                $prefix = "FATAL: ";
+                break;
         }
+
+        return $this->get_line_prefix().$prefix.$line;
+    }
+
+    // Output a line to the user.
+    protected function output_line($line, $error = self::ERROR_NONE) {
+        $line = $this->render_line($line, $error);
+
         $this->print_line($line);
     }
 
@@ -168,14 +184,14 @@ class logging {
 
 
     // Add a line to the message buffer.
-    protected function buffer_line($line) {
-        $this->buffer[] = $this->get_line_prefix().$line;
+    protected function buffer_line($line, $error = self::ERROR_NONE) {
+        $this->buffer[] = $this->render_line($line, $error);
     }
 
     // Output and clear the buffer.
     protected function flush_buffer() {
         foreach ($this->buffer as $line) {
-            $this->output_line($line, true);
+            $this->print_line($line);
         }
 
         $this->purge_buffer();

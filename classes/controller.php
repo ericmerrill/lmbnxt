@@ -66,8 +66,9 @@ class controller {
         $xmlproc = $this->typeprocessors[$type];
 
         $obj = $xmlproc->process_xml_to_data($xmlobj);
+        $obj->log_id();
 
-        print "<pre>";var_dump($obj);print "</pre>";
+        //print "<pre>";var_dump($obj);print "</pre>";
     }
 
     /**

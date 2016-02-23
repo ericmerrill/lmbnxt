@@ -107,6 +107,9 @@ class xml_tester extends \enrol_lmb\local\xml\base {
  */
 class data_test extends \enrol_lmb\local\data\base {
 
+    public function log_id() {
+    }
+
 }
 
 /**

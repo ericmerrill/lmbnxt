@@ -116,6 +116,7 @@ class parse_processor extends \simplified_parser_processor {
             $this->currentnode = new local\xml_node();
             $parts = explode('/', $path);
             $this->currentnode->set_name(end($parts));
+            logging::instance()->start_message("Processing {$this->currentnode->get_name()} message");
         }
     }
 
@@ -148,6 +149,7 @@ class parse_processor extends \simplified_parser_processor {
         if ($this->path_is_selected($path)) {
             // This is where our current node is complete, and can be dispatched.
             $this->process_complete_node($this->currentnode);
+            logging::instance()->end_message();
             $this->currentnode = null;
         } else if ($parent = $this->selected_parent_exists($path)) {
             // Save the path for marking as finished. This has to be done after the upcoming chunk is processed.
