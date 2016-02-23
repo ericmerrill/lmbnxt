@@ -37,6 +37,14 @@ if ($ADMIN->fulltree) {
 
     $settingslmb->add(new admin_setting_configdirectory('enrol_lmb/extractpath', get_string('extractpath', 'enrol_lmb'),
         get_string('extractpath_help', 'enrol_lmb'), ''));
+
+    $loggingoptions = array(\enrol_lmb\logging::ERROR_NONE => get_string('error_all', 'enrol_lmb'),
+                            \enrol_lmb\logging::ERROR_NOTICE => get_string('error_notice', 'enrol_lmb'),
+                            \enrol_lmb\logging::ERROR_WARN => get_string('error_warn', 'enrol_lmb'),
+                            \enrol_lmb\logging::ERROR_MAJOR => get_string('error_major', 'enrol_lmb'));
+
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/logginglevel', get_string('logginglevel', 'enrol_lmb'),
+            get_string('logginglevel_help', 'enrol_lmb'), \enrol_lmb\logging::ERROR_NOTICE, $loggingoptions));
 }
 
 $settings->add('enrolsettingscat', $settingslmb);

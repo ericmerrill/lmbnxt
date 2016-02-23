@@ -42,8 +42,36 @@ class logging_testcase extends advanced_testcase {
     public function test_logging() {
         $log = logging::instance();
 
-        $this->expectOutputString("Logged Line\n");
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+
+        $this->expectOutputString("Logged Line\nLogged Line2\n");
         $log->log_line("Logged Line");
+        $log->log_line("Logged Line2");
+    }
+
+    public function test_notice() {
+        $log = logging::instance();
+
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_NOTICE);
+
+        $expected = "Notice 1\n".
+                    "  Notice 1 sub\n".
+                    "Notice 2\n".
+                    "  Notice 2 sub\n";
+
+        $this->expectOutputString($expected);
+
+        $log->start_message("Notice 1");
+        $log->log_line("Notice 1 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->end_message();
+
+        $log->start_message("None 1");
+        $log->log_line("None 1 sub");
+        $log->end_message();
+
+        $log->start_message("Notice 2");
+        $log->log_line("Notice 2 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->end_message();
     }
 
 }

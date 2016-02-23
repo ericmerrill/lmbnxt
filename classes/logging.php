@@ -88,7 +88,11 @@ class logging {
      * Protected constructor, please use the static instance method.
      */
     protected function __construct() {
-        // Nothing to do here. Just here to prevent incorrect usage.
+        $this->outputerrorlevel = get_config('enrol_lmb', 'logginglevel');
+    }
+
+    public function set_logging_level($level) {
+        $this->outputerrorlevel = $level;
     }
 
     // Log a line with an optional error level.
@@ -118,7 +122,8 @@ class logging {
     // Output the start of a message block then increase level.
     public function start_message($line) {
         $this->log_line($line);
-        $this->depth++;
+        $this->depth += 1;
+        //print "<pre>";print_r($this->depth);print "</pre>";
     }
 
     // Add a depth level.
@@ -135,8 +140,9 @@ class logging {
     public function end_message($error = self::ERROR_NONE) {
         $this->set_error_level($error);
 
-        $this->depth = 0;
+        $this->depth -= 1;
         $this->purge_buffer();
+        $this->errorlevel = self::ERROR_NONE;
     }
 
     // Get the indenting prefix of the line.
@@ -145,8 +151,11 @@ class logging {
     }
 
     // Output a line to the user.
-    protected function output_line($line) {
-        mtrace($this->get_line_prefix().$line);
+    protected function output_line($line, $noprefix = false) {
+        if (!$noprefix) {
+            $line = $this->get_line_prefix().$line;
+        }
+        mtrace($line);
     }
 
 
@@ -158,7 +167,7 @@ class logging {
     // Output and clear the buffer.
     protected function flush_buffer() {
         foreach ($this->buffer as $line) {
-            $this->output_line($line);
+            $this->output_line($line, true);
         }
 
         $this->purge_buffer();

@@ -62,3 +62,4 @@ $filepath = $options['filepath'];
 
 $controller = new \enrol_lmb\controller();
 $controller->import_file($filepath);
+

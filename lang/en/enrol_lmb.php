@@ -26,6 +26,12 @@
 $string['pluginname'] = 'LMB NXT';
 
 // Settings.
+$string['logginglevel'] = 'Error logging';
+$string['logginglevel_help'] = 'Log messages at this level or higher will be logged. TODO.';
+$string['error_all'] = 'All';
+$string['error_notice'] = 'Notices';
+$string['error_warn'] = 'Warnings';
+$string['error_major'] = 'Major Errors';
 $string['logpath'] = 'Log file location';
 $string['logpath_help'] = 'This is the location you would like the log file to be saved to. This should be an absolute path on the server. The file specified should already exist, and needs to be writable by the webserver process.';
 $string['extractpath'] = 'Import folder location';
