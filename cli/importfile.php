@@ -58,8 +58,9 @@ Example:
 
 $silent = (bool)$options['silent'];
 $force = (bool)$options['force'];
+$filepath = $options['filepath'];
 
-if (!empty($filepath = $options['filepath'])) {
+if (!empty($filepath)) {
     if (stripos($filepath, '/') !== 0) {
         if (!empty($_SERVER['PWD'])) {
             $filepath = $_SERVER['PWD'].'/'.$filepath;
