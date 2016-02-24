@@ -42,5 +42,7 @@ abstract class base {
      *
      * @param data\base $data A data object to process.
      */
-    abstract public static function convert_to_moodle(\enrol_lmb\local\data\base $data);
+    public static function convert_to_moodle(\enrol_lmb\local\data\base $data) {
+        debugging("convert_to_moodle must be implemented by child classes.", DEBUG_DEVELOPER);
+    }
 }
