@@ -38,3 +38,5 @@ $string['extractpath'] = 'Import folder location';
 $string['extractpath_help'] = 'The path (on the Moodle server) to the directory where a set of XML files will be located.';
 $string['xmlpath'] = 'Import file location';
 $string['xmlpath_help'] = 'The path (on the Moodle server) where the XML file that you would like to import resides.';
+
+$string['exception_bad_person'] = 'Person object has no id or source';

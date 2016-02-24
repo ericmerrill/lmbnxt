@@ -67,7 +67,8 @@ class person extends base {
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
         if (empty($id) || empty($source)) {
-            logging::instance()->log_line("Person object has no id or source", logging::ERROR_MAJOR);
+            //logging::instance()->log_line("Person object has no id or source", logging::ERROR_MAJOR);
+            throw new \enrol_lmb\local\exception\message_exception('exception_bad_person');
         } else {
             logging::instance()->log_line("Person ID \"{$id}\" from \"{$source}\"");
         }

@@ -95,4 +95,32 @@ class xml_person_testcase extends xml_helper {
         $this->assertEquals('ApplicantAccept', $person->customrole[0]);
         $this->assertEquals('BannerINB', $person->customrole[1]);
     }
+
+    public function test_log_id() {
+        global $CFG;
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
+        $converter = new \enrol_lmb\local\xml\person();
+        $person = $converter->process_xml_to_data($node);
+
+        $log = new logging_helper();
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+
+        $person->log_id();
+
+        $this->assertRegExp("|{$person->sdid}.*{$person->sdidsource}|", $log->test_get_flush_buffer());
+
+        unset($person->sdid);
+
+        try {
+            $person->log_id();
+            $this->fail('message_exception expected');
+        } catch (\enrol_lmb\local\exception\message_exception $ex) {
+            $this->assertInstanceOf('\\enrol_lmb\\local\\exception\\message_exception', $ex);
+            $expected = get_string('exception_bad_person', 'enrol_lmb');
+            $this->assertRegExp("|{$expected}|", $ex->getMessage());
+        }
+
+
+    }
 }

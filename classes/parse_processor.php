@@ -89,7 +89,8 @@ class parse_processor extends \simplified_parser_processor {
         // Check to see if it is one of our grouped paths.
         if ($this->path_is_selected($path)) {
             if (is_null($this->currentnode)) {
-                throw new \coding_exception("XML object not started");
+                debugging("XML object not started", DEBUG_DEVELOPER);
+                return;
             }
             // Add the data to the current node.
             $this->currentnode->build_from_array($data['tags']);

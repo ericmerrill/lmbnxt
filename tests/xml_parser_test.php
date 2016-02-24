@@ -146,7 +146,7 @@ class xml_parser_testcase extends xml_helper {
         // Check no parser exception.
         try {
             $parser->process();
-            $this->assertFalse(true, "Expected exception not thrown.");
+            $this->fail("Expected exception not thrown.");
         } catch (Exception $ex) {
             $this->assertInstanceOf('progressive_parser_exception', $ex);
             $this->assertStringStartsWith('error/undefined_parser_processor', $ex->getMessage());
@@ -157,7 +157,7 @@ class xml_parser_testcase extends xml_helper {
         $parser->set_processor($processor);
         try {
             $parser->process();
-            $this->assertFalse(true, "Expected exception not thrown.");
+            $this->fail("Expected exception not thrown.");
         } catch (Exception $ex) {
             $this->assertInstanceOf('progressive_parser_exception', $ex);
             $this->assertStringStartsWith('error/undefined_xml_to_parse', $ex->getMessage());
@@ -168,7 +168,7 @@ class xml_parser_testcase extends xml_helper {
         $parser->process();
         try {
             $parser->process();
-            $this->assertFalse(true, "Expected exception not thrown.");
+            $this->fail("Expected exception not thrown.");
         } catch (Exception $ex) {
             $this->assertInstanceOf('progressive_parser_exception', $ex);
             $this->assertStringStartsWith('error/progressive_parser_already_used', $ex->getMessage());
