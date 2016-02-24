@@ -235,7 +235,7 @@ abstract class base {
                 return;
             }
 
-            if ($DB->update_record('enrol_lmb_person', $new)) {
+            if ($DB->update_record(static::TABLE, $new)) {
                 // Updated the record.
                 logging::instance()->log_line('Updated database record');
             } else {

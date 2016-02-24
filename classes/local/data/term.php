@@ -49,7 +49,8 @@ class term extends base {
     const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\term';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'begindate', 'enddate', 'sortorder', 'additional', 'timemodified');
+    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'description', 'begindate', 'enddate',
+                              'sortorder', 'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
@@ -68,10 +69,11 @@ class term extends base {
     public function log_id() {
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
+        $desc = $this->__get('description');
         if (empty($id) || empty($source)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_bad_term');
         } else {
-            logging::instance()->log_line("Term ID \"{$id}\" from \"{$source}\"");
+            logging::instance()->log_line("Term \"{$desc}\", ID \"{$id}\" from \"{$source}\"");
         }
     }
 
@@ -81,12 +83,11 @@ class term extends base {
      * @return object|false The record or false if not found.
      */
     protected function get_record() {
-        /*global $DB;
+        global $DB;
 
         $params = array('sdid' => $this->__get('sdid'), 'sdidsource' => $this->__get('sdidsource'));
 
-        return $DB->get_record('enrol_lmb_person', $params);*/
+        return $DB->get_record('enrol_lmb_term', $params);
     }
 
-    public function save_to_db() {}
 }
