@@ -52,9 +52,6 @@ after_script:
   - moodle-plugin-ci codechecker
   - moodle-plugin-ci phpcpd
   - moodle-plugin-ci phpmd
-    # Create a coveralls file in the plugin dir, otherwise php-coveralls will get confused.
-  - echo "coverage_clover: $(pwd)/build/logs/clover.xml" > moodle/enrol/lmb/.coveralls.yml
-  - echo "json_path: $(pwd)/build/logs/coveralls-upload.json" >> moodle/enrol/lmb/.coveralls.yml
     # Need to move into the plugin dir to run, because it uses the git info.
   - cd moodle/enrol/lmb
   - travis_retry php ../../../vendor/bin/coveralls -v
