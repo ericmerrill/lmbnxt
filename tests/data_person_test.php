@@ -87,10 +87,10 @@ class data_person_testcase extends xml_helper {
 
         foreach ($dbrecord as $key => $value) {
             if ($key == 'timemodified') {
-                // Skip special case;
+                // Skip special case.
                 continue;
             }
-            $this->assertEquals($person->$key, $dbrecord->$key, "Key {$key} did not match");
+            $this->assertEquals($person->$key, $value, "Key {$key} did not match");
         }
     }
 }

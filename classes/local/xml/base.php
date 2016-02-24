@@ -50,7 +50,7 @@ abstract class base {
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = FALSE;
+    const MAPPING_PATH = false;
 
     /**
      * Processes the passed xml_node into a data object of the current type.

@@ -146,7 +146,7 @@ class parser extends \progressive_parser {
 
     // Inherited from progressive_parser.
     protected function end_tag($parser, $tag) {
-        // Ending rencently started tag, add value to current tag
+        // Ending rencently started tag, add value to current tag.
         if ($this->level == $this->prevlevel) {
             $this->currtag['cdata'] = $this->postprocess_cdata($this->accum);
             if (isset($this->topush['tags'][$this->currtag['name']])) {
@@ -157,7 +157,7 @@ class parser extends \progressive_parser {
             $this->currtag = array();
         }
 
-        // Leaving one level, publish all the information available
+        // Leaving one level, publish all the information available.
         if ($this->level < $this->prevlevel) {
             if (!empty($this->topush['tags'])) {
                 $this->publish($this->topush);
@@ -166,19 +166,19 @@ class parser extends \progressive_parser {
             $this->topush = array();
         }
 
-        // For the records
+        // For the records.
         $this->prevlevel = $this->level;
 
-        // Inform processor we have finished one tag
+        // Inform processor we have finished one tag.
         $this->inform_end($this->path);
 
-        // Normal update of parser internals
+        // Normal update of parser internals.
         $this->level--;
         $this->path = \progressive_parser::dirname($this->path);
     }
 
 
-    /*
+    /**
      * Process the XML, delegating found chunks to the @progressive_parser_processor.
      */
     public function process() {

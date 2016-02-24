@@ -35,9 +35,6 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class types {
-
-    //protected static $types = array('person');
-
     public static function get_types() {
         return array('person');
     }

@@ -74,40 +74,5 @@ class controller {
             logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
         }
 
-        //print "<pre>";var_dump($obj);print "</pre>";
     }
-
-    /**
-     * Returns the class type for a path.
-     *
-     * @param string $path The path to check for
-     * @return string|false The type string or false
-     */
-    /*protected function get_path_type($path) {
-        if (isset($this->pathclasses[$path])) {
-            return $this->pathclasses[$path];
-        }
-
-        return false;
-    }*/
-
-    /**
-     * Gets the processor for the path. Creates if doesn't exist.
-     *
-     * @param string $path The path to check for
-     * @return object|false A xml processor or false if not available
-     */
-    /*protected function get_path_processor($path) {
-        if (!$type = $this->get_path_type($path)) {
-            return false;
-        }
-
-        if (!isset($this->typeprocessors[$type])) {
-            $class = '\\enrol_lmb\\local\\types\\'.$type.'\\xml';
-            $this->typeprocessors[$type] = new $class();
-        }
-
-        return $this->typeprocessors[$type];
-    }*/
-
 }

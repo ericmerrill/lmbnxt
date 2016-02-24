@@ -48,11 +48,7 @@ class person extends base {
                               'familyname', 'givenname', 'email', 'rolestudent', 'rolestaff', 'rolefaculty',
                               'rolealumni', 'roleprospectivestudent', 'additional', 'timemodified');
 
-    /** @var array Array of allowed additional keys */
-    /*protected $additionalkeys = array('phonevoice', 'phonemobile', 'middlename', 'gender', 'streetadr', 'city', 'region',
-                                      'postalcode', 'country', 'customroles', 'userid', 'prefix', 'suffix', 'televoice',
-                                      'telemobile', 'major', 'title', 'customrole', 'degree');*/
-
+    /** @var array An array of default property->value pairs */
     protected $defaults = array('rolestudent' => 0,
                                 'rolestaff' => 0,
                                 'rolefaculty' => 0,
@@ -73,7 +69,6 @@ class person extends base {
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
         if (empty($id) || empty($source)) {
-            //logging::instance()->log_line("Person object has no id or source", logging::ERROR_MAJOR);
             throw new \enrol_lmb\local\exception\message_exception('exception_bad_person');
         } else {
             logging::instance()->log_line("Person ID \"{$id}\" from \"{$source}\"");

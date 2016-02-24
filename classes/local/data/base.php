@@ -43,10 +43,8 @@ abstract class base {
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array();
 
+    /** @var array An array of default property->value pairs */
     protected $defaults = array();
-
-    /** @var array Array of allowed additional keys */
-    /*protected $additionalkeys = array();*/
 
     /** @var object Object that contains additional data about the object */
     protected $additionaldata;
@@ -79,7 +77,7 @@ abstract class base {
      * @return mixed The property
      */
     public function &__get($name) {
-        // First check the DB keys, then additional
+        // First check the DB keys, then additional.
         if (in_array($name, $this->dbkeys)) {
             if ($name == 'additional') {
                 $this->record->$name = serialize($this->additionaldata);
@@ -179,7 +177,7 @@ abstract class base {
                 // If this is existing, set the id.
                 $this->__set('id', $existing->id);
             } else {
-                // Insert the record because it doesn't exist
+                // Insert the record because it doesn't exist.
                 $new = $this->convert_to_db_object();
                 $id = $DB->insert_record(static::TABLE, $new);
                 if (!$id) {

@@ -152,7 +152,7 @@ class parse_processor extends \simplified_parser_processor {
             $this->process_complete_node($this->currentnode);
             logging::instance()->end_message();
             $this->currentnode = null;
-        } else if ($parent = $this->selected_parent_exists($path)) {
+        } else if ($this->selected_parent_exists($path)) {
             // Save the path for marking as finished. This has to be done after the upcoming chunk is processed.
             $this->finishedpaths[] = $path;
         }

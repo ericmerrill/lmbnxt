@@ -24,7 +24,7 @@
  */
 function xmldb_enrol_lmb_upgrade($oldversion=0) {
 
-    global $CFG, $DB;
+    global $DB;
 
     $dbman = $DB->get_manager();
 
@@ -67,6 +67,5 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         // Lmb savepoint reached.
         upgrade_plugin_savepoint(true, 2016022300, 'enrol', 'lmb');
     }
-
 
 }
