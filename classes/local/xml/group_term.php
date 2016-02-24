@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * An object for converting data to moodle.
+ * Works on types of messages.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,24 +23,50 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\moodle;
-use enrol_lmb\logging;
+namespace enrol_lmb\local\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Abstract object for converting a data object to Moodle.
+ * Class for working with message types.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base {
+class group_term extends base {
     /**
-     * This function takes a data object and attempts to apply it to Moodle.
-     *
-     * @param data\base $data A data object to process.
+     * The data object path for this object.
      */
-    abstract public static function convert_to_moodle(\enrol_lmb\local\data\base $data);
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\term';
+
+    /**
+     * Path to this objects mappings.
+     */
+    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/group_term.json';
+
+    /**
+     * Basic constructor.
+     */
+    public function __construct() {
+        $this->load_mappings();
+    }
+
+    /**
+     * Processes the passed xml_node into a data object of the current type.
+     *
+     * @param xml_node $xmlobj The node to work on
+     * @return enrol_lmb\local\data\person
+     */
+    public function process_xml_to_data($node) {
+        $class = static::DATA_CLASS;
+        $this->dataobj = new $class();
+
+        // First we are going to use the simple static mappings.
+        $this->apply_mappings($node);
+
+        return $this->dataobj;
+    }
+
 }

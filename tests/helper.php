@@ -111,7 +111,9 @@ class data_test extends \enrol_lmb\local\data\base {
     protected $dbkeys = array('dbkey', 'additional', 'defkey', 'nondefkey');
 
     protected $handlers = array('double' => 'handler_double',
-                                'boolean' => 'handler_boolean');
+                                'boolean' => 'handler_boolean',
+                                'date' => 'handler_date');
+
 
     protected $defaults = array('defkey' => 'Default value');
 

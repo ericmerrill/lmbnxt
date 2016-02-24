@@ -66,10 +66,16 @@ class controller {
         $xmlproc = $this->typeprocessors[$type];
 
         try {
-            $obj = $xmlproc->process_xml_to_data($xmlobj);
+            $objs = $xmlproc->process_xml_to_data($xmlobj);
 
-            $obj->log_id();
-            $obj->save_to_db();
+            if (!is_array($objs)) {
+                $objs = array($objs);
+            }
+
+            foreach ($objs as $obj) {
+                $obj->log_id();
+                $obj->save_to_db();
+            }
         } catch (\enrol_lmb\local\exception\message_exception $e) {
             logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
         }

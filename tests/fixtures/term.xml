@@ -1,0 +1,29 @@
+<enterprise>
+    <group>
+        <sourcedid>
+            <source>Test SCT Banner</source>
+            <id>201640</id>
+        </sourcedid>
+        <grouptype>
+            <scheme>Luminis</scheme>
+            <typevalue level="1">Term</typevalue>
+        </grouptype>
+        <description>
+            <short>201640</short>
+            <long>Fall 2016</long>
+        </description>
+        <timeframe>
+            <begin restrict="0">2016-08-30</begin>
+            <end restrict="1">2016-12-17</end>
+        </timeframe>
+        <enrollcontrol>
+            <enrollaccept>1</enrollaccept>
+            <enrollallowed>0</enrollallowed>
+        </enrollcontrol>
+        <extension>
+            <luminisgroup>
+                <sort>201640</sort>
+            </luminisgroup>
+        </extension>
+    </group>
+</enterprise>

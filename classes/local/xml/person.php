@@ -37,9 +37,9 @@ defined('MOODLE_INTERNAL') || die();
  */
 class person extends base {
     /**
-     * Array of keys that go in the database object.
+     * The data object path for this object.
      */
-    const TYPE = 'person';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\person';
 
     /**
      * Path to this objects mappings.
@@ -59,12 +59,12 @@ class person extends base {
      * @param xml_node $xmlobj The node to work on
      * @return enrol_lmb\local\data\person
      */
-    public function process_xml_to_data($xmlobj) {
-        $class = '\\enrol_lmb\\local\\data\\'.static::TYPE;
+    public function process_xml_to_data($node) {
+        $class = static::DATA_CLASS;
         $this->dataobj = new $class();
 
         // First we are going to use the simple static mappings.
-        $this->apply_mappings($xmlobj);
+        $this->apply_mappings($node);
 
         return $this->dataobj;
     }

@@ -1,0 +1,52 @@
+{
+  "sourcedid": {
+    "source": "sdidsource",
+    "id": "sdid"
+  },
+  "description": {
+    "long": "description"
+  },
+  "timeframe": {
+    "begin": {
+      "lmbinternal": true,
+      "repetition": [
+        "begindate",
+        {
+          "lmbinternal": true,
+          "type": "bool",
+          "attr": "restrict",
+          "objname": "beginrestrict"
+        }
+      ]
+    },
+    "end": {
+      "lmbinternal": true,
+      "repetition": [
+        "enddate",
+        {
+          "lmbinternal": true,
+          "type": "bool",
+          "attr": "restrict",
+          "objname": "endrestrict"
+        }
+      ]
+    }
+  },
+  "enrollcontrol": {
+    "enrollaccept": {
+      "lmbinternal": true,
+      "type": "bool",
+      "objname": "enrollaccept"
+    },
+    "enrollallowed": {
+      "lmbinternal": true,
+      "type": "bool",
+      "objname": "enrollallowed"
+    }
+  },
+  "extension": {
+    "luminisgroup": {
+      "sort": "sortorder"
+    }
+  }
+}

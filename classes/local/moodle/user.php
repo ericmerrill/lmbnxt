@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base {
+class user extends base {
     /**
      * This function takes a data object and attempts to apply it to Moodle.
      *

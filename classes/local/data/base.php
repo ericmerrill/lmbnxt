@@ -58,6 +58,11 @@ abstract class base {
     const TABLE = 'base';
 
     /**
+     * The class of the Moodle converter for this data object.
+     */
+    const MOODLE_TYPE = false;
+
+    /**
      * Basic constructor.
      */
     public function __construct() {
@@ -161,6 +166,25 @@ abstract class base {
         return $v;
     }
 
+    /**
+     * Concerts an incoming date string to a timestamp.
+     *
+     * $param string $name Name of property to convert
+     * $param string $value The value
+     * @return int The new property value
+     */
+    protected function handler_date($name, $value) {
+        // TODO This really needs timezone work...
+        $time = strtotime($value.' UTC');
+
+        if ($time === false) {
+            logging::instance()->log_line("Could not convert time \"{$value}\".", logging::ERROR_WARN);
+            return 0;
+        }
+
+        return $time;
+    }
+
     public function save_to_db() {
         $this->update_if_needed();
     }
@@ -223,6 +247,11 @@ abstract class base {
         }
     }
 
+    /**
+     * Converts this data object into a database record.
+     *
+     * @return object The object converted to a DB object.
+     */
     protected function convert_to_db_object() {
         $obj = new \stdClass();
 
@@ -237,5 +266,10 @@ abstract class base {
         return $obj;
     }
 
+    /**
+     * Retreive an exiting db record for this record.
+     *
+     * @return object|false The record or false if not found.
+     */
     abstract protected function get_record();
 }

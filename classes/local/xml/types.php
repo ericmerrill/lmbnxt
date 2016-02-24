@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class types {
     public static function get_types() {
-        return array('person');
+        return array('person', 'group');
     }
 
 

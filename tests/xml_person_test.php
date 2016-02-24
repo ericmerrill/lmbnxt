@@ -38,7 +38,6 @@ class xml_person_testcase extends xml_helper {
         $this->assertInstanceOf('\\enrol_lmb\\local\\data\\person', $person);
         $this->assertEquals('Test SCT Banner', $person->sdidsource);
         $this->assertEquals('1000001', $person->sdid);
-        $this->assertEquals('Test SCT Banner', $person->sdidsource);
 
         $this->assertInternalType('array', $person->userid);
         $this->assertCount(5, $person->userid);

@@ -37,35 +37,30 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class person extends base {
+class term extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_person';
+    const TABLE = 'enrol_lmb_term';
 
     /**
      * The class of the Moodle converter for this data object.
      */
-    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\user';
+    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\term';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'sctid', 'logonid', 'emailid', 'fullname', 'nickname',
-                              'familyname', 'givenname', 'email', 'rolestudent', 'rolestaff', 'rolefaculty',
-                              'rolealumni', 'roleprospectivestudent', 'additional', 'timemodified');
+    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'begindate', 'enddate', 'sortorder', 'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
-    protected $defaults = array('rolestudent' => 0,
-                                'rolestaff' => 0,
-                                'rolefaculty' => 0,
-                                'rolealumni' => 0,
-                                'roleprospectivestudent' => 0);
+    protected $defaults = array();
 
     /** @var array An array of property->function pairs for converting incoming values */
-    protected $handlers = array('rolestudent' => 'handler_boolean',
-                                'rolestaff' => 'handler_boolean',
-                                'rolefaculty' => 'handler_boolean',
-                                'rolealumni' => 'handler_boolean',
-                                'roleprospectivestudent' => 'handler_boolean');
+    protected $handlers = array('beginrestrict' => 'handler_boolean',
+                                'endrestrict' => 'handler_boolean',
+                                'enrollaccept' => 'handler_boolean',
+                                'enrollallowed' => 'handler_boolean',
+                                'begindate' => 'handler_date',
+                                'enddate' => 'handler_date',);
 
     /**
      * Log a unique line to id this object.
@@ -74,9 +69,9 @@ class person extends base {
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
         if (empty($id) || empty($source)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_bad_person');
+            throw new \enrol_lmb\local\exception\message_exception('exception_bad_term');
         } else {
-            logging::instance()->log_line("Person ID \"{$id}\" from \"{$source}\"");
+            logging::instance()->log_line("Term ID \"{$id}\" from \"{$source}\"");
         }
     }
 
@@ -86,10 +81,12 @@ class person extends base {
      * @return object|false The record or false if not found.
      */
     protected function get_record() {
-        global $DB;
+        /*global $DB;
 
         $params = array('sdid' => $this->__get('sdid'), 'sdidsource' => $this->__get('sdidsource'));
 
-        return $DB->get_record('enrol_lmb_person', $params);
+        return $DB->get_record('enrol_lmb_person', $params);*/
     }
+
+    public function save_to_db() {}
 }

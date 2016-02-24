@@ -43,9 +43,9 @@ abstract class base {
     protected $dataobj = null;
 
     /**
-     * Array of keys that go in the database object.
+     * The data object path for this object.
      */
-    const TYPE = 'base';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\base';
 
     /**
      * Path to this objects mappings.
@@ -55,10 +55,10 @@ abstract class base {
     /**
      * Processes the passed xml_node into a data object of the current type.
      *
-     * @param xml_node $xmlobj The node to work on
+     * @param xml_node $node The node to work on
      * @return enrol_lmb\local\data\base
      */
-    abstract public function process_xml_to_data($xmlobj);
+    abstract public function process_xml_to_data($node);
 
     /**
      * Loads the mapping JSON into the this object.

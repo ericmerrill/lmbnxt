@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * An object for converting data to moodle.
+ * Works on types of messages.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,24 +23,49 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\moodle;
-use enrol_lmb\logging;
+namespace enrol_lmb\local\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Abstract object for converting a data object to Moodle.
+ * Class for working with message types.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base {
+class group extends base {
     /**
-     * This function takes a data object and attempts to apply it to Moodle.
-     *
-     * @param data\base $data A data object to process.
+     * The data object path for this object.
      */
-    abstract public static function convert_to_moodle(\enrol_lmb\local\data\base $data);
+    const DATA_CLASS = false;
+
+    /**
+     * Path to this objects mappings.
+     */
+    const MAPPING_PATH = false;
+
+    /**
+     * Processes the passed xml_node into a data object of the current type.
+     *
+     * @param xml_node $xmlobj The node to work on
+     * @return array|enrol_lmb\local\data\person
+     */
+    public function process_xml_to_data($node) {
+        // ID what group type for the XML, then pass on to the correct converter.
+        if (!isset($node->grouptype->typevalue)) {
+            throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+        }
+
+        switch (strtolower($node->grouptype->typevalue->get_value())) {
+            case 'term':
+                $term = new group_term();
+                return $term->process_xml_to_data($node);
+
+        }
+
+        throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+    }
+
 }
