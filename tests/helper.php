@@ -107,6 +107,14 @@ class xml_tester extends \enrol_lmb\local\xml\base {
  */
 class data_test extends \enrol_lmb\local\data\base {
 
+    /** @var array Array of keys that go in the database object */
+    protected $dbkeys = array('dbkey', 'additional', 'defkey', 'nondefkey');
+
+    protected $handlers = array('double' => 'handler_double',
+                                'boolean' => 'handler_boolean');
+
+    protected $defaults = array('defkey' => 'Default value');
+
     public function log_id() {
     }
 
@@ -116,6 +124,10 @@ class data_test extends \enrol_lmb\local\data\base {
 
     protected function update_if_needed() {
 
+    }
+
+    protected function handler_double($name, $value) {
+        return $value * 2;
     }
 
 }
