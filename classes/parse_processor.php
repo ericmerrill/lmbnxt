@@ -27,6 +27,7 @@ namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/backup/util/xml/parser/processors/simplified_parser_processor.class.php');
+
 /**
  * Processes XML chunks from the parser.
  *
