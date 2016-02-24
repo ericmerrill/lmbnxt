@@ -67,7 +67,9 @@ class controller {
 
         try {
             $obj = $xmlproc->process_xml_to_data($xmlobj);
+
             $obj->log_id();
+            $obj->save_to_db();
         } catch (\enrol_lmb\local\exception\message_exception $e) {
             logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
         }

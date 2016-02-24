@@ -110,6 +110,14 @@ class data_test extends \enrol_lmb\local\data\base {
     public function log_id() {
     }
 
+    protected function get_record() {
+
+    }
+
+    protected function update_if_needed() {
+
+    }
+
 }
 
 /**

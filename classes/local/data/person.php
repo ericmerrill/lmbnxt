@@ -44,14 +44,20 @@ class person extends base {
     const TABLE = 'enrol_lmb_person';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('sdidsource', 'sdid', 'sctid', 'logonid', 'emailid', 'fullname', 'nickname',
+    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'sctid', 'logonid', 'emailid', 'fullname', 'nickname',
                               'familyname', 'givenname', 'email', 'rolestudent', 'rolestaff', 'rolefaculty',
-                              'rolealumni', 'roleprospectivestudent', 'additional');
+                              'rolealumni', 'roleprospectivestudent', 'additional', 'timemodified');
 
     /** @var array Array of allowed additional keys */
     /*protected $additionalkeys = array('phonevoice', 'phonemobile', 'middlename', 'gender', 'streetadr', 'city', 'region',
                                       'postalcode', 'country', 'customroles', 'userid', 'prefix', 'suffix', 'televoice',
                                       'telemobile', 'major', 'title', 'customrole', 'degree');*/
+
+    protected $defaults = array('rolestudent' => 0,
+                                'rolestaff' => 0,
+                                'rolefaculty' => 0,
+                                'rolealumni' => 0,
+                                'roleprospectivestudent' => 0);
 
     /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array('rolestudent' => 'handler_boolean',
@@ -72,5 +78,13 @@ class person extends base {
         } else {
             logging::instance()->log_line("Person ID \"{$id}\" from \"{$source}\"");
         }
+    }
+
+    protected function get_record() {
+        global $DB;
+
+        $params = array('sdid' => $this->__get('sdid'), 'sdidsource' => $this->__get('sdidsource'));
+
+        return $DB->get_record('enrol_lmb_person', $params);
     }
 }

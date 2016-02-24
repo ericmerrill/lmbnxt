@@ -120,7 +120,44 @@ class xml_person_testcase extends xml_helper {
             $expected = get_string('exception_bad_person', 'enrol_lmb');
             $this->assertRegExp("|{$expected}|", $ex->getMessage());
         }
+    }
 
+    public function test_db_save() {
+        global $CFG, $DB;
 
+        $this->resetAfterTest(true);
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
+        $converter = new \enrol_lmb\local\xml\person();
+        $person = $converter->process_xml_to_data($node);
+
+        $log = new logging_helper();
+        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+
+        // First insert.
+        $person->save_to_db();
+        $this->assertRegExp("|Inserting into database|", $log->test_get_flush_buffer());
+
+        // Try to save the same object again.
+        $person->save_to_db();
+        $this->assertRegExp("|No database update needed|", $log->test_get_flush_buffer());
+
+        // Modify the person and try and insert again.
+        $person->firstname = 'first';
+        $person->save_to_db();
+        $this->assertRegExp("|Updated database record|", $log->test_get_flush_buffer());
+
+        // Now lets get it from the DB and check it.
+        $params = array('sdid' => $person->sdid, 'sdidsource' => $person->sdidsource);
+        $dbrecord = $DB->get_record(\enrol_lmb\local\data\person::TABLE, $params);
+        $this->assertNotEmpty($dbrecord);
+
+        foreach ($dbrecord as $key => $value) {
+            if ($key == 'timemodified') {
+                // Skip special case;
+                continue;
+            }
+            $this->assertEquals($person->$key, $dbrecord->$key, "Key {$key} did not match");
+        }
     }
 }

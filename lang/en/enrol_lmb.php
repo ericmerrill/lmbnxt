@@ -40,3 +40,5 @@ $string['xmlpath'] = 'Import file location';
 $string['xmlpath_help'] = 'The path (on the Moodle server) where the XML file that you would like to import resides.';
 
 $string['exception_bad_person'] = 'Person object has no id or source';
+$string['exception_insert_failure'] = 'Failure inserting in database';
+$string['exception_update_failure'] = 'Failure updating in database';

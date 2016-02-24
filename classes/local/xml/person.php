@@ -91,6 +91,18 @@ class person extends base {
         $userid->password = $node->get_attribute('password');
         $userid->pwencryptiontype = $node->get_attribute('pwencryptiontype');
 
+        switch ($type) {
+            case 'Logon ID':
+                $this->dataobj->logonid = $userid->userid;
+                break;
+            case 'SCTID':
+                $this->dataobj->sctid = $userid->userid;
+                break;
+            case 'Email ID':
+                $this->dataobj->emailid = $userid->userid;
+                break;
+        }
+
         $this->dataobj->userid[$type] = $userid;
     }
 
