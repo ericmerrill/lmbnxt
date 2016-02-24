@@ -42,5 +42,7 @@ class user extends base {
      *
      * @param data\base $data A data object to process.
      */
-    abstract public static function convert_to_moodle(\enrol_lmb\local\data\base $data);
+    public static function convert_to_moodle(\enrol_lmb\local\data\base $data) {
+        // TODO Do something.
+    }
 }
