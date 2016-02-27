@@ -30,18 +30,7 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
 class xml_parser_processor_test extends xml_helper {
     public function test_processor() {
-        $parser = new \enrol_lmb\parser();
 
-        $processor = new \enrol_lmb\parse_processor(null);
-        $processor->register_path('/test');
-
-        $chunk = array('path' => '/LMB/TEST',
-                       'depth' => '1',
-                       'tags' => array ('N1' => array('value' => "v1")));
-
-        $processor->process_chunk($chunk);
-
-        $this->assertDebuggingCalled('XML object not started');
 
     }
 }

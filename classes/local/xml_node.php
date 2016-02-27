@@ -75,14 +75,14 @@ class xml_node implements \Iterator {
      */
     public function build_from_array($data) {
         // Check to see if this seems to be a "data" node.
-        if (isset($data['name']) && !is_array($data['name']) && (array_key_exists('cdata', $data) || isset($data['attrs']))) {
+        if (isset($data['name']) && !is_array($data['name']) && (isset($data['cdata']) || isset($data['attrs']))) {
             // Unset the name, cdata, and attrs so that we don't make children for them.
             unset($data['name']);
-            if (array_key_exists('cdata', $data)) {
+            if (isset($data['cdata'])) {
                 $this->value = $data['cdata'];
                 unset($data['cdata']);
             }
-            if (array_key_exists('attrs', $data)) {
+            if (isset($data['attrs'])) {
                 $this->attrs = $data['attrs'];
                 // Lowercase the attribute names.
                 $keys = array_keys($this->attrs);
@@ -100,7 +100,7 @@ class xml_node implements \Iterator {
             // Lowercase the child element names.
             $name = strtolower($name);
             // Check to see if we have a child with that name.
-            if (array_key_exists($name, $this->children)) {
+            if (isset($this->children[$name])) {
                 // Get the child.
                 $child = $this->children[$name];
                 if (is_array($child)) {
@@ -144,8 +144,8 @@ class xml_node implements \Iterator {
             return;
         }
         // Get the next path name and move the pointer forward.
-        $child = strtolower(array_shift($patharray));
-        if (!array_key_exists($child, $this->children)) {
+        $child = array_shift($patharray);
+        if (!isset($this->children[$child])) {
             // If we don't have a child, just discard the finish mark.
             return;
         }
@@ -173,7 +173,7 @@ class xml_node implements \Iterator {
         $name = $child->name;
         // Set the childs parent.
         $child->set_parent($this);
-        if (array_key_exists($name, $this->children)) {
+        if (isset($this->children[$name])) {
             // If they item already exists, check to see if we need to make a new array.
             if (!is_array($this->children[$name])) {
                 $this->children[$name] = array($this->children[$name]);
@@ -219,7 +219,7 @@ class xml_node implements \Iterator {
      * @return scalar|null
      */
     public function get_attribute($attribute) {
-        if (!array_key_exists($attribute, $this->attrs)) {
+        if (!isset($this->attrs[$attribute])) {
             return null;
         }
         return $this->attrs[$attribute];
@@ -324,7 +324,7 @@ class xml_node implements \Iterator {
         $current = current($this->children);
         if (is_array($current)) {
             $this->arraykey++;
-            if (array_key_exists($this->arraykey, $current)) {
+            if (isset($current[$this->arraykey])) {
                 return;
             }
             $this->arraykey = 0;

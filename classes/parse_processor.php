@@ -49,6 +49,9 @@ class parse_processor extends \simplified_parser_processor {
     /** @var controller A reference to the controller object */
     protected $controller;
 
+    /** @var bool|string The currently active node path */
+    protected $currentselectedpath = false;
+
     /**
      * Basic constructor.
      */
@@ -82,23 +85,20 @@ class parse_processor extends \simplified_parser_processor {
         $path = $data['path'];
 
         // If this is a child path, expand it to the parent level.
-        if ($parent = $this->selected_parent_exists($path)) {
-            $this->expand_path($parent, $data);
-            $path = $parent;
+        if ($path !== $this->currentselectedpath && strpos($path, $this->currentselectedpath) === 0) {
+            $this->expand_path($this->currentselectedpath, $data);
+            $path = $this->currentselectedpath;
+
         }
 
-        // Check to see if it is one of our grouped paths.
-        if ($this->path_is_selected($path)) {
-            if (is_null($this->currentnode)) {
-                debugging("XML object not started", DEBUG_DEVELOPER);
-                return;
-            }
+        // Check to see if this is out currently active node.
+        if ($path === $this->currentselectedpath) {
             // Add the data to the current node.
             $this->currentnode->build_from_array($data['tags']);
 
             // Send all the currently buffered paths as finished.
             foreach ($this->finishedpaths as $fpath) {
-                $fpath = str_replace($path.'/', '', $fpath);
+                $fpath = strtolower(str_replace($path.'/', '', $fpath));
                 $patharray = explode('/', $fpath);
                 $this->currentnode->mark_node_finished($patharray);
             }
@@ -116,6 +116,7 @@ class parse_processor extends \simplified_parser_processor {
         if ($this->path_is_selected($path)) {
             // If we are starting a new group node, start a new collector.
             $this->currentnode = new local\xml_node();
+            $this->currentselectedpath = $path;
             $parts = explode('/', $path);
             $this->currentnode->set_name(end($parts));
             logging::instance()->start_message("Processing {$this->currentnode->get_name()} message");
@@ -146,18 +147,48 @@ class parse_processor extends \simplified_parser_processor {
      * @param string $path Path that happened.
      */
     public function after_path($path) {
-        parent::after_path($path);
-
-        if ($this->path_is_selected($path)) {
+        if ($path === $this->currentselectedpath) {
             // This is where our current node is complete, and can be dispatched.
             $this->process_complete_node($this->currentnode);
             logging::instance()->end_message();
             $this->currentnode = null;
-        } else if ($this->selected_parent_exists($path)) {
+            $this->currentselectedpath = false;
+        } else if (strpos($path, $this->currentselectedpath) === 0) {
+            // This means we are in a child path.
             // Save the path for marking as finished. This has to be done after the upcoming chunk is processed.
             $this->finishedpaths[] = $path;
         }
     }
+
+    /**
+     * Register paths.
+     *
+     * @param string $path Path to register.
+     */
+    public function add_path($path) {
+        // We register with path keys because it allows faster lookup.
+        $this->paths[$path] = $path;
+        $this->parentpaths[\progressive_parser::dirname($path)] = \progressive_parser::dirname($path);
+    }
+
+    /**
+     * Lookup if the path is a registered path.
+     *
+     * @param string $path Path to lookup.
+     */
+    protected function path_is_selected($path) {
+        return isset($this->paths[$path]);
+    }
+
+    /**
+     * Lookup to see if the path is the parent of a regsitered path, to know we are done with it.
+     *
+     * @param string $path Path to lookup.
+     */
+    protected function path_is_selected_parent($path) {
+        return isset($this->parentpaths[$path]);
+    }
+
 
     protected function notify_path_start($path) {
         // Nothing to do. Required for abstract.

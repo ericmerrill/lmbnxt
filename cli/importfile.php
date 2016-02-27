@@ -74,7 +74,9 @@ if (!empty($filepath)) {
 }
 
 
-
+$starttime = microtime(true);
 $controller = new \enrol_lmb\controller();
 $controller->import_file($filepath);
+$endtime = microtime(true);
 
+mtrace($endtime - $starttime);

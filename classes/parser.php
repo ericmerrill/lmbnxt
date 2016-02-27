@@ -170,7 +170,7 @@ class parser extends \progressive_parser {
         $this->prevlevel = $this->level;
 
         // Inform processor we have finished one tag.
-        $this->inform_end($this->path);
+        $this->processor->after_path($this->path);
 
         // Normal update of parser internals.
         $this->level--;

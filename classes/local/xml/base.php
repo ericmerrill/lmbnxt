@@ -101,7 +101,7 @@ abstract class base {
                 // This means we just associate directly to a field.
                 $this->process_node_array_field($xml->$name, $mapping);
             } else if (is_array($mapping)) {
-                if (array_key_exists('lmbinternal', $mapping)) {
+                if (isset($mapping['lmbinternal'])) {
                     // Special array for processing a field.
                     $this->process_node_array_field($xml->$name, $mapping);
                 } else {
@@ -144,7 +144,7 @@ abstract class base {
      * @param array $mapping The mapping for the field
      */
     protected function process_node_repeat_mapping($node, $mapping) {
-        if (is_array($mapping) && array_key_exists('lmbinternal', $mapping) && array_key_exists('repetition', $mapping)) {
+        if (is_array($mapping) && isset($mapping['lmbinternal']) && isset($mapping['repetition'])) {
             foreach ($mapping['repetition'] as $repmap) {
                 $this->process_field($node, $repmap);
             }
@@ -165,7 +165,7 @@ abstract class base {
             if ($node->has_data()) {
                 $this->dataobj->$mapping = $node->get_value();
             }
-        } else if (is_array($mapping) && array_key_exists('lmbinternal', $mapping)) {
+        } else if (is_array($mapping) && isset($mapping['lmbinternal'])) {
             // LMB internal mapping array.
             if (isset($mapping['function'])) {
                 // If a function is set, just call it, passing the node and mapping.
