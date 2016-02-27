@@ -144,38 +144,27 @@ class parser extends \progressive_parser {
         return $this->processor;
     }
 
+    protected function start_tag($parser, $tag, $attributes) {
+        $this->level++;
+        $this->path .= '/' . $tag;
+
+        $this->processor->start_tag($tag, $this->path);
+        $this->processor->add_attributes($attributes);
+    }
+
     // Inherited from progressive_parser.
     protected function end_tag($parser, $tag) {
-        // Ending rencently started tag, add value to current tag.
-        if ($this->level == $this->prevlevel) {
-            $this->currtag['cdata'] = $this->postprocess_cdata($this->accum);
-            if (isset($this->topush['tags'][$this->currtag['name']])) {
-                $this->publish($this->topush);
-                $this->topush['tags'] = array();
-            }
-            $this->topush['tags'][$this->currtag['name']] = $this->currtag;
-            $this->currtag = array();
-        }
+        $this->processor->add_data($this->accum);
+        $this->accum = '';
+        $this->processor->end_tag($tag, $this->path);
 
-        // Leaving one level, publish all the information available.
-        if ($this->level < $this->prevlevel) {
-            if (!empty($this->topush['tags'])) {
-                $this->publish($this->topush);
-            }
-            $this->currtag = array();
-            $this->topush = array();
-        }
-
-        // For the records.
-        $this->prevlevel = $this->level;
-
-        // Inform processor we have finished one tag.
-        $this->processor->after_path($this->path);
-
-        // Normal update of parser internals.
         $this->level--;
-        $this->path = \progressive_parser::dirname($this->path);
+        //$this->path = \progressive_parser::dirname($this->path);
+        $this->path = dirname($this->path);
+
+
     }
+
 
 
     /**

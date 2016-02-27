@@ -65,7 +65,18 @@ class xml_node implements \Iterator {
      * @param string $name The path name of the current element
      */
     public function __construct($name = null) {
-        $this->name = $name;
+        $this->set_name($name);
+    }
+
+    public function set_attributes($attrs) {
+        $keys = array_keys($attrs);
+        foreach ($keys as $key) {
+            $this->attrs[strtolower($key)] = $attrs[$key];
+        }
+    }
+
+    public function set_data($data) {
+        $this->value = $data;
     }
 
     /**

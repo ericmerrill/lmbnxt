@@ -42,6 +42,7 @@ class parse_processor extends \simplified_parser_processor {
 
     /** @var xml_node The current node we are working on */
     protected $currentnode = null;
+    protected $rootnode = null;
 
     /** @var xml_node The most recently completed node, basically for testing */
     protected $previousnode = null;
@@ -50,7 +51,7 @@ class parse_processor extends \simplified_parser_processor {
     protected $controller;
 
     /** @var bool|string The currently active node path */
-    protected $currentselectedpath = false;
+    protected $currentrootpath = false;
 
     /**
      * Basic constructor.
@@ -75,6 +76,68 @@ class parse_processor extends \simplified_parser_processor {
         $this->add_path(strtoupper($path));
         $this->add_path(strtoupper('/enterprise'.$path));
     }
+
+    public function start_tag($tag, $path) {
+        if ($this->currentrootpath !== false) {
+            $child = new local\xml_node($tag);
+            $this->currentnode->add_child($child);
+            $this->currentnode = $child;
+            return;
+        }
+
+        if ($this->path_is_selected($path)) {
+            // If we are starting a new group node, start a new collector.
+            $this->rootnode = new local\xml_node($tag);
+            $this->currentrootpath = $path;
+            $this->currentnode = $this->rootnode;
+            //$parts = explode('/', $path);
+            logging::instance()->start_message("Processing {$this->currentnode->get_name()} message");
+            return;
+        }
+
+
+
+
+    }
+
+    // Inherited from progressive_parser.
+    public function end_tag($tag, $path) {
+        if ($this->currentrootpath === false) {
+            return;
+        }
+        $this->currentnode->mark_node_finished(array());
+
+        if ($path === $this->currentrootpath) {
+            // Reached the end of the selected node.
+            $this->process_complete_node($this->rootnode);
+            logging::instance()->end_message();
+            $this->currentnode = null;
+            $this->rootnode = null;
+            $this->currentrootpath = false;
+            return;
+        }
+
+        $this->currentnode = $this->currentnode->get_parent();
+
+
+    }
+
+    public function add_attributes($attrs) {
+        if (!is_null($this->currentnode)) {
+            $this->currentnode->set_attributes($attrs);
+        }
+    }
+
+    public function add_data($data) {
+        if (!is_null($this->currentnode)) {
+            $this->currentnode->set_data(trim($data));
+        }
+    }
+
+
+
+
+
 
     /**
      * Takes a chunk of parsed XML and processes it.
@@ -125,7 +188,7 @@ class parse_processor extends \simplified_parser_processor {
 
     protected function process_complete_node($node) {
         $this->previousnode = $node;
-
+//print "<pre>";print_r($node);print "</pre>";
         // Dispatch a completed node.
         if ($this->controller) {
             $this->controller->process_xml_object($node);
@@ -176,7 +239,7 @@ class parse_processor extends \simplified_parser_processor {
      *
      * @param string $path Path to lookup.
      */
-    protected function path_is_selected($path) {
+    public function path_is_selected($path) {
         return isset($this->paths[$path]);
     }
 
