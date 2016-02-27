@@ -50,12 +50,6 @@ class xml_node implements \Iterator {
     /** @var mixed Value of the node */
     protected $value;
 
-    /**
-     * If the node is finished. Used to determine if an incoming node of the same name is merged or a sibling.
-     * @var bool
-     */
-    protected $finished = false;
-
     /** @var int An pointer key used for child arrays. */
     protected $arraykey = 0;
 
@@ -69,110 +63,15 @@ class xml_node implements \Iterator {
     }
 
     public function set_attributes($attrs) {
-        $keys = array_keys($attrs);
+        /*$keys = array_keys($attrs);
         foreach ($keys as $key) {
             $this->attrs[strtolower($key)] = $attrs[$key];
-        }
+        }*/
+        $this->attrs = $attrs;
     }
 
     public function set_data($data) {
         $this->value = $data;
-    }
-
-    /**
-     * Takes a data array and recursivly builds itself and children.
-     *
-     * @param array $data An deep associative array for data.
-     */
-    public function build_from_array($data) {
-        // Check to see if this seems to be a "data" node.
-        if (isset($data['name']) && !is_array($data['name']) && (isset($data['cdata']) || isset($data['attrs']))) {
-            // Unset the name, cdata, and attrs so that we don't make children for them.
-            unset($data['name']);
-            if (isset($data['cdata'])) {
-                $this->value = $data['cdata'];
-                unset($data['cdata']);
-            }
-            if (isset($data['attrs'])) {
-                $this->attrs = $data['attrs'];
-                // Lowercase the attribute names.
-                $keys = array_keys($this->attrs);
-                foreach ($keys as $key) {
-                    $this->attrs[strtolower($key)] = $this->attrs[$key];
-                    unset($this->attrs[$key]);
-                }
-
-                unset($data['attrs']);
-            }
-        }
-
-        // Go through each remaining element.
-        foreach ($data as $name => $value) {
-            // Lowercase the child element names.
-            $name = strtolower($name);
-            // Check to see if we have a child with that name.
-            if (isset($this->children[$name])) {
-                // Get the child.
-                $child = $this->children[$name];
-                if (is_array($child)) {
-                    // If the child is an array, get the last member of that array.
-                    $child = end($child);
-                    // Move back the pointer.
-                    reset($this->children[$name]);
-                }
-                if (!$child->is_finished()) {
-                    // If the child is not finished, it means that we can "merge" the data with it.
-                    $child->build_from_array($value);
-                    continue;
-                }
-            }
-
-            // Getting here means we need a new child.
-            $child = new xml_node($name);
-            $child->build_from_array($value);
-            $this->add_child($child);
-        }
-    }
-
-    /**
-     * Checks to see if the current node is finished.
-     *
-     * @return bool
-     */
-    public function is_finished() {
-        return $this->finished;
-    }
-
-    /**
-     * Takes an array of path elements, and marks the final element as finished.
-     *
-     * @param array $patharray An array of path elements
-     */
-    public function mark_node_finished($patharray) {
-        if (is_array($patharray) && empty($patharray)) {
-            // If the path list is empty, then we have hit the node.
-            $this->finished = true;
-            return;
-        }
-        // Get the next path name and move the pointer forward.
-        $child = array_shift($patharray);
-        if (!isset($this->children[$child])) {
-            // If we don't have a child, just discard the finish mark.
-            return;
-        }
-
-        $node = $this->children[$child];
-        if (is_array($node)) {
-            // If the child is an array, then we want to work on the last child of the array.
-            $node = end($node);
-            // Reset the array pointer.
-            reset($this->children);
-        }
-
-        if (is_object($node)) {
-            // If it's an object, pass the now shortened array on.
-            $node->mark_node_finished($patharray);
-        }
     }
 
     /**
@@ -194,6 +93,10 @@ class xml_node implements \Iterator {
             $this->children[$name] = $child;
         }
 
+    }
+
+    public function has_children() {
+        return !empty($this->children);
     }
 
     /**
@@ -251,7 +154,7 @@ class xml_node implements \Iterator {
      * @param string $name The name to set
      */
     public function set_name($name) {
-        $this->name = strtolower($name);
+        $this->name = $name;
     }
 
     /**

@@ -76,7 +76,7 @@ class person extends base {
      * @param array $mapping The mapping for the field
      */
     protected function process_userid_node($node, $mapping) {
-        if (!$type = $node->get_attribute('useridtype')) {
+        if (!$type = $node->get_attribute('USERIDTYPE')) {
             // We need a type to do anything with this.
             return;
         }
@@ -88,8 +88,8 @@ class person extends base {
 
         $userid = new \stdClass();
         $userid->userid = $node->get_value();
-        $userid->password = $node->get_attribute('password');
-        $userid->pwencryptiontype = $node->get_attribute('pwencryptiontype');
+        $userid->password = $node->get_attribute('PASSWORD');
+        $userid->pwencryptiontype = $node->get_attribute('PWENCRYPTIONTYPE');
 
         switch ($type) {
             case 'Logon ID':
@@ -114,13 +114,13 @@ class person extends base {
      */
     protected function process_telephone_node($node, $mapping) {
         // Standard voice line.
-        if ($node->get_attribute('teltype') == 1) {
+        if ($node->get_attribute('TELTYPE') == 1) {
             $this->dataobj->televoice = $node->get_value();
             return;
         }
 
         // Mobile phone number.
-        if ($node->get_attribute('teltype') == 3) {
+        if ($node->get_attribute('TELTYPE') == 3) {
             $this->dataobj->telemobile = $node->get_value();
             return;
         }

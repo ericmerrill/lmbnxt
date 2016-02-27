@@ -35,11 +35,11 @@ class xml_node_testcase extends xml_helper {
         $node = $this->get_node_for_xml($xml);
 
         $i = 0;
-        $expected = array(array('n' => 'n1', 'v' => 'V1'),
-                          array('n' => 'n2', 'v' => 'V2'),
-                          array('n' => 'n2', 'v' => 'V3'),
-                          array('n' => 'n2', 'v' => 'V5'),
-                          array('n' => 'n3', 'v' => 'V4'));
+        $expected = array(array('n' => 'N1', 'v' => 'V1'),
+                          array('n' => 'N2', 'v' => 'V2'),
+                          array('n' => 'N2', 'v' => 'V3'),
+                          array('n' => 'N2', 'v' => 'V5'),
+                          array('n' => 'N3', 'v' => 'V4'));
         foreach ($node as $key => $child) {
             $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child);
             $this->assertEquals($expected[$i]['v'], $child->get_value());
@@ -56,21 +56,14 @@ class xml_node_testcase extends xml_helper {
         }
     }
 
-    public function test_node_finished() {
-        $node = new \enrol_lmb\local\xml_node('parent');
-
-        // Just calling a non-existent child to make sure no error is thrown.
-        $node->mark_node_finished(array('child', 'subchild'));
-    }
-
     public function test_get_parent() {
         $xml = '<tests><n1><n2>V2</n2></n1></tests>';
         $parent = $this->get_node_for_xml($xml);
 
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $parent);
-        $child1 = $parent->n1;
+        $child1 = $parent->N1;
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child1);
-        $child2 = $child1->n2;
+        $child2 = $child1->N2;
         $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child2);
 
         $this->assertEquals($child1, $child2->get_parent());
@@ -82,72 +75,72 @@ class xml_node_testcase extends xml_helper {
         $xml = '<tests><n1>V1</n1><n2>V2</n2><n2>V3</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
-        $this->assertEquals('V1', $node->n1->get_value());
-        $this->assertInternalType('array', $node->n2);
-        $this->assertEquals('V2', $node->n2[0]->get_value());
-        $this->assertEquals('V3', $node->n2[1]->get_value());
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N1);
+        $this->assertEquals('V1', $node->N1->get_value());
+        $this->assertInternalType('array', $node->N2);
+        $this->assertEquals('V2', $node->N2[0]->get_value());
+        $this->assertEquals('V3', $node->N2[1]->get_value());
 
         // Make sure checks for non-existant child work.
-        $this->assertFalse(isset($node->n3));
-        $this->assertNull($node->n3);
+        $this->assertFalse(isset($node->N3));
+        $this->assertNull($node->N3);
     }
 
     public function test_magic_unset() {
         $xml = '<tests><n1>V1</n1><n2>V2</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n1);
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->n2);
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N1);
+        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N2);
 
-        $this->assertTrue(isset($node->n2));
-        unset($node->n2);
-        $this->assertFalse(isset($node->n2));
-        $this->assertNull($node->n2);
+        $this->assertTrue(isset($node->N2));
+        unset($node->N2);
+        $this->assertFalse(isset($node->N2));
+        $this->assertNull($node->N2);
 
         // Make sure no errors when unsetting something that doesn't exist.
-        unset($node->n3);
+        unset($node->N3);
     }
 
     public function test_attributes() {
         $xml = '<tests><n1 a1="v1" a2="v2">V1</n1><n2>V2</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertEquals('v1', $node->n1->get_attribute('a1'));
-        $this->assertEquals('v2', $node->n1->get_attribute('a2'));
-        $this->assertNull($node->n1->get_attribute('a3'));
+        $this->assertEquals('v1', $node->N1->get_attribute('A1'));
+        $this->assertEquals('v2', $node->N1->get_attribute('A2'));
+        $this->assertNull($node->N1->get_attribute('A3'));
 
-        $this->assertInternalType('array', $node->n1->get_attributes());
-        $this->assertCount(2, $node->n1->get_attributes());
-        $this->assertEquals('v1', $node->n1->get_attributes()['a1']);
-        $this->assertEquals('v2', $node->n1->get_attributes()['a2']);
+        $this->assertInternalType('array', $node->N1->get_attributes());
+        $this->assertCount(2, $node->N1->get_attributes());
+        $this->assertEquals('v1', $node->N1->get_attributes()['A1']);
+        $this->assertEquals('v2', $node->N1->get_attributes()['A2']);
 
-        $this->assertInternalType('array', $node->n2->get_attributes());
-        $this->assertEmpty(0, $node->n2->get_attributes());
+        $this->assertInternalType('array', $node->N2->get_attributes());
+        $this->assertEmpty(0, $node->N2->get_attributes());
     }
 
     public function test_name() {
         $xml = '<tests><n1 a1="v1" a2="v2">V1</n1><n2>V2</n2><n2>V3</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertEquals('tests', $node->get_name());
-        $this->assertEquals('n1', $node->n1->get_name());
-        $this->assertEquals('n2', $node->n2[0]->get_name());
-        $this->assertEquals('n2', $node->n2[1]->get_name());
+        $this->assertEquals('TESTS', $node->get_name());
+        $this->assertEquals('N1', $node->N1->get_name());
+        $this->assertEquals('N2', $node->N2[0]->get_name());
+        $this->assertEquals('N2', $node->N2[1]->get_name());
     }
 
     public function test_has_data() {
         $xml = '<tests><n1 a1="v1" a2="v2"><c1>Something</c1></n1><n2><c1>Data</c1></n2><n3></n3></tests>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertTrue($node->n1->has_data());
-        $this->assertTrue($node->n1->c1->has_data());
-        $this->assertFalse($node->n2->has_data());
-        $this->assertTrue($node->n2->c1->has_data());
+        $this->assertTrue($node->N1->has_data());
+        $this->assertTrue($node->N1->C1->has_data());
+        $this->assertFalse($node->N2->has_data());
+        $this->assertTrue($node->N2->C1->has_data());
 
         // Empty nodes contain a empty string value.
-        $this->assertTrue($node->n3->has_data());
-        $this->assertEquals('', $node->n3->get_value());
+        $this->assertTrue($node->N3->has_data());
+        $this->assertEquals('', $node->N3->get_value());
     }
 
     public function test_mixed_case() {
@@ -158,18 +151,18 @@ class xml_node_testcase extends xml_helper {
 
         // All tag and attribute names should be converted to lowercase.
         // Data should remain in source case.
-        $this->assertTrue(isset($node->node));
+        $this->assertTrue(isset($node->NODE));
         $this->assertFalse(isset($node->nOde));
-        $this->assertFalse(isset($node->NODE));
+        $this->assertFalse(isset($node->node));
 
-        $this->assertInternalType('array', $node->node);
-        $this->assertCount(3, $node->node);
-        $this->assertEquals(1, $node->node[0]->get_value());
-        $this->assertEquals(2, $node->node[1]->get_value());
-        $this->assertEquals('Val3', $node->node[2]->get_value());
+        $this->assertInternalType('array', $node->NODE);
+        $this->assertCount(3, $node->NODE);
+        $this->assertEquals(1, $node->NODE[0]->get_value());
+        $this->assertEquals(2, $node->NODE[1]->get_value());
+        $this->assertEquals('Val3', $node->NODE[2]->get_value());
 
-        $this->assertEquals('v1', $node->node[0]->get_attributes()['a1']);
-        $this->assertEquals('V2', $node->node[0]->get_attributes()['a2']);
+        $this->assertEquals('v1', $node->NODE[0]->get_attributes()['A1']);
+        $this->assertEquals('V2', $node->NODE[0]->get_attributes()['A2']);
 
     }
 }

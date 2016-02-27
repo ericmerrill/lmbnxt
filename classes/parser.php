@@ -42,6 +42,8 @@ class parser extends \progressive_parser {
     /** @var array An array of registered types */
     protected $types = array();
 
+    protected $backslashpaths = false;
+
     /**
      * Constructor.
      *
@@ -49,6 +51,12 @@ class parser extends \progressive_parser {
      */
     public function __construct() {
         parent::__construct(true);
+
+        // Check if this system is using backslash paths.
+        $filepath = dirname(__FILE__);
+        if (strpos('\\', $filepath) !== false) {
+            $this->backslashpaths = true;
+        }
 
         $this->load_types();
     }
@@ -144,25 +152,51 @@ class parser extends \progressive_parser {
         return $this->processor;
     }
 
+    /**
+     * Processes an incoming tag notification.
+     *
+     * @param object $parser Reference of the parser.
+     * @param string $tag The opening tag name.
+     * $param array $attributes The attributes associated with the open tag.
+     */
     protected function start_tag($parser, $tag, $attributes) {
+        // Increase our level and append the incoming tag.
         $this->level++;
         $this->path .= '/' . $tag;
 
-        $this->processor->start_tag($tag, $this->path);
-        $this->processor->add_attributes($attributes);
+        // Tell the processor we are starting a tag and pass the attributes.
+        $this->processor->start_tag($tag, $this->path, $attributes);
     }
 
-    // Inherited from progressive_parser.
+    /**
+     * Called when a tag has ended. Contents are considered complete.
+     *
+     * @param object $parser Reference of the parser.
+     * @param string $tag The opening tag name.
+     * $param array $attributes The attributes associated with the open tag.
+     */
     protected function end_tag($parser, $tag) {
         $this->processor->add_data($this->accum);
         $this->accum = '';
         $this->processor->end_tag($tag, $this->path);
 
         $this->level--;
-        //$this->path = \progressive_parser::dirname($this->path);
-        $this->path = dirname($this->path);
+        $this->path = $this->lmb_dirname($this->path);
+    }
 
-
+    /**
+     * Get the parent path of the passed path.
+     *
+     * @param string $path The back to get the parent path of.
+     */
+    protected function lmb_dirname($path) {
+        // Only do the string replace if this system uses backslashes.
+        if ($this->backslashpaths) {
+            // On Windows systems, paths are returned in backslash format. See MDL-24381.
+            return str_replace('\\', '/', dirname($path));
+        } else {
+            return dirname($path);
+        }
     }
 
 

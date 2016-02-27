@@ -1,52 +1,52 @@
 {
-  "sourcedid": {
-    "source": "sdidsource",
-    "id": "sdid"
+  "SOURCEDID": {
+    "SOURCE": "sdidsource",
+    "ID": "sdid"
   },
-  "description": {
-    "long": "description"
+  "DESCRIPTION": {
+    "LONG": "description"
   },
-  "timeframe": {
-    "begin": {
+  "TIMEFRAME": {
+    "BEGIN": {
       "lmbinternal": true,
       "repetition": [
         "begindate",
         {
           "lmbinternal": true,
           "type": "bool",
-          "attr": "restrict",
+          "attr": "RESTRICT",
           "objname": "beginrestrict"
         }
       ]
     },
-    "end": {
+    "END": {
       "lmbinternal": true,
       "repetition": [
         "enddate",
         {
           "lmbinternal": true,
           "type": "bool",
-          "attr": "restrict",
+          "attr": "RESTRICT",
           "objname": "endrestrict"
         }
       ]
     }
   },
-  "enrollcontrol": {
-    "enrollaccept": {
+  "ENROLLCONTROL": {
+    "ENROLLACCEPT": {
       "lmbinternal": true,
       "type": "bool",
       "objname": "enrollaccept"
     },
-    "enrollallowed": {
+    "ENROLLALLOWED": {
       "lmbinternal": true,
       "type": "bool",
       "objname": "enrollallowed"
     }
   },
-  "extension": {
-    "luminisgroup": {
-      "sort": "sortorder"
+  "EXTENSION": {
+    "LUMINISGROUP": {
+      "SORT": "sortorder"
     }
   }
 }

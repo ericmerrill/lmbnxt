@@ -1,35 +1,35 @@
 {
-  "n1": "node1",
-  "n2": {
-    "nc": "childnode"
+  "N1": "node1",
+  "N2": {
+    "NC": "childnode"
   },
-  "n3": {
+  "N3": {
     "lmbinternal": true,
-    "reqattrs": [{"name": "testattr", "value": "test"}],
+    "reqattrs": [{"name": "TESTATTR", "value": "test"}],
     "objname": "node3"
   },
-  "n4": {
+  "N4": {
     "lmbinternal": true,
-    "reqattrs": [{"name": "testattr", "value": "misstest"}],
+    "reqattrs": [{"name": "TESTATTR", "value": "misstest"}],
     "objname": "node4"
   },
-  "n5": {
+  "N5": {
     "lmbinternal": true,
     "function": "process_node_5"
   },
-  "n6": {
+  "N6": {
     "lmbinternal": true,
-    "attr": "attrval",
+    "attr": "ATTRVAL",
     "objname": "node6"
   },
-  "n7": {
+  "N7": {
     "lmbinternal": true,
     "type": "array",
     "objname": "node7"
   },
-  "n9": "node9",
-  "n10": "node10",
-  "n11": {
-    "nc": "node11c"
+  "N9": "node9",
+  "N10": "node10",
+  "N11": {
+    "NC": "node11c"
   }
 }

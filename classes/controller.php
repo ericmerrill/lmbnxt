@@ -53,7 +53,7 @@ class controller {
     }
 
     public function process_xml_object(local\xml_node $xmlobj) {
-        $type = $xmlobj->get_name();
+        $type = strtolower($xmlobj->get_name());
 
         if (!isset($this->typeprocessors[$type])) {
             $class = '\\enrol_lmb\\local\\xml\\'.$type;
@@ -67,7 +67,7 @@ class controller {
 
         try {
             $objs = $xmlproc->process_xml_to_data($xmlobj);
-
+//print "<pre>";print_r($objs);print "</pre>";
             if (!is_array($objs)) {
                 $objs = array($objs);
             }

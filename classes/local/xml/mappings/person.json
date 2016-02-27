@@ -1,88 +1,88 @@
 {
-  "sourcedid": {
-    "source": "sdidsource",
-    "id": "sdid"
+  "SOURCEDID": {
+    "SOURCE": "sdidsource",
+    "ID": "sdid"
   },
-  "userid": {
+  "USERID": {
     "lmbinternal": true,
     "function": "process_userid_node"
   },
-  "name": {
-    "fn": "fullname",
-    "nickname": "nickname",
-    "n": {
-      "family": "familyname",
-      "given": "givenname",
-      "prefix": "prefix",
-      "suffix": "suffix",
-      "partname": {
+  "NAME": {
+    "FN": "fullname",
+    "NICKNAME": "nickname",
+    "N": {
+      "FAMILY": "familyname",
+      "GIVEN": "givenname",
+      "PREFIX": "prefix",
+      "SUFFIX": "suffix",
+      "PARTNAME": {
         "lmbinternal": true,
-        "reqattrs": [{"name": "partnametype", "value": "MiddleName"}],
+        "reqattrs": [{"name": "PARTNAMETYPE", "value": "MiddleName"}],
         "objname": "middlename"
       }
     }
   },
-  "demographics": {
-    "gender": "gender"
+  "DEMOGRAPHICS": {
+    "GENDER": "gender"
   },
-  "email": "email",
-  "tel": {
+  "EMAIL": "email",
+  "TEL": {
     "lmbinternal": true,
     "function": "process_telephone_node"
   },
-  "adr": {
-    "street": "streetadr",
-    "locality": "city",
-    "region": "region",
-    "pcode": "postalcode",
-    "country": "country"
+  "ADR": {
+    "STREET": "streetadr",
+    "LOCALITY": "city",
+    "REGION": "region",
+    "PCODE": "postalcode",
+    "COUNTRY": "country"
   },
-  "institutionrole": {
+  "INSTITUTIONROLE": {
     "lmbinternal": true,
     "repetition": [
       {
         "lmbinternal": true,
-        "reqattrs": [{"name": "institutionroletype", "value": "Student"}],
+        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "Student"}],
         "type": "bool",
-        "attr": "institutionroletype",
+        "attr": "INSTITUTIONROLETYPE",
         "objname": "rolestudent"
       },
       {
         "lmbinternal": true,
-        "reqattrs": [{"name": "institutionroletype", "value": "Faculty"}],
+        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "Faculty"}],
         "type": "bool",
-        "attr": "institutionroletype",
+        "attr": "INSTITUTIONROLETYPE",
         "objname": "rolefaculty"
       },
       {
         "lmbinternal": true,
-        "reqattrs": [{"name": "institutionroletype", "value": "Staff"}],
+        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "Staff"}],
         "type": "bool",
-        "attr": "institutionroletype",
+        "attr": "INSTITUTIONROLETYPE",
         "objname": "rolestaff"
       },
       {
         "lmbinternal": true,
-        "reqattrs": [{"name": "institutionroletype", "value": "Alumni"}],
+        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "Alumni"}],
         "type": "bool",
-        "attr": "institutionroletype",
+        "attr": "INSTITUTIONROLETYPE",
         "objname": "rolealumni"
       },
       {
         "lmbinternal": true,
-        "reqattrs": [{"name": "institutionroletype", "value": "ProspectiveStudent"}],
+        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "ProspectiveStudent"}],
         "type": "bool",
-        "attr": "institutionroletype",
+        "attr": "INSTITUTIONROLETYPE",
         "objname": "roleprospectivestudent"
       }
     ]
   },
-  "extension": {
-    "luminisperson": {
-      "academicmajor": "major",
-      "academictitle": "title",
-      "academicdegree": "degree",
-      "customrole": {
+  "EXTENSION": {
+    "LUMINISPERSON": {
+      "ACADEMICMAJOR": "major",
+      "ACADEMICTITLE": "title",
+      "ACADEMICDEGREE": "degree",
+      "CUSTOMROLE": {
         "lmbinternal": true,
         "type": "array",
         "objname": "customrole"

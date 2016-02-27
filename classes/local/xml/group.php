@@ -54,11 +54,11 @@ class group extends base {
      */
     public function process_xml_to_data($node) {
         // ID what group type for the XML, then pass on to the correct converter.
-        if (!isset($node->grouptype->typevalue)) {
+        if (!isset($node->GROUPTYPE->TYPEVALUE)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
         }
 
-        switch (strtolower($node->grouptype->typevalue->get_value())) {
+        switch (strtolower($node->GROUPTYPE->TYPEVALUE->get_value())) {
             case 'term':
                 $term = new group_term();
                 return $term->process_xml_to_data($node);
