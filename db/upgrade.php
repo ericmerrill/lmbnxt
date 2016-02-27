@@ -68,7 +68,7 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2016022300, 'enrol', 'lmb');
     }
 
-        if ($oldversion < 2016022401) {
+    if ($oldversion < 2016022401) {
 
         // Define table enrol_lmb_term to be created.
         $table = new xmldb_table('enrol_lmb_term');
@@ -98,6 +98,4 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         // Lmb savepoint reached.
         upgrade_plugin_savepoint(true, 2016022401, 'enrol', 'lmb');
     }
-
-
 }

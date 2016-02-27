@@ -61,7 +61,7 @@ class term extends base {
                                 'enrollaccept' => 'handler_boolean',
                                 'enrollallowed' => 'handler_boolean',
                                 'begindate' => 'handler_date',
-                                'enddate' => 'handler_date',);
+                                'enddate' => 'handler_date');
 
     /**
      * Log a unique line to id this object.
