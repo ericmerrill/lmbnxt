@@ -63,10 +63,6 @@ class xml_node implements \Iterator {
     }
 
     public function set_attributes($attrs) {
-        /*$keys = array_keys($attrs);
-        foreach ($keys as $key) {
-            $this->attrs[strtolower($key)] = $attrs[$key];
-        }*/
         $this->attrs = $attrs;
     }
 

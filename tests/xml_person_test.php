@@ -82,8 +82,9 @@ class xml_person_testcase extends xml_helper {
         $this->assertEquals(1, $person->rolestaff);
         $this->assertEquals(1, $person->rolestudent);
         $this->assertEquals(1, $person->roleprospectivestudent);
-        $this->assertFalse(isset($person->rolefaculty));
-        $this->assertFalse(isset($person->rolealumni));
+        $this->assertEquals(1, $person->rolefaculty);
+        $this->assertEquals(1, $person->rolealumni);
+
 
         $this->assertEquals('Undeclared', $person->major);
         $this->assertEquals('Lecturer', $person->title);
@@ -93,5 +94,25 @@ class xml_person_testcase extends xml_helper {
         $this->assertCount(2, $person->customrole);
         $this->assertEquals('ApplicantAccept', $person->customrole[0]);
         $this->assertEquals('BannerINB', $person->customrole[1]);
+
+        // Now see what happens if some properties aren't set.
+        $roles = $node->INSTITUTIONROLE;
+        foreach ($roles as $role) {
+            if ($role->get_attribute('INSTITUTIONROLETYPE') === 'Faculty') {
+                $role->set_attributes(array());
+                continue;
+            }
+            if ($role->get_attribute('INSTITUTIONROLETYPE') === 'Alumni') {
+                $role->set_attributes(array());
+                continue;
+            }
+        }
+        $person = $converter->process_xml_to_data($node);
+
+        $this->assertEquals(1, $person->rolestaff);
+        $this->assertEquals(1, $person->rolestudent);
+        $this->assertEquals(1, $person->roleprospectivestudent);
+        $this->assertFalse(isset($person->rolealumni));
+        $this->assertFalse(isset($person->rolefaculty));
     }
 }

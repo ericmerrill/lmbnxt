@@ -42,6 +42,7 @@ class parser extends \progressive_parser {
     /** @var array An array of registered types */
     protected $types = array();
 
+    /** @var bool True if we are on a system using blackslash paths */
     protected $backslashpaths = false;
 
     /**
@@ -198,8 +199,6 @@ class parser extends \progressive_parser {
             return dirname($path);
         }
     }
-
-
 
     /**
      * Process the XML, delegating found chunks to the @progressive_parser_processor.

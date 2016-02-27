@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class xml_term_testcase extends xml_helper {
+class xml_group_term_testcase extends xml_helper {
     public function test_conversion() {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/term.xml');
