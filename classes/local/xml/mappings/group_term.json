@@ -9,27 +9,13 @@
   "TIMEFRAME": {
     "BEGIN": {
       "lmbinternal": true,
-      "repetition": [
-        "begindate",
-        {
-          "lmbinternal": true,
-          "type": "bool",
-          "attr": "RESTRICT",
-          "objname": "beginrestrict"
-        }
-      ]
+      "function": "process_timeframe_node",
+      "nodetype": "begin"
     },
     "END": {
       "lmbinternal": true,
-      "repetition": [
-        "enddate",
-        {
-          "lmbinternal": true,
-          "type": "bool",
-          "attr": "RESTRICT",
-          "objname": "endrestrict"
-        }
-      ]
+      "function": "process_timeframe_node",
+      "nodetype": "end"
     }
   },
   "ENROLLCONTROL": {

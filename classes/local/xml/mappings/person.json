@@ -39,43 +39,7 @@
   },
   "INSTITUTIONROLE": {
     "lmbinternal": true,
-    "repetition": [
-      {
-        "lmbinternal": true,
-        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "Student"}],
-        "type": "bool",
-        "attr": "INSTITUTIONROLETYPE",
-        "objname": "rolestudent"
-      },
-      {
-        "lmbinternal": true,
-        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "Faculty"}],
-        "type": "bool",
-        "attr": "INSTITUTIONROLETYPE",
-        "objname": "rolefaculty"
-      },
-      {
-        "lmbinternal": true,
-        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "Staff"}],
-        "type": "bool",
-        "attr": "INSTITUTIONROLETYPE",
-        "objname": "rolestaff"
-      },
-      {
-        "lmbinternal": true,
-        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "Alumni"}],
-        "type": "bool",
-        "attr": "INSTITUTIONROLETYPE",
-        "objname": "rolealumni"
-      },
-      {
-        "lmbinternal": true,
-        "reqattrs": [{"name": "INSTITUTIONROLETYPE", "value": "ProspectiveStudent"}],
-        "type": "bool",
-        "attr": "INSTITUTIONROLETYPE",
-        "objname": "roleprospectivestudent"
-      }
-    ]
+    "function": "process_instituterole_node"
   },
   "EXTENSION": {
     "LUMINISPERSON": {

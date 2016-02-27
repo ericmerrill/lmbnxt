@@ -126,4 +126,32 @@ class person extends base {
         }
     }
 
+    /**
+     * Proccess an institute role node.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_instituterole_node($node, $mapping) {
+        $type = $node->get_attribute('INSTITUTIONROLETYPE');
+
+        switch ($type) {
+            case ('Student'):
+                $this->dataobj->rolestudent = 1;
+                break;
+            case ('Faculty'):
+                $this->dataobj->rolefaculty = 1;
+                break;
+            case ('Staff'):
+                $this->dataobj->rolestaff = 1;
+                break;
+            case ('Alumni'):
+                $this->dataobj->rolealumni = 1;
+                break;
+            case ('ProspectiveStudent'):
+                $this->dataobj->roleprospectivestudent = 1;
+                break;
+        }
+    }
+
 }

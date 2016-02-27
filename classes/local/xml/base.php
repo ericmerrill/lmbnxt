@@ -130,23 +130,7 @@ abstract class base {
     protected function process_node_array_field($node, $mapping) {
         if (is_array($node)) {
             foreach ($node as $n) {
-                $this->process_node_repeat_mapping($n, $mapping);
-            }
-        } else {
-            $this->process_node_repeat_mapping($node, $mapping);
-        }
-    }
-
-    /**
-     * Processes repetitive mappings if they exist.
-     *
-     * @param xml_node|array $node The XML node to process, or array of nodes
-     * @param array $mapping The mapping for the field
-     */
-    protected function process_node_repeat_mapping($node, $mapping) {
-        if (is_array($mapping) && isset($mapping['lmbinternal']) && isset($mapping['repetition'])) {
-            foreach ($mapping['repetition'] as $repmap) {
-                $this->process_field($node, $repmap);
+                $this->process_field($n, $mapping);
             }
         } else {
             $this->process_field($node, $mapping);

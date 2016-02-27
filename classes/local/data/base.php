@@ -194,7 +194,7 @@ abstract class base {
      */
     protected function update_if_needed() {
         global $DB;
-//return;
+
         $existing = $this->get_record();
         try {
             if ($existing) {

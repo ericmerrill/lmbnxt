@@ -35,7 +35,11 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class controller {
+    /** @var array An array of existing type processors for reuse */
     protected $typeprocessors = array();
+
+    /** @var array Options for this run */
+    protected $options = array();
 
     public function import_file($path = null) {
         if (!$path) {
@@ -52,9 +56,29 @@ class controller {
 
     }
 
+    /**
+     * Set a controller option.
+     *
+     * Valid keys:
+     *     nodb - If true, disabled saving to db.
+     *
+     * @param string $key The option key
+     * @param string $value The option value
+     */
+    public function set_option($key, $value) {
+        $this->options[$key] = $value;
+    }
+
+    /**
+     * Takes a built XML node and processes it.
+     *
+     * @param xml_node $xmlobj The XML node to work on.
+     */
     public function process_xml_object(local\xml_node $xmlobj) {
+        // Types are lowercase, but node paths are upper.
         $type = strtolower($xmlobj->get_name());
 
+        // Check for a cached processor, build if not.
         if (!isset($this->typeprocessors[$type])) {
             $class = '\\enrol_lmb\\local\\xml\\'.$type;
             if (!class_exists($class)) {
@@ -62,21 +86,26 @@ class controller {
             }
             $this->typeprocessors[$type] = new $class();
         }
-
         $xmlproc = $this->typeprocessors[$type];
 
         try {
+            // Convert the node to a data object.
             $objs = $xmlproc->process_xml_to_data($xmlobj);
-//print "<pre>";print_r($objs);print "</pre>";
+
             if (!is_array($objs)) {
+                // Convert single object to array for later.
                 $objs = array($objs);
             }
 
+            // Some nodes (like membership) may return many children.
             foreach ($objs as $obj) {
                 $obj->log_id();
-                $obj->save_to_db();
+                if (empty($this->options['nodb'])) {
+                    $obj->save_to_db();
+                }
             }
         } catch (\enrol_lmb\local\exception\message_exception $e) {
+            // There as a fatal exeption for this node.
             logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
         }
 

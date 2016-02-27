@@ -28,7 +28,12 @@ define('CLI_SCRIPT', true);
 require(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->libdir.'/clilib.php');
 
-list($options, $unrecognized) = cli_get_params(array('force' => false, 'filepath' => null, 'silent' => false, 'help' => false),
+list($options, $unrecognized) = cli_get_params(array('force' => false,
+                                                     'filepath' => null,
+                                                     'silent' => false,
+                                                     'help' => false,
+                                                     'log-level' => false,
+                                                     'no-db' => false),
                                                array('f' => 'filepath', 's' => 'silent'));
 
 if ($unrecognized) {
@@ -45,6 +50,14 @@ Options:
 --force                 Skip file modification time checks.
 -h, --help              Print out this help
 -s, --silent            Don't print logging output to stdout.
+--log-level             Sets the logging level:
+                            0 = All
+                            1 = Notice and above
+                            2 = Warning and above
+                            3 = Fatal and above
+
+For testing:
+--no-db                 Disable saving to the databse.
 
 
 Example:
@@ -73,10 +86,20 @@ if (!empty($filepath)) {
     }
 }
 
+// Set a logging level.
+if ($options['log-level'] !== false && is_numeric($options['log-level'])) {
+    $logger = \enrol_lmb\logging::instance();
+    $logger->set_logging_level($options['log-level']);
+}
 
 $starttime = microtime(true);
 $controller = new \enrol_lmb\controller();
+
+if (!empty($options['no-db'])) {
+    $controller->set_option('nodb', true);
+}
+
 $controller->import_file($filepath);
 $endtime = microtime(true);
 
-mtrace($endtime - $starttime);
+mtrace(round($endtime - $starttime, 3).'s');
