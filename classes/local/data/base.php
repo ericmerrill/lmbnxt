@@ -46,7 +46,7 @@ abstract class base {
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
 
-    /** @var object Object that contains additional data about the object */
+    /** @var object Object that contains additional data about the object. This will be JSON encoded. */
     protected $additionaldata;
 
     /** @var array An array of property->function pairs for converting incoming values */
@@ -85,7 +85,8 @@ abstract class base {
         // First check the DB keys, then additional.
         if (in_array($name, $this->dbkeys)) {
             if ($name == 'additional') {
-                $this->record->$name = serialize($this->additionaldata);
+                // Allows easier interaction with outside scripts of DB modification than serialize.
+                $this->record->$name = json_encode($this->additionaldata, JSON_UNESCAPED_UNICODE);
                 return $this->record->$name;
             }
             if (isset($this->record->$name)) {
