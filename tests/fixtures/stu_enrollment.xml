@@ -1,0 +1,28 @@
+<enterprise>
+    <membership>
+        <sourcedid>
+            <source>Test SCT Banner</source>
+            <id>10011.201640</id>
+        </sourcedid>
+        <member>
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>1000001</id>
+            </sourcedid>
+            <idtype>1</idtype>
+            <role recstatus="1" roletype="01">
+                <status>1</status>
+                <timeframe>
+                    <begin restrict="0">2016-08-30</begin>
+                    <end restrict="1">2016-12-17</end>
+                </timeframe>
+                <interimresult resulttype="MidTerm">
+                    <mode>Letter Grade</mode>
+                </interimresult>
+                <finalresult>
+                    <mode>4-Point Grade</mode>
+                </finalresult>
+            </role>
+        </member>
+    </membership>
+</enterprise>
