@@ -42,9 +42,9 @@ env:
   - PHPVER=7.0 DB=mysqli MOODLE_BRANCH=master
 
 before_install:
- - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/
- - phpenv config-rm xdebug.ini
- - cd ../..
+  - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/
+  - phpenv config-rm xdebug.ini
+  - cd ../..
   - if [ -n "$GITHUB_APITOKEN" ]; then composer config -g github-oauth.github.com $GITHUB_APITOKEN; fi
   - composer selfupdate
   - composer create-project -n --no-dev moodlerooms/moodle-plugin-ci ci ^1
