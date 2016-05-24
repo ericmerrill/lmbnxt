@@ -24,7 +24,7 @@
  */
 
 $plugin->version  = 2016052400;
-$plugin->release = "0.0.0";
+$plugin->release = "0.0.1";
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->requires = 2014051200; // Moodle 2.7.
 $plugin->component = 'enrol_lmb';
