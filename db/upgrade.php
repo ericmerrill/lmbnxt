@@ -98,4 +98,40 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         // Lmb savepoint reached.
         upgrade_plugin_savepoint(true, 2016022401, 'enrol', 'lmb');
     }
+
+    if ($oldversion < 2016052400) {
+
+        // Define table enrol_lmb_section to be created.
+        $table = new xmldb_table('enrol_lmb_section');
+
+        // Adding fields to table enrol_lmb_section.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('title', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('begindate', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('enddate', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('deptname', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('termsdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('termsdid', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('coursesdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('coursesdid', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('additional', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table enrol_lmb_section.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Adding indexes to table enrol_lmb_section.
+        $table->add_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch create table for enrol_lmb_section.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2016052400, 'enrol', 'lmb');
+    }
+
 }
