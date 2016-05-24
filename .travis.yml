@@ -42,13 +42,13 @@ env:
   - PHPVER=7.0 DB=mysqli MOODLE_BRANCH=master
 
 before_install:
-  - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/
-  - phpenv config-rm xdebug.ini
-  - cd ../..
+ - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/
+ - phpenv config-rm xdebug.ini
+ - cd ../..
   - if [ -n "$GITHUB_APITOKEN" ]; then composer config -g github-oauth.github.com $GITHUB_APITOKEN; fi
   - composer selfupdate
   - composer create-project -n --no-dev moodlerooms/moodle-plugin-ci ci ^1
-  - composer require satooshi/php-coveralls
+#  - composer require satooshi/php-coveralls
   - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
 
 install:
@@ -60,20 +60,21 @@ script:
   - moodle-plugin-ci shifter
   - moodle-plugin-ci validate
     # Do junk for code coverage.
-  - mkdir -p moodle/enrol/lmb/build/logs
-  - export XML="<logging><log type=\"coverage-clover\" target=\"$(pwd)/moodle/enrol/lmb/build/logs/clover.xml\"/></logging>"
-  - export XMLINCLUDE="<directory suffix=\".php\">enrol/lmb</directory>"
-  - export XMLEXCLUDE="<directory suffix=\".php\">enrol/lmb/lang</directory><directory suffix=\".php\">enrol/lmb/db</directory><directory suffix=\".php\">enrol/lmb/cli</directory><file>enrol/lmb/version.php</file><file>enrol/lmb/settings.php</file>"
-  - export XML="$XML<filter><whitelist addUncoveredFilesFromWhitelist=\"true\" processUncoveredFilesFromWhitelist=\"false\">$XMLINCLUDE<exclude>$XMLEXCLUDE</exclude></whitelist></filter>"
-  - sed "/<testsuites>/  s|<testsuites>|$XML<testsuites>| " moodle/phpunit.xml > moodle/phpunit2.xml
-  - mv moodle/phpunit2.xml moodle/phpunit.xml
+#  - mkdir -p moodle/enrol/lmb/build/logs
+#  - export XML="<logging><log type=\"coverage-clover\" target=\"$(pwd)/moodle/enrol/lmb/build/logs/clover.xml\"/></logging>"
+#  - export XMLINCLUDE="<directory suffix=\".php\">enrol/lmb</directory>"
+#  - export XMLEXCLUDE="<directory suffix=\".php\">enrol/lmb/lang</directory><directory suffix=\".php\">enrol/lmb/db</directory><directory suffix=\".php\">enrol/lmb/cli</directory><file>enrol/lmb/version.php</file><file>enrol/lmb/settings.php</file>"
+#  - export XML="$XML<filter><whitelist addUncoveredFilesFromWhitelist=\"true\" processUncoveredFilesFromWhitelist=\"false\">$XMLINCLUDE<exclude>$XMLEXCLUDE</exclude></whitelist></filter>"
+#  - sed "/<testsuites>/  s|<testsuites>|$XML<testsuites>| " moodle/phpunit.xml > moodle/phpunit2.xml
+#  - mv moodle/phpunit2.xml moodle/phpunit.xml
   - phpenv config-add ~/xdebug.ini
-  - moodle-plugin-ci phpunit
+  - moodle-plugin-ci phpunit --coverage-clover
 
 after_script:
   - moodle-plugin-ci codechecker
   - moodle-plugin-ci phpcpd
   - moodle-plugin-ci phpmd
+  - moodle-plugin-ci coveralls-upload
     # Need to move into the plugin dir to run, because it uses the git info.
-  - cd moodle/enrol/lmb
-  - travis_retry php ../../../vendor/bin/coveralls -v
+#  - cd moodle/enrol/lmb
+#  - travis_retry php ../../../vendor/bin/coveralls -v
