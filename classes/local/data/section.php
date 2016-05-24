@@ -30,27 +30,28 @@ use enrol_lmb\logging;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Object that represents the internal data structure of a term object.
+ * Object that represents the internal data structure of a section object.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class term extends base {
+class section extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_term';
+    const TABLE = 'enrol_lmb_section';
 
     /**
      * The class of the Moodle converter for this data object.
      */
-    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\term';
+    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\section';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'description', 'begindate', 'enddate',
-                              'sortorder', 'additional', 'timemodified');
+    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'title', 'begindate', 'enddate',
+                              'deptname', 'termsdidsource', 'termsdid', 'coursesdidsource', 'coursesdid',
+                              'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
@@ -69,11 +70,11 @@ class term extends base {
     public function log_id() {
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
-        $desc = $this->__get('description');
+        $desc = $this->__get('title');
         if (empty($id) || empty($source)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_bad_term');
         } else {
-            logging::instance()->log_line("Term \"{$desc}\", ID \"{$id}\" from \"{$source}\"");
+            logging::instance()->log_line("Section \"{$desc}\", ID \"{$id}\" from \"{$source}\"");
         }
     }
 

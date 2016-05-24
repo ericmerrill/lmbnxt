@@ -62,10 +62,30 @@ class group extends base {
             case 'term':
                 $term = new group_term();
                 return $term->process_xml_to_data($node);
+            case 'coursesection':
+                $term = new group_section();
+                return $term->process_xml_to_data($node);
 
         }
 
         throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+    }
+
+    /**
+     * Proccess a timeframe node.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_timeframe_node($node, $mapping) {
+        $type = $mapping['nodetype'];
+
+        $param = $type.'date';
+        $this->dataobj->$param = $node->get_value();
+
+        $value = $node->get_attribute('RESTRICT');
+        $param = $type.'restrict';
+        $this->dataobj->$param = (bool)$value;
     }
 
 }

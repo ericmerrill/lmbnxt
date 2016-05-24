@@ -1,0 +1,62 @@
+{
+  "SOURCEDID": {
+    "SOURCE": "sdidsource",
+    "ID": "sdid"
+  },
+  "DESCRIPTION": {
+    "SHORT": "crn",
+    "LONG": "rubric",
+    "FULL": "title"
+  },
+  "ORG": {
+    "ORGUNIT": "deptname"
+  },
+  "TIMEFRAME": {
+    "BEGIN": {
+      "lmbinternal": true,
+      "function": "process_timeframe_node",
+      "nodetype": "begin"
+    },
+    "END": {
+      "lmbinternal": true,
+      "function": "process_timeframe_node",
+      "nodetype": "end"
+    }
+  },
+  "ENROLLCONTROL": {
+    "ENROLLACCEPT": {
+      "lmbinternal": true,
+      "type": "bool",
+      "objname": "enrollaccept"
+    },
+    "ENROLLALLOWED": {
+      "lmbinternal": true,
+      "type": "bool",
+      "objname": "enrollallowed"
+    }
+  },
+  "RELATIONSHIP": {
+    "lmbinternal": true,
+    "function": "process_relationship_node"
+  },
+  "EXTENSION": {
+    "LUMINISGROUP": {
+      "EVENTS": {
+        "RECURRINGEVENT": {
+          "lmbinternal": true,
+          "function": "process_recurringevent_node",
+          "mappings": {
+            "EVENTDESCRIPTION": "eventdescription",
+            "BEGINDATE": "begindate",
+            "ENDDATE": "enddate",
+            "DAYSOFWEEK": "daysofweek",
+            "BEGINTIME": "begintime",
+            "ENDTIME": "endtime",
+            "LOCATION": "location"
+          }
+        }
+      },
+      "DELIVERYSYSTEM": "deliverysystem"
+    }
+  }
+}

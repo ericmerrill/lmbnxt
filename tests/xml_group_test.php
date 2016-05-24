@@ -40,7 +40,7 @@ class xml_group_testcase extends xml_helper {
     }
 
     public function test_error_groups() {
-        $node = $this->get_node_for_xml('<group><sourcedid><source>Test SCT Banner</source><id>201640</id> </sourcedid></group>');
+        $node = $this->get_node_for_xml('<group><sourcedid><source>Test SCT Banner</source><id>201640</id></sourcedid></group>');
 
         $converter = new \enrol_lmb\local\xml\group();
 

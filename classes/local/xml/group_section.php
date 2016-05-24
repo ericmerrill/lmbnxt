@@ -35,16 +35,16 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class group_term extends group {
+class group_section extends group {
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\term';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\section';
 
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/group_term.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/group_section.json';
 
     /**
      * Basic constructor.
@@ -69,5 +69,48 @@ class group_term extends group {
         return $this->dataobj;
     }
 
+    /**
+     * Proccess a relationship node.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_relationship_node($node, $mapping) {
+        switch (strtolower($node->LABEL->get_value())) {
+            case 'course':
+                $this->dataobj->coursesdidsource = $node->SOURCEDID->SOURCE->get_value();
+                $this->dataobj->coursesdid = $node->SOURCEDID->ID->get_value();
+                break;
+            case 'term':
+                $this->dataobj->termsdidsource = $node->SOURCEDID->SOURCE->get_value();
+                $this->dataobj->termsdid = $node->SOURCEDID->ID->get_value();
+                break;
+            default:
+                return;
+        }
+    }
+
+    /**
+     * Proccess a recurring event node.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_recurringevent_node($node, $mapping) {
+        $mappings = $mapping['mappings'];
+
+        $event = new \stdClass();
+        foreach ($mappings as $key => $field) {
+            if (isset($node->$key)) {
+                $event->$field = $node->$key->get_value();
+            }
+        }
+
+        if (isset($this->dataobj->events)) {
+            $this->dataobj->events[] = $event;
+        } else {
+            $this->dataobj->events = array($event);
+        }
+    }
 
 }
