@@ -2,8 +2,19 @@
     <membership>
         <sourcedid>
             <source>Test SCT Banner</source>
-            <id>10011.201640</id>
+            <id>10001.201640</id>
         </sourcedid>
+        <member>
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>1000002</id>
+            </sourcedid>
+            <idtype>1</idtype>
+            <role recstatus="1" roletype="02">
+                <subrole>Primary</subrole>
+                <status>1</status>
+            </role>
+        </member>
         <member>
             <sourcedid>
                 <source>Test SCT Banner</source>
@@ -22,6 +33,11 @@
                 <finalresult>
                     <mode>4-Point Grade</mode>
                 </finalresult>
+                <extension>
+                    <luminisrole>
+                        <gradable>1</gradable>
+                    </luminisrole>
+                </extension>
             </role>
         </member>
     </membership>

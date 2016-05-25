@@ -1,0 +1,38 @@
+{
+  "SOURCEDID": {
+    "SOURCE": "sdidsource",
+    "ID": "sdid"
+  },
+  "IDTYPE": "membertype",
+  "ROLE": {
+    "lmbinternal": true,
+    "function": "process_role_node",
+    "mappings": {
+      "SUBROLE": "subrole",
+      "STATUS": "status",
+      "TIMEFRAME": {
+        "BEGIN": {
+          "lmbinternal": true,
+          "function": "process_timeframe_node",
+          "nodetype": "begin"
+        },
+        "END": {
+          "lmbinternal": true,
+          "function": "process_timeframe_node",
+          "nodetype": "end"
+        }
+      },
+      "INTERIMRESULT": {
+        "MODE": "midtermmode"
+      },
+      "FINALRESULT": {
+        "MODE": "finalmode"
+      },
+      "EXTENSION": {
+        "LUMINISROLE": {
+          "GRADABLE": "gradable"
+        }
+      }
+    }
+  }
+}

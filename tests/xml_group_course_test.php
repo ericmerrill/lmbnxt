@@ -43,7 +43,6 @@ class xml_group_course_testcase extends xml_helper {
         $this->assertEquals('Course Title', $course->title);
         $this->assertEquals('ENG-101', $course->rubric);
 
-
         $this->assertEquals('Test SCT Banner', $course->deptsdidsource);
         $this->assertEquals('DEPENG', $course->deptsdid);
         $this->assertEquals('Test SCT Banner', $course->collegesdidsource);
