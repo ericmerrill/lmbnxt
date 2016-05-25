@@ -82,5 +82,26 @@
         <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
       </INDEXES>
     </TABLE>
+    <TABLE NAME="enrol_lmb_course" COMMENT="Courses from the SIS.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="title" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="rubric" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="deptsdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="deptsdid" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="collegesdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="collegesdid" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="additional" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
+      </INDEXES>
+    </TABLE>
   </TABLES>
 </XMLDB>

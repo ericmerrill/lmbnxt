@@ -28,29 +28,29 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class data_section_testcase extends xml_helper {
+class data_course_testcase extends xml_helper {
     public function test_log_id() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/section.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/course.xml');
         $converter = new \enrol_lmb\local\xml\group();
-        $section = $converter->process_xml_to_data($node);
+        $course = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
         $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
 
-        $section->log_id();
+        $course->log_id();
 
-        $this->assertRegExp("|{$section->sdid}.*{$section->sdidsource}|", $log->test_get_flush_buffer());
+        $this->assertRegExp("|{$course->sdid}.*{$course->sdidsource}|", $log->test_get_flush_buffer());
 
-        unset($section->sdid);
+        unset($course->sdid);
 
         try {
-            $section->log_id();
+            $course->log_id();
             $this->fail('message_exception expected');
         } catch (\enrol_lmb\local\exception\message_exception $ex) {
             $this->assertInstanceOf('\\enrol_lmb\\local\\exception\\message_exception', $ex);
-            $expected = get_string('exception_bad_section', 'enrol_lmb');
+            $expected = get_string('exception_bad_course', 'enrol_lmb');
             $this->assertRegExp("|{$expected}|", $ex->getMessage());
         }
     }
@@ -60,29 +60,29 @@ class data_section_testcase extends xml_helper {
 
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/section.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/course.xml');
         $converter = new \enrol_lmb\local\xml\group();
-        $section = $converter->process_xml_to_data($node);
+        $course = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
         $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
 
         // First insert.
-        $section->save_to_db();
+        $course->save_to_db();
         $this->assertRegExp("|Inserting into database|", $log->test_get_flush_buffer());
 
         // Try to save the same object again.
-        $section->save_to_db();
+        $course->save_to_db();
         $this->assertRegExp("|No database update needed|", $log->test_get_flush_buffer());
 
-        // Modify the section and try and insert again.
-        $section->title = 'Course title 2';
-        $section->save_to_db();
+        // Modify the course and try and insert again.
+        $course->title = 'Course title 2';
+        $course->save_to_db();
         $this->assertRegExp("|Updated database record|", $log->test_get_flush_buffer());
 
         // Now lets get it from the DB and check it.
-        $params = array('sdid' => $section->sdid, 'sdidsource' => $section->sdidsource);
-        $dbrecord = $DB->get_record(\enrol_lmb\local\data\section::TABLE, $params);
+        $params = array('sdid' => $course->sdid, 'sdidsource' => $course->sdidsource);
+        $dbrecord = $DB->get_record(\enrol_lmb\local\data\course::TABLE, $params);
 
         $this->assertNotEmpty($dbrecord);
 
@@ -91,7 +91,7 @@ class data_section_testcase extends xml_helper {
                 // Skip special case.
                 continue;
             }
-            $this->assertEquals($section->$key, $value, "Key {$key} did not match");
+            $this->assertEquals($course->$key, $value, "Key {$key} did not match");
         }
     }
 }

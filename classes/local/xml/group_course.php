@@ -35,60 +35,59 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class group extends base {
+class group_course extends group {
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = false;
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\course';
 
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = false;
+    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/group_course.json';
+
+    /**
+     * Basic constructor.
+     */
+    public function __construct() {
+        $this->load_mappings();
+    }
 
     /**
      * Processes the passed xml_node into a data object of the current type.
      *
      * @param xml_node $xmlobj The node to work on
-     * @return array|enrol_lmb\local\data\person
+     * @return enrol_lmb\local\data\person
      */
     public function process_xml_to_data($node) {
-        // ID what group type for the XML, then pass on to the correct converter.
-        if (!isset($node->GROUPTYPE->TYPEVALUE)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
-        }
+        $class = static::DATA_CLASS;
+        $this->dataobj = new $class();
 
-        switch (strtolower($node->GROUPTYPE->TYPEVALUE->get_value())) {
-            case 'term':
-                $term = new group_term();
-                return $term->process_xml_to_data($node);
-            case 'coursesection':
-                $section = new group_section();
-                return $section->process_xml_to_data($node);
-            case 'course':
-                $course = new group_course();
-                return $course->process_xml_to_data($node);
+        // First we are going to use the simple static mappings.
+        $this->apply_mappings($node);
 
-        }
-
-        throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+        return $this->dataobj;
     }
 
     /**
-     * Proccess a timeframe node.
+     * Proccess a relationship node.
      *
      * @param xml_node|array $node The XML node to process, or array of nodes
      * @param array $mapping The mapping for the field
      */
-    protected function process_timeframe_node($node, $mapping) {
-        $type = $mapping['nodetype'];
-
-        $param = $type.'date';
-        $this->dataobj->$param = $node->get_value();
-
-        $value = $node->get_attribute('RESTRICT');
-        $param = $type.'restrict';
-        $this->dataobj->$param = (bool)$value;
+    protected function process_relationship_node($node, $mapping) {
+        switch (strtolower($node->LABEL->get_value())) {
+            case 'college':
+                $this->dataobj->collegesdidsource = $node->SOURCEDID->SOURCE->get_value();
+                $this->dataobj->collegesdid = $node->SOURCEDID->ID->get_value();
+                break;
+            case 'department':
+                $this->dataobj->deptsdidsource = $node->SOURCEDID->SOURCE->get_value();
+                $this->dataobj->deptsdid = $node->SOURCEDID->ID->get_value();
+                break;
+            default:
+                return;
+        }
     }
 
 }

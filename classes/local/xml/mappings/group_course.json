@@ -1,0 +1,14 @@
+{
+  "SOURCEDID": {
+    "SOURCE": "sdidsource",
+    "ID": "sdid"
+  },
+  "DESCRIPTION": {
+    "SHORT": "rubric",
+    "LONG": "title"
+  },
+  "RELATIONSHIP": {
+    "lmbinternal": true,
+    "function": "process_relationship_node"
+  }
+}
