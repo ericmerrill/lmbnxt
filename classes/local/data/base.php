@@ -272,5 +272,11 @@ abstract class base {
      *
      * @return object|false The record or false if not found.
      */
-    abstract protected function get_record();
+    protected function get_record() {
+        global $DB;
+
+        $params = array('sdid' => $this->__get('sdid'), 'sdidsource' => $this->__get('sdidsource'));
+
+        return $DB->get_record(static::TABLE, $params);
+    }
 }

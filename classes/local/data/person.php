@@ -79,17 +79,4 @@ class person extends base {
             logging::instance()->log_line("Person ID \"{$id}\" from \"{$source}\"");
         }
     }
-
-    /**
-     * Retreive an exiting db record for this record.
-     *
-     * @return object|false The record or false if not found.
-     */
-    protected function get_record() {
-        global $DB;
-
-        $params = array('sdid' => $this->__get('sdid'), 'sdidsource' => $this->__get('sdidsource'));
-
-        return $DB->get_record('enrol_lmb_person', $params);
-    }
 }

@@ -28,29 +28,29 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class data_person_testcase extends xml_helper {
+class data_section_testcase extends xml_helper {
     public function test_log_id() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
-        $converter = new \enrol_lmb\local\xml\person();
-        $person = $converter->process_xml_to_data($node);
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/section.xml');
+        $converter = new \enrol_lmb\local\xml\group();
+        $section = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
         $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
 
-        $person->log_id();
+        $section->log_id();
 
-        $this->assertRegExp("|{$person->sdid}.*{$person->sdidsource}|", $log->test_get_flush_buffer());
+        $this->assertRegExp("|{$section->sdid}.*{$section->sdidsource}|", $log->test_get_flush_buffer());
 
-        unset($person->sdid);
+        unset($section->sdid);
 
         try {
-            $person->log_id();
+            $section->log_id();
             $this->fail('message_exception expected');
         } catch (\enrol_lmb\local\exception\message_exception $ex) {
             $this->assertInstanceOf('\\enrol_lmb\\local\\exception\\message_exception', $ex);
-            $expected = get_string('exception_bad_person', 'enrol_lmb');
+            $expected = get_string('exception_bad_section', 'enrol_lmb');
             $this->assertRegExp("|{$expected}|", $ex->getMessage());
         }
     }
@@ -60,29 +60,30 @@ class data_person_testcase extends xml_helper {
 
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
-        $converter = new \enrol_lmb\local\xml\person();
-        $person = $converter->process_xml_to_data($node);
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/section.xml');
+        $converter = new \enrol_lmb\local\xml\group();
+        $section = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
         $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
 
         // First insert.
-        $person->save_to_db();
+        $section->save_to_db();
         $this->assertRegExp("|Inserting into database|", $log->test_get_flush_buffer());
 
         // Try to save the same object again.
-        $person->save_to_db();
+        $section->save_to_db();
         $this->assertRegExp("|No database update needed|", $log->test_get_flush_buffer());
 
-        // Modify the person and try and insert again.
-        $person->firstname = 'first';
-        $person->save_to_db();
+        // Modify the term and try and insert again.
+        $section->title = 'Course title 2';
+        $section->save_to_db();
         $this->assertRegExp("|Updated database record|", $log->test_get_flush_buffer());
 
         // Now lets get it from the DB and check it.
-        $params = array('sdid' => $person->sdid, 'sdidsource' => $person->sdidsource);
-        $dbrecord = $DB->get_record(\enrol_lmb\local\data\person::TABLE, $params);
+        $params = array('sdid' => $section->sdid, 'sdidsource' => $section->sdidsource);
+        $dbrecord = $DB->get_record(\enrol_lmb\local\data\section::TABLE, $params);
+
         $this->assertNotEmpty($dbrecord);
 
         foreach ($dbrecord as $key => $value) {
@@ -90,7 +91,7 @@ class data_person_testcase extends xml_helper {
                 // Skip special case.
                 continue;
             }
-            $this->assertEquals($person->$key, $value, "Key {$key} did not match");
+            $this->assertEquals($section->$key, $value, "Key {$key} did not match");
         }
     }
 }

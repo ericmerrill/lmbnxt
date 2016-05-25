@@ -72,23 +72,10 @@ class section extends base {
         $source = $this->__get('sdidsource');
         $desc = $this->__get('title');
         if (empty($id) || empty($source)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_bad_term');
+            throw new \enrol_lmb\local\exception\message_exception('exception_bad_section');
         } else {
             logging::instance()->log_line("Section \"{$desc}\", ID \"{$id}\" from \"{$source}\"");
         }
-    }
-
-    /**
-     * Retreive an exiting db record for this record.
-     *
-     * @return object|false The record or false if not found.
-     */
-    protected function get_record() {
-        global $DB;
-
-        $params = array('sdid' => $this->__get('sdid'), 'sdidsource' => $this->__get('sdidsource'));
-
-        return $DB->get_record('enrol_lmb_term', $params);
     }
 
 }

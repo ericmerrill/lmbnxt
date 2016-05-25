@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tests for the xml parser.
+ * Tests for the data model.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>

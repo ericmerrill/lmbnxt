@@ -41,6 +41,7 @@ $string['xmlpath_help'] = 'The path (on the Moodle server) where the XML file th
 
 $string['exception_bad_person'] = 'Person object has no id or source';
 $string['exception_bad_term'] = 'Term object has no id or source';
+$string['exception_bad_section'] = 'Section object has no id or source';
 $string['exception_insert_failure'] = 'Failure inserting in database';
 $string['exception_grouptype_not_found'] = 'Group type not found';
 $string['exception_update_failure'] = 'Failure updating in database';
