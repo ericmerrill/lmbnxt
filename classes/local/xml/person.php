@@ -54,22 +54,6 @@ class person extends base {
     }
 
     /**
-     * Processes the passed xml_node into a data object of the current type.
-     *
-     * @param xml_node $xmlobj The node to work on
-     * @return enrol_lmb\local\data\person
-     */
-    public function process_xml_to_data($node) {
-        $class = static::DATA_CLASS;
-        $this->dataobj = new $class();
-
-        // First we are going to use the simple static mappings.
-        $this->apply_mappings($node);
-
-        return $this->dataobj;
-    }
-
-    /**
      * Process userid nodes into the data object.
      *
      * @param xml_node|array $node The XML node to process, or array of nodes

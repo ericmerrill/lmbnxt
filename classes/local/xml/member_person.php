@@ -36,6 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class member_person extends base {
+    use trait_timeframe;
     /**
      * The data object path for this object.
      */
@@ -53,42 +54,9 @@ class member_person extends base {
         $this->load_mappings();
     }
 
-    /**
-     * Processes the passed xml_node into a data object of the current type.
-     *
-     * @param xml_node $xmlobj The node to work on
-     * @return enrol_lmb\local\data\person
-     */
-    public function process_xml_to_data($node) {
-        $class = static::DATA_CLASS;
-        $this->dataobj = new $class();
-
-        // First we are going to use the simple static mappings.
-        $this->apply_mappings($node);
-
-        return $this->dataobj;
-    }
-
     public function process_role_node($node, $mapping) {
         $this->dataobj->roletype = $node->get_attribute('ROLETYPE');
 
         $this->apply_mappings($node, $mapping['mappings']);
-    }
-
-    /**
-     * Proccess a timeframe node.
-     *
-     * @param xml_node|array $node The XML node to process, or array of nodes
-     * @param array $mapping The mapping for the field
-     */
-    protected function process_timeframe_node($node, $mapping) {
-        $type = $mapping['nodetype'];
-
-        $param = $type.'date';
-        $this->dataobj->$param = $node->get_value();
-
-        $value = $node->get_attribute('RESTRICT');
-        $param = $type.'restrict';
-        $this->dataobj->$param = (bool)$value;
     }
 }

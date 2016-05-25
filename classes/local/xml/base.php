@@ -58,7 +58,15 @@ abstract class base {
      * @param xml_node $node The node to work on
      * @return enrol_lmb\local\data\base
      */
-    abstract public function process_xml_to_data($node);
+    public function process_xml_to_data($node) {
+        $class = static::DATA_CLASS;
+        $this->dataobj = new $class();
+
+        // First we are going to use the simple static mappings.
+        $this->apply_mappings($node);
+
+        return $this->dataobj;
+    }
 
     /**
      * Loads the mapping JSON into the this object.

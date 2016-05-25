@@ -74,21 +74,4 @@ class group extends base {
         throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
     }
 
-    /**
-     * Proccess a timeframe node.
-     *
-     * @param xml_node|array $node The XML node to process, or array of nodes
-     * @param array $mapping The mapping for the field
-     */
-    protected function process_timeframe_node($node, $mapping) {
-        $type = $mapping['nodetype'];
-
-        $param = $type.'date';
-        $this->dataobj->$param = $node->get_value();
-
-        $value = $node->get_attribute('RESTRICT');
-        $param = $type.'restrict';
-        $this->dataobj->$param = (bool)$value;
-    }
-
 }

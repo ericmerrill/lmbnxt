@@ -35,7 +35,9 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class group_section extends group {
+class group_section extends base {
+    use trait_timeframe;
+
     /**
      * The data object path for this object.
      */
@@ -51,22 +53,6 @@ class group_section extends group {
      */
     public function __construct() {
         $this->load_mappings();
-    }
-
-    /**
-     * Processes the passed xml_node into a data object of the current type.
-     *
-     * @param xml_node $xmlobj The node to work on
-     * @return enrol_lmb\local\data\person
-     */
-    public function process_xml_to_data($node) {
-        $class = static::DATA_CLASS;
-        $this->dataobj = new $class();
-
-        // First we are going to use the simple static mappings.
-        $this->apply_mappings($node);
-
-        return $this->dataobj;
     }
 
     /**
