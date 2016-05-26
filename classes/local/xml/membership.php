@@ -104,14 +104,6 @@ class membership extends base {
         }
 
         return $results;
-
-        if (!isset($member->IDTYPE)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_membershiptype_no_member_type');
-        }
-
-
-
-        throw new \enrol_lmb\local\exception\message_exception('exception_membershiptype_unknown_member_type');
     }
 
 }

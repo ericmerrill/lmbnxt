@@ -37,30 +37,25 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_person extends base {
+class member_group extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_member_person';
+    const TABLE = 'enrol_lmb_member_group';
 
     /**
      * The class of the Moodle converter for this data object.
      */
-    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\member_person';
+    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\member_group';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'roletype', 'status', 'groupsdidsource', 'groupsdid',
-                              'begindate', 'enddate', 'additional', 'timemodified');
+    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'status', 'groupsdid', 'groupsdidsource', 'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
 
     /** @var array An array of property->function pairs for converting incoming values */
-    protected $handlers = array('beginrestrict' => 'handler_boolean',
-                                'endrestrict' => 'handler_boolean',
-                                'begindate' => 'handler_date',
-                                'enddate' => 'handler_date',
-                                'gradable' => 'handler_boolean');
+    protected $handlers = array();
 
     /**
      * Log a unique line to id this object.
@@ -72,9 +67,9 @@ class member_person extends base {
         $gsource = $this->__get('groupsdidsource');
         // TODO.
         if (empty($id) || empty($source) || empty($gid) || empty($gsource)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_bad_member_person');
+            throw new \enrol_lmb\local\exception\message_exception('exception_bad_member_group');
         } else {
-            logging::instance()->log_line("Person \"{$id}\" from \"{$source}\" membership into \"{$gid}\" from \"{$gsource}\"");
+            logging::instance()->log_line("Group \"{$id}\" from \"{$source}\" membership into \"{$gid}\" from \"{$gsource}\"");
         }
     }
 

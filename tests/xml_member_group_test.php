@@ -28,10 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class xml_member_person_testcase extends xml_helper {
+class xml_member_group_testcase extends xml_helper {
     public function test_conversion() {
         global $CFG;
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/member_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/member_group.xml');
 
         $converter = new \enrol_lmb\local\xml\membership();
 
@@ -41,44 +41,27 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertCount(2, $members);
 
         $member = $members[0];
-        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\member_person', $member);
+        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\member_group', $member);
 
         $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('1000002', $member->sdid);
+        $this->assertEquals('10001.201640', $member->sdid);
 
-        $this->assertEquals('02', $member->roletype);
         $this->assertEquals(1, $member->status);
-        $this->assertEquals('Primary', $member->subrole);
-
-        $this->assertFalse(isset($member->begindate));
-        $this->assertFalse(isset($member->beginrestrict));
-        $this->assertFalse(isset($member->enddate));
-        $this->assertFalse(isset($member->endrestrict));
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
-        $this->assertEquals('10001.201640', $member->groupsdid);
-        $this->assertEquals(1, $member->membertype);
+        $this->assertEquals('XLSAA201640', $member->groupsdid);
+        $this->assertEquals(2, $member->membertype);
 
         $member = $members[1];
-        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\member_person', $member);
+        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\member_group', $member);
+
         $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('1000001', $member->sdid);
+        $this->assertEquals('10002.201640', $member->sdid);
 
-        $this->assertEquals('01', $member->roletype);
         $this->assertEquals(1, $member->status);
-        $this->assertFalse(isset($member->subrole));
-
-        $this->assertEquals(1472515200, $member->begindate);
-        $this->assertEquals(0, $member->beginrestrict);
-        $this->assertEquals(1481932800, $member->enddate);
-        $this->assertEquals(1, $member->endrestrict);
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
-        $this->assertEquals('10001.201640', $member->groupsdid);
-        $this->assertEquals(1, $member->membertype);
-
-        $this->assertEquals('Letter Grade', $member->midtermmode);
-        $this->assertEquals('4-Point Grade', $member->finalmode);
-        $this->assertEquals(1, $member->gradable);
+        $this->assertEquals('XLSAA201640', $member->groupsdid);
+        $this->assertEquals(2, $member->membertype);
     }
 }

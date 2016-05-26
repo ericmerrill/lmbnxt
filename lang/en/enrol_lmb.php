@@ -40,6 +40,7 @@ $string['xmlpath'] = 'Import file location';
 $string['xmlpath_help'] = 'The path (on the Moodle server) where the XML file that you would like to import resides.';
 
 $string['exception_bad_course'] = 'Course object has no id or source';
+$string['exception_bad_member_group'] = 'Membership group or destination has no source or id';
 $string['exception_bad_member_person'] = 'Membership person or group has no source or id';
 $string['exception_bad_person'] = 'Person object has no id or source';
 $string['exception_bad_term'] = 'Term object has no id or source';

@@ -1,0 +1,10 @@
+{
+  "SOURCEDID": {
+    "SOURCE": "sdidsource",
+    "ID": "sdid"
+  },
+  "IDTYPE": "membertype",
+  "ROLE": {
+    "STATUS": "status"
+  }
+}

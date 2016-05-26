@@ -35,17 +35,16 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_person extends base {
-    use trait_timeframe;
+class member_group extends base {
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_person';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_group';
 
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/member_person.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/member_group.json';
 
     /**
      * Basic constructor.
@@ -54,15 +53,4 @@ class member_person extends base {
         $this->load_mappings();
     }
 
-    /**
-     * Proccess a role node.
-     *
-     * @param xml_node|array $node The XML node to process, or array of nodes
-     * @param array $mapping The mapping for the field
-     */
-    public function process_role_node($node, $mapping) {
-        $this->dataobj->roletype = $node->get_attribute('ROLETYPE');
-
-        $this->apply_mappings($node, $mapping['mappings']);
-    }
 }

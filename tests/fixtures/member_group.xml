@@ -1,0 +1,28 @@
+<enterprise>
+    <membership>
+        <sourcedid>
+            <source>Test SCT Banner</source>
+            <id>XLSAA201640</id>
+        </sourcedid>
+        <member>
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>10001.201640</id>
+            </sourcedid>
+            <idtype>2</idtype>
+            <role recstatus="1">
+                <status>1</status>
+            </role>
+        </member>
+        <member>
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>10002.201640</id>
+            </sourcedid>
+            <idtype>2</idtype>
+            <role recstatus="1">
+                <status>1</status>
+            </role>
+        </member>
+    </membership>
+</enterprise>
