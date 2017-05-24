@@ -47,6 +47,7 @@ $string['exception_bad_term'] = 'Term object has no id or source';
 $string['exception_bad_section'] = 'Section object has no id or source';
 $string['exception_insert_failure'] = 'Failure inserting in database';
 $string['exception_grouptype_not_found'] = 'Group type not found';
+$string['exception_lis_namespace'] = 'LIS message namespace incorrect';
 $string['exception_membershiptype_no_id'] = 'Membership group has no source or id';
 $string['exception_membershiptype_no_member_type'] = 'Member has no idtype value';
 $string['exception_membershiptype_no_members'] = 'Membership has no members';

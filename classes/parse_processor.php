@@ -78,6 +78,8 @@ class parse_processor extends \progressive_parser_processor {
         $this->add_path(strtoupper('/lmb/enterprise'.$path));
         $this->add_path(strtoupper($path));
         $this->add_path(strtoupper('/enterprise'.$path));
+        $this->add_path(strtoupper('/SOAPENV:ENVELOPE/SOAPENV:BODY'.$path));
+        $this->add_path(strtoupper('/ENVELOPE/BODY'.$path));
     }
 
     /**
@@ -165,7 +167,7 @@ class parse_processor extends \progressive_parser_processor {
      */
     protected function process_complete_node(local\xml_node $node) {
         $this->previousnode = $node;
-
+print_r($node);
         // Dispatch a completed node.
         if ($this->controller) {
             $this->controller->process_xml_object($node);

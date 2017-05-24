@@ -57,7 +57,7 @@ Options:
                             3 = Fatal and above
 
 For testing:
---no-db                 Disable saving to the databse.
+--no-db                 Disable saving to the database.
 
 
 Example:

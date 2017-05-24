@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class types {
     public static function get_types() {
-        return array('person', 'group', 'membership');
+        return array('person', 'group', 'membership', 'replaceMembershipRequest', 'replacePersonRequest');//, 'SOAPENV:ENVELOPE/SOAPENV:HEADER'
     }
 
 
