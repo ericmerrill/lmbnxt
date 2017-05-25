@@ -167,7 +167,7 @@ class parse_processor extends \progressive_parser_processor {
      */
     protected function process_complete_node(local\xml_node $node) {
         $this->previousnode = $node;
-print_r($node);
+
         // Dispatch a completed node.
         if ($this->controller) {
             $this->controller->process_xml_object($node);

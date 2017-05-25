@@ -91,7 +91,7 @@ class controller {
         try {
             // Convert the node to a data object.
             $objs = $xmlproc->process_xml_to_data($xmlobj);
-print_r($objs);
+//print_r($objs);
             if (!is_array($objs)) {
                 // Convert single object to array for later.
                 $objs = array($objs);
