@@ -35,9 +35,38 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class types {
+    protected static $types = array('person' => '\\enrol_lmb\\local\\xml\\person',
+                                    'group' => '\\enrol_lmb\\local\\xml\\group',
+                                    'membership' => '\\enrol_lmb\\local\\xml\\membership',
+                                    'replacemembershiprequest' => '\\enrol_lmb\\local\\lis2\\member_replace',
+                                    'replacepersonrequest' => '\\enrol_lmb\\local\\lis2\\person_replace',
+                                    'replacegrouprequest' => '\\enrol_lmb\\local\\lis2\\group');
+
+    protected static $processors = array();
+
     public static function get_types() {
-        return array('person', 'group', 'membership', 'replaceMembershipRequest', 'replacePersonRequest');//, 'SOAPENV:ENVELOPE/SOAPENV:HEADER'
+        return array_keys(self::$types);
     }
 
+    public static function get_type_processor($type) {
+        $type = strtolower($type);
+        if (!isset(self::$types[$type])) {
+            return false;
+        }
 
+        $class = self::$types[$type];
+
+        return self::get_processor_for_class($class);
+    }
+
+    public static function get_processor_for_class($class) {
+        if (isset(self::$processors[$class])) {
+            return self::$processors[$class];
+        }
+
+        $processor = new $class();
+        self::$processors[$class] = $processor;
+
+        return $processor;
+    }
 }

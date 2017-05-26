@@ -22,4 +22,7 @@ Settings
 
 # TODO
 * Doc mappings.json
+* Deal with SourceDID vs SpridenID (sdid vs G#)
+* Drop sourcedidsource requirements.
+* Get LIS message header number. Needed for response.
 

@@ -1,0 +1,33 @@
+{
+  "GROUPRECORD": {
+    "SOURCEDGUID": {
+      "REFAGENTINSTANCEID": "referenceagent",
+      "SOURCEDID": {
+        "lmbinternal": true,
+        "fields": [
+          "messagereference",
+          "sdid",
+          "sortorder"
+        ]
+      }
+    },
+    "GROUP": {
+      "TIMEFRAME": {
+        "BEGIN": {
+          "lmbinternal": true,
+          "function": "process_timeframe_node",
+          "nodetype": "begin"
+        },
+        "END": {
+          "lmbinternal": true,
+          "function": "process_timeframe_node",
+          "nodetype": "end"
+        }
+      },
+      "DESCRIPTION": {
+        "LONGDESCRIPTION": "description",
+        "SHORTDESCRIPTION": "shortdescription"
+      }
+    }
+  }
+}

@@ -166,6 +166,13 @@ abstract class base {
                 return;
             }
 
+            if (isset($mapping['fields'])) {
+                foreach ($mapping['fields'] as $field) {
+                    $this->process_field($node, $field);
+                }
+                return;
+            }
+
             $matched = true;
             if (isset($mapping['reqattrs'])) {
                 // This means we require attributes to continue.

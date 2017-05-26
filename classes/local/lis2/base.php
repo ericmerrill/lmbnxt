@@ -23,9 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\lis2;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\xml;
 
 /**
  * Class for working with messages from XML from the LIS spec.
@@ -35,7 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base_lis extends base {
+abstract class base extends xml\base {
     const NAMESPACE_DEF = false;
 
     /**

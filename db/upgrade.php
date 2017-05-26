@@ -224,5 +224,150 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2016052600, 'enrol', 'lmb');
     }
 
+    if ($oldversion < 2016052600) {
+
+        // Define table enrol_lmb_member_group to be created.
+        $table = new xmldb_table('enrol_lmb_member_group');
+
+        // Adding fields to table enrol_lmb_member_group.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('groupsdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('groupsdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('status', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('additional', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table enrol_lmb_member_group.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for enrol_lmb_member_group.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2016052600, 'enrol', 'lmb');
+    }
+
+    if ($oldversion < 2017052500) {
+
+        // Define field referenceagent to be added to enrol_lmb_member_person.
+        $table = new xmldb_table('enrol_lmb_member_person');
+        $field = new xmldb_field('referenceagent', XMLDB_TYPE_CHAR, '64', null, null, null, null, 'sdid');
+
+        // Conditionally launch add field referenceagent.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field messagereference to be added to enrol_lmb_member_person.
+        $field = new xmldb_field('messagereference', XMLDB_TYPE_CHAR, '128', null, null, null, null, 'referenceagent');
+
+        // Conditionally launch add field messagereference.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define index sdid-sdidsource (not unique) to be added to enrol_lmb_member_person.
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_NOTUNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch add index sdid-sdidsource.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define index messagereference-referenceagent (not unique) to be added to enrol_lmb_member_person.
+        $index = new xmldb_index('messagereference-referenceagent', XMLDB_INDEX_NOTUNIQUE, array('messagereference', 'referenceagent'));
+
+        // Conditionally launch add index messagereference-referenceagent.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2017052500, 'enrol', 'lmb');
+    }
+
+    if ($oldversion < 2017052501) {
+
+        // Define index sdid-sdidsource (not unique) to be dropped form enrol_lmb_member_person.
+        $table = new xmldb_table('enrol_lmb_member_person');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_NOTUNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Changing nullability of field sdidsource on table enrol_lmb_member_person to null.
+        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
+
+        // Launch change of nullability for field sdidsource.
+        $dbman->change_field_notnull($table, $field);
+
+        // Changing nullability of field groupsdidsource on table enrol_lmb_member_person to null.
+        $field = new xmldb_field('groupsdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'messagereference');
+
+        // Launch change of nullability for field groupsdidsource.
+        $dbman->change_field_notnull($table, $field);
+
+        // Define index sdid-groupsdid (not unique) to be added to enrol_lmb_member_person.
+        $index = new xmldb_index('sdid-groupsdid', XMLDB_INDEX_NOTUNIQUE, array('sdid', 'groupsdid'));
+
+        // Conditionally launch add index sdid-groupsdid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2017052501, 'enrol', 'lmb');
+    }
+
+    if ($oldversion < 2017052502) {
+
+        // Define index sdid-sdidsource (not unique) to be dropped form enrol_lmb_term.
+        $table = new xmldb_table('enrol_lmb_term');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Define field referenceagent to be added to enrol_lmb_term.
+        $field = new xmldb_field('referenceagent', XMLDB_TYPE_CHAR, '64', null, null, null, null, 'sdid');
+
+        // Conditionally launch add field referenceagent.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field messagereference to be added to enrol_lmb_term.
+        $field = new xmldb_field('messagereference', XMLDB_TYPE_CHAR, '128', null, null, null, null, 'referenceagent');
+
+        // Conditionally launch add field messagereference.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Changing nullability of field sdidsource on table enrol_lmb_member_person to null.
+        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
+
+        // Launch change of nullability for field sdidsource.
+        $dbman->change_field_notnull($table, $field);
+
+        // Define index sdid-sdidsource (not unique) to be added to enrol_lmb_term.
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch add index sdid-sdidsource.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2017052502, 'enrol', 'lmb');
+    }
 
 }

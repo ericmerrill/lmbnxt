@@ -23,9 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\lis2;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\xml\types;
 
 /**
  * Class for working with message types.
@@ -36,6 +38,8 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class group extends base {
+    const NAMESPACE_DEF = "www.imsglobal.org/services/lis/gms2p0/wsdl11/sync/imsgms_v2p0";
+
     /**
      * The data object path for this object.
      */
@@ -54,21 +58,15 @@ class group extends base {
      */
     public function process_xml_to_data($node) {
         // ID what group type for the XML, then pass on to the correct converter.
-        if (!isset($node->GROUPTYPE->TYPEVALUE)) {
+        //print_r($node);
+        if (!isset($node->GROUPRECORD->GROUP->GROUPTYPE->TYPEVALUE->ID)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
         }
 
-        switch (strtolower($node->GROUPTYPE->TYPEVALUE->get_value())) {
+        switch (strtolower($node->GROUPRECORD->GROUP->GROUPTYPE->TYPEVALUE->ID->get_value())) {
             case 'term':
-                $term = types::get_processor_for_class('\\enrol_lmb\\local\\xml\\group_term');
+                $term = types::get_processor_for_class('\\enrol_lmb\\local\\lis2\\group_term');
                 return $term->process_xml_to_data($node);
-            case 'coursesection':
-                $section = types::get_processor_for_class('\\enrol_lmb\\local\\xml\\group_section');
-                return $section->process_xml_to_data($node);
-            case 'course':
-                $course = types::get_processor_for_class('\\enrol_lmb\\local\\xml\\group_course');
-                return $course->process_xml_to_data($node);
-
         }
 
         throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');

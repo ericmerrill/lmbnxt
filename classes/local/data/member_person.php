@@ -49,8 +49,8 @@ class member_person extends base {
     const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\member_person';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'roletype', 'status', 'groupsdidsource', 'groupsdid',
-                              'begindate', 'enddate', 'additional', 'timemodified');
+    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'referenceagent', 'messagereference', 'roletype', 'status',
+                              'groupsdidsource', 'groupsdid', 'begindate', 'enddate', 'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
@@ -66,15 +66,26 @@ class member_person extends base {
      * Log a unique line to id this object.
      */
     public function log_id() {
+        $msgref = $this->__get('messagereference');
+
+        $extramsg = "";
+        if (!empty($msgref)) {
+            // This means we are a LIS message, Add a message ID.
+            $extramsg = " (LIS \"{$msgref}\")";
+        }
+
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
+        $source = (empty($source) ? "(empty)" : $source);
         $gid = $this->__get('groupsdid');
         $gsource = $this->__get('groupsdidsource');
-        // TODO.
-        if (empty($id) || empty($source) || empty($gid) || empty($gsource)) {
+        $gsource = (empty($gsource) ? "(empty)" : $gsource);
+
+        if (empty($id) || empty($gid)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_bad_member_person');
         } else {
-            logging::instance()->log_line("Person \"{$id}\" from \"{$source}\" membership into \"{$gid}\" from \"{$gsource}\"");
+            logging::instance()->log_line("Person \"{$id}\" from \"{$source}\" membership into \"{$gid}\" from \"{$gsource}\"".
+                    $extramsg);
         }
     }
 

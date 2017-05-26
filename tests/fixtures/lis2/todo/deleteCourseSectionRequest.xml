@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Header>
+    <imsx_syncRequestHeaderInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_v1p0">
+      <imsx_version>V1.0</imsx_version>
+      <imsx_messageIdentifier>2</imsx_messageIdentifier>
+    </imsx_syncRequestHeaderInfo>
+  </soapenv:Header>
+  <soapenv:Body>
+    <deleteCourseSectionRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_v1p0">
+      <sourcedId>44654.201740</sourcedId>
+    </deleteCourseSectionRequest>
+  </soapenv:Body>
+</soapenv:Envelope>

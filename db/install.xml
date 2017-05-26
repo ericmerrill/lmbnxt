@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="enrol/lmb/db" VERSION="20160524" COMMENT="XMLDB file for Moodle enrol/lmb"
+<XMLDB PATH="enrol/lmb/db" VERSION="20170525" COMMENT="XMLDB file for Moodle enrol/lmb"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -43,8 +43,10 @@
     <TABLE NAME="enrol_lmb_term" COMMENT="Terms from the SIS">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="referenceagent" TYPE="char" LENGTH="64" NOTNULL="false" SEQUENCE="false" COMMENT="Message agent ID for the LIS message that most recently touched it."/>
+        <FIELD NAME="messagereference" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Message reference ID for the LIS message that most recently touched it."/>
         <FIELD NAME="description" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="begindate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="enddate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
@@ -106,9 +108,11 @@
     <TABLE NAME="enrol_lmb_member_person" COMMENT="Person enrollments from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="groupsdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="referenceagent" TYPE="char" LENGTH="64" NOTNULL="false" SEQUENCE="false" COMMENT="Message agent ID for the LIS message that most recently touched it."/>
+        <FIELD NAME="messagereference" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Message reference ID for the LIS message that most recently touched it."/>
+        <FIELD NAME="groupsdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="groupsdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="roletype" TYPE="char" LENGTH="2" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
@@ -120,6 +124,10 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="messagereference-referenceagent" UNIQUE="false" FIELDS="messagereference, referenceagent" COMMENT="Index for LIS message IDs. Possibly make unique?"/>
+        <INDEX NAME="sdid-groupsdid" UNIQUE="false" FIELDS="sdid, groupsdid" COMMENT="Index of user and group."/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="enrol_lmb_member_group" COMMENT="Group enrollments (crosslists) from the SIS.">
       <FIELDS>

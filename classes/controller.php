@@ -26,6 +26,8 @@
 namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
+use \enrol_lmb\local\xml\types;
+
 /**
  * Controller class for importing files and folders.
  *
@@ -75,18 +77,8 @@ class controller {
      * @param xml_node $xmlobj The XML node to work on.
      */
     public function process_xml_object(local\xml_node $xmlobj) {
-        // Types are lowercase, but node paths are upper.
-        $type = strtolower($xmlobj->get_name());
-
-        // Check for a cached processor, build if not.
-        if (!isset($this->typeprocessors[$type])) {
-            $class = '\\enrol_lmb\\local\\xml\\'.$type;
-            if (!class_exists($class)) {
-                return;
-            }
-            $this->typeprocessors[$type] = new $class();
-        }
-        $xmlproc = $this->typeprocessors[$type];
+        // Get the processor (cached).
+        $xmlproc = types::get_type_processor($xmlobj->get_name());
 
         try {
             // Convert the node to a data object.
