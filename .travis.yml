@@ -22,6 +22,7 @@ php:
 env:
  global:
   - MOODLE_BRANCH=MOODLE_32_STABLE
+  - PHPUNIT_IGNORE_PATHS=cli,db,settings.php
  matrix:
   - DB=pgsql
   - DB=mysqli
