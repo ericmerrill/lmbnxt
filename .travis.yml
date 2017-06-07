@@ -45,7 +45,7 @@ before_install:
   - phpenv config-rm xdebug.ini
   - nvm install node
   - cd ../..
-  - composer create-project -n --no-dev --prefer-dist moodlerooms/moodle-plugin-ci ci ^2
+  - composer create-project -n --no-dev --prefer-dist moodlerooms/moodle-plugin-ci ci dev-master
   - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
 
 install:
@@ -58,18 +58,12 @@ script:
   - moodle-plugin-ci savepoints
   - moodle-plugin-ci mustache
   - moodle-plugin-ci grunt
-  - if [[ "$COVERALLS" == "TRUE" ]]; then
-      phpenv config-add ~/xdebug.ini;
-      moodle-plugin-ci phpunit --coverage-clover;
-      phpenv config-rm xdebug.ini;
-    else
-      moodle-plugin-ci phpunit;
-    fi
+  - phpenv config-add ~/xdebug.ini;
+  - moodle-plugin-ci phpunit --coverage-clover;
+  - phpenv config-rm xdebug.ini;
   - moodle-plugin-ci behat
 
 after_script:
   - moodle-plugin-ci phpcpd
   - moodle-plugin-ci codechecker
-  - if [[ "$COVERALLS" == "TRUE" ]]; then
-      moodle-plugin-ci coveralls-upload;
-    fi
+  - moodle-plugin-ci coveralls-upload
