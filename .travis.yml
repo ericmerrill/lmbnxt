@@ -40,6 +40,7 @@ env:
 
 
 before_install:
+  - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/
   - phpenv config-rm xdebug.ini
   - nvm install node
   - cd ../..
