@@ -59,11 +59,11 @@ script:
   - moodle-plugin-ci mustache
   - moodle-plugin-ci grunt
   - if [[ "$COVERALLS" == "TRUE" ]]; then
-      phpenv config-add ~/xdebug.ini
-      moodle-plugin-ci phpunit --coverage-clover
-      phpenv config-rm xdebug.ini
+      phpenv config-add ~/xdebug.ini;
+      moodle-plugin-ci phpunit --coverage-clover;
+      phpenv config-rm xdebug.ini;
     else
-      moodle-plugin-ci phpunit
+      moodle-plugin-ci phpunit;
     fi
   - moodle-plugin-ci behat
 
