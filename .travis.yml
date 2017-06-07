@@ -58,12 +58,18 @@ script:
   - moodle-plugin-ci savepoints
   - moodle-plugin-ci mustache
   - moodle-plugin-ci grunt
-  - phpenv config-add ~/xdebug.ini
-  - moodle-plugin-ci phpunit --coverage-clover
-  - phpenv config-rm xdebug.ini
+  - if [[ "$COVERALLS" == "TRUE" ]]; then
+      phpenv config-add ~/xdebug.ini
+      moodle-plugin-ci phpunit --coverage-clover
+      phpenv config-rm xdebug.ini
+    else
+      moodle-plugin-ci phpunit
+    fi
   - moodle-plugin-ci behat
 
 after_script:
   - moodle-plugin-ci phpcpd
   - moodle-plugin-ci codechecker
-  - if [[ "$COVERALLS" == "TRUE" ]]; then moodle-plugin-ci coveralls-upload; fi
+  - if [[ "$COVERALLS" == "TRUE" ]]; then
+      moodle-plugin-ci coveralls-upload;
+    fi
