@@ -22,13 +22,13 @@ php:
 env:
  global:
   - MOODLE_BRANCH=MOODLE_32_STABLE
-  - PHPUNIT_IGNORE_PATHS=cli,db,settings.php
+  - PHPUNIT_IGNORE_PATHS=cli,db,settings.php,version.php
  matrix:
   - DB=pgsql
   - DB=mysqli
 
 before_install:
-  - phpenv config-rm xdebug.ini
+#  - phpenv config-rm xdebug.ini
   - nvm install node
   - cd ../..
   - composer create-project -n --no-dev --prefer-dist moodlerooms/moodle-plugin-ci ci ^2
