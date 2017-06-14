@@ -47,7 +47,7 @@ class xml_types_test extends xml_helper {
         $result = xml\types::get_type_processor('unknown');
         $this->assertFalse($result);
 
-        // Now a person processor
+        // Now a person processor.
         $personprocessor1 = xml\types::get_type_processor('person');
         $this->assertInstanceOf(xml\person::class, $personprocessor1);
 

@@ -23,6 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 $plugin->version  = 2017052502;
 $plugin->release = "0.0.1";
 $plugin->maturity = MATURITY_ALPHA;

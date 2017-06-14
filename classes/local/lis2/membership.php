@@ -62,7 +62,7 @@ class membership extends base {
             throw new \enrol_lmb\local\exception\message_exception('exception_membershiptype_not_found');
         }
 
-        // From WSDL valid values are courseTemplate, courseOffering, courseSection, sectionAssociation, and group
+        // From WSDL valid values are courseTemplate, courseOffering, courseSection, sectionAssociation, and group.
         switch (strtolower($node->MEMBERSHIPRECORD->MEMBERSHIP->MEMBERSHIPIDTYPE->get_value())) {
             case 'coursesection':
                 $membership = types::get_processor_for_class('\\enrol_lmb\\local\\lis2\\member_person');

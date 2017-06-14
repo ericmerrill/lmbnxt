@@ -27,6 +27,8 @@ namespace enrol_lmb\local\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\local\exception;
+
 /**
  * Class for working with messages from XML.
  *
@@ -208,7 +210,7 @@ abstract class base {
                     } else if ($value === '0' || strcasecmp($value, 'false') === 0) {
                         $boolvalue = false;
                     } else {
-                        // TODO - throw exception.
+                        throw new exception\message_exception('exception_xml_boolean', '', $value);
                     }
 
                     $this->dataobj->$key = $boolvalue;

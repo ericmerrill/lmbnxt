@@ -54,5 +54,5 @@ $string['exception_membershiptype_no_id'] = 'Membership group has no source or i
 $string['exception_membershiptype_no_member_type'] = 'Member has no idtype value';
 $string['exception_membershiptype_no_members'] = 'Membership has no members';
 $string['exception_membershiptype_not_found'] = 'Membership type could not be found';
-//$string['exception_membershiptype_unknown_member_type'] = 'Membership member has unknown idtype';
 $string['exception_update_failure'] = 'Failure updating in database';
+$string['exception_xml_boolean'] = 'Could not convert data "{$a}" into boolean.';

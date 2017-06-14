@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Upgrade file.
  *
@@ -279,7 +281,8 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         }
 
         // Define index messagereference-referenceagent (not unique) to be added to enrol_lmb_member_person.
-        $index = new xmldb_index('messagereference-referenceagent', XMLDB_INDEX_NOTUNIQUE, array('messagereference', 'referenceagent'));
+        $index = new xmldb_index('messagereference-referenceagent',
+                XMLDB_INDEX_NOTUNIQUE, array('messagereference', 'referenceagent'));
 
         // Conditionally launch add index messagereference-referenceagent.
         if (!$dbman->index_exists($table, $index)) {
