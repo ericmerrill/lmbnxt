@@ -25,8 +25,8 @@ env:
  matrix:
     # Moodle 3.2
   - PHPVER=5.6 DB=pgsql MOODLE_BRANCH=MOODLE_32_STABLE
-  - PHPVER=7.0 DB=mysqli MOODLE_BRANCH=MOODLE_32_STABLE COVERALLS=TRUE
-  - PHPVER=7.1 DB=pgsql MOODLE_BRANCH=MOODLE_32_STABLE COVERALLS=TRUE
+  - PHPVER=7.0 DB=mysqli MOODLE_BRANCH=MOODLE_32_STABLE
+  - PHPVER=7.1 DB=pgsql MOODLE_BRANCH=MOODLE_32_STABLE
 
     # Moodle 3.3
   - PHPVER=5.6 DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
@@ -41,7 +41,6 @@ env:
 
 
 before_install:
-  - cp ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/
   - phpenv config-rm xdebug.ini
   - nvm install node
   - cd ../..
@@ -58,18 +57,10 @@ script:
   - moodle-plugin-ci savepoints
   - moodle-plugin-ci mustache
   - moodle-plugin-ci grunt
-  - if [[ "$COVERALLS" == "TRUE" ]]; then
-      phpenv config-add ~/xdebug.ini;
-      moodle-plugin-ci phpunit --coverage-clover;
-      phpenv config-rm xdebug.ini;
-    else
-      moodle-plugin-ci phpunit;
-    fi
+  - moodle-plugin-ci phpunit --coverage-clover
   - moodle-plugin-ci behat
 
 after_script:
   - moodle-plugin-ci phpcpd
   - moodle-plugin-ci codechecker
-  - if [[ "$COVERALLS" == "TRUE" ]]; then
-      moodle-plugin-ci coveralls-upload;
-    fi
+  - moodle-plugin-ci coveralls-upload
