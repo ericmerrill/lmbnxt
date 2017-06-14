@@ -26,5 +26,12 @@
             </sourcedid>
             <label>College</label>
         </relationship>
+        <relationship relation="1">
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>OTHR</id>
+            </sourcedid>
+            <label>Unknown</label>
+        </relationship>
     </group>
 </enterprise>

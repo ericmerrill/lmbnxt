@@ -63,10 +63,10 @@ class lis2_group_term_test extends xml_helper {
     }
 
     public function test_error_group() {
+        $converter = new lis2\group();
+
         $node = $this->get_node_for_xml('<replacegrouprequest><grouprecord><group><grouptype>'.
                                         '</grouptype></group></grouprecord></replacegrouprequest>');
-
-        $converter = new lis2\group();
 
         try {
             $group = $converter->process_xml_to_data($node);

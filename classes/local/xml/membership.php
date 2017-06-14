@@ -80,6 +80,12 @@ class membership extends base {
         $results = array();
 
         foreach ($members as $member) {
+            if (!isset($member->IDTYPE)) {
+                // We don't throw an exception so that other members can process.
+                // TODO log error.
+                continue;
+            }
+
             switch ($member->IDTYPE->get_value()) {
                 case '1':
                     // A person member.
@@ -98,7 +104,8 @@ class membership extends base {
                     $results[] = $result;
                     break;
                 default:
-                    // TODO unknown type error, not exception.
+                    // We don't throw an exception so that other members can process.
+                    // TODO unknown type error log.
                     break;
             }
         }
