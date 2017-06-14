@@ -39,6 +39,9 @@ use enrol_lmb\local\exception;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class base extends xml\base {
+    /**
+     * Namespace associated with this object.
+     */
     const NAMESPACE_DEF = false;
 
     /**

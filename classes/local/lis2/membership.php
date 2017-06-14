@@ -38,6 +38,9 @@ use enrol_lmb\local\xml\types;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class membership extends base {
+    /**
+     * Namespace associated with this object.
+     */
     const NAMESPACE_DEF = "www.imsglobal.org/services/lis/mms2p0/wsdl11/sync/imsmms_v2p0";
 
     /**
@@ -53,7 +56,7 @@ class membership extends base {
     /**
      * Processes the passed xml_node into a data object of the current type.
      *
-     * @param xml_node $xmlobj The node to work on
+     * @param xml_node $node The node to work on
      * @return array|enrol_lmb\local\data\member_group|enrol_lmb\local\data\member_user
      */
     public function process_xml_to_data($node) {

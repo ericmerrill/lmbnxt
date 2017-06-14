@@ -78,7 +78,7 @@ abstract class base {
     /**
      * Gets (by reference) the passed property.
      *
-     * $param string $name Name of property to get
+     * @param string $name Name of property to get
      * @return mixed The property
      */
     public function &__get($name) {
@@ -106,8 +106,8 @@ abstract class base {
     /**
      * Set a property, either in the db object, ot the additional data object
      *
-     * $param string $name Name of property to set
-     * $param string $value The value
+     * @param string $name Name of property to set
+     * @param string $value The value
      */
     public function __set($name, $value) {
         if (array_key_exists($name, $this->handlers)) {
@@ -127,7 +127,7 @@ abstract class base {
     /**
      * Unset the passed property.
      *
-     * $param string $name Name of property to unset
+     * @param string $name Name of property to unset
      */
     public function __unset($name) {
         if (in_array($name, $this->dbkeys)) {
@@ -140,7 +140,7 @@ abstract class base {
     /**
      * Check if a property is set.
      *
-     * $param string $name Name of property to set
+     * @param string $name Name of property to set
      * @return bool True if the property is set
      */
     public function __isset($name) {
@@ -153,8 +153,8 @@ abstract class base {
     /**
      * Concerts an incoming value to 1 or 0 for database storage.
      *
-     * $param string $name Name of property to convert
-     * $param string $value The value
+     * @param string $name Name of property to convert
+     * @param string $value The value
      * @return int The new property value
      */
     protected function handler_boolean($name, $value) {
@@ -170,8 +170,8 @@ abstract class base {
     /**
      * Concerts an incoming date string to a timestamp.
      *
-     * $param string $name Name of property to convert
-     * $param string $value The value
+     * @param string $name Name of property to convert
+     * @param string $value The value
      * @return int The new property value
      */
     protected function handler_date($name, $value) {

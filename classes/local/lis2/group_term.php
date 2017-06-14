@@ -40,6 +40,9 @@ use enrol_lmb\local\xml\trait_timeframe;
 class group_term extends base {
     use trait_timeframe;
 
+    /**
+     * Namespace associated with this object.
+     */
     const NAMESPACE_DEF = "www.imsglobal.org/services/lis/gms2p0/wsdl11/sync/imsgms_v2p0";
 
     /**

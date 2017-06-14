@@ -47,8 +47,7 @@ class logging {
     /** @var int The current error level */
     protected $errorlevel = self::ERROR_NONE;
 
-    /** @var int The error level setting */
-    // TODO make a setting for this!
+    /** @var int The error level setting TODO - make setting! */
     protected $outputerrorlevel = self::ERROR_NONE;
 
     /**

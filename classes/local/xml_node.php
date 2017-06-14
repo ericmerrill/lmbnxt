@@ -198,7 +198,7 @@ class xml_node implements \Iterator {
     /**
      * Returns requested child or null.
      *
-     * @param string name
+     * @param string $name
      * @return xml_node|array|null
      */
     public function __get($name) {
@@ -212,7 +212,7 @@ class xml_node implements \Iterator {
     /**
      * Returns if the requested child exists.
      *
-     * @param string name
+     * @param string $name
      * @return bool
      */
     public function __isset($name) {
@@ -226,7 +226,7 @@ class xml_node implements \Iterator {
     /**
      * Unset a child.
      *
-     * @param string name
+     * @param string $name
      */
     public function __unset($name) {
         unset($this->children[$name]);

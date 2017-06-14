@@ -36,10 +36,19 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class member_person extends base {
+    /**
+     * Namespace associated with this object.
+     */
     const NAMESPACE_DEF = "www.imsglobal.org/services/lis/mms2p0/wsdl11/sync/imsmms_v2p0";
 
+    /**
+     * Path to the mapping file.
+     */
     const MAPPING_PATH = '/enrol/lmb/classes/local/lis2/mappings/member_person.json';
 
+    /**
+     * Data class used by this type.
+     */
     const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_person';
     // TODO loop handling - confirm not needed in spec.
     /**

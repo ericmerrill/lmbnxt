@@ -47,8 +47,6 @@ class parser extends \progressive_parser {
 
     /**
      * Constructor.
-     *
-     * @param bool $case_folding If true, all tags and attributes converted to upper-case
      */
     public function __construct() {
         parent::__construct(true);
@@ -158,7 +156,7 @@ class parser extends \progressive_parser {
      *
      * @param object $parser Reference of the parser.
      * @param string $tag The opening tag name.
-     * $param array $attributes The attributes associated with the open tag.
+     * @param array $attributes The attributes associated with the open tag.
      */
     protected function start_tag($parser, $tag, $attributes) {
         // Increase our level and append the incoming tag.

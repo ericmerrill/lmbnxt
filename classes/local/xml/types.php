@@ -35,6 +35,7 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class types {
+    /** @var array Associative array and message root node names (types) and the processor class */
     protected static $types = array('person' => '\\enrol_lmb\\local\\xml\\person',
                                     'group' => '\\enrol_lmb\\local\\xml\\group',
                                     'membership' => '\\enrol_lmb\\local\\xml\\membership',
@@ -42,12 +43,24 @@ class types {
                                     'replacepersonrequest' => '\\enrol_lmb\\local\\lis2\\person_replace',
                                     'replacegrouprequest' => '\\enrol_lmb\\local\\lis2\\group');
 
+    /** @var array Array of processor nodes */
     protected static $processors = array();
 
+    /**
+     * Returns an array of type names (root node names) available.
+     *
+     * @return array
+     */
     public static function get_types() {
         return array_keys(self::$types);
     }
 
+    /**
+     * Returns the statically cached processor that goes with a type.
+     *
+     * @param string $type The type to get the processor for
+     * @return xml\base
+     */
     public static function get_type_processor($type) {
         $type = strtolower($type);
         if (!isset(self::$types[$type])) {
@@ -59,6 +72,12 @@ class types {
         return self::get_processor_for_class($class);
     }
 
+    /**
+     * Returns the statically cached processor that goes with a class name.
+     *
+     * @param string $class The class path to get the processor for
+     * @return xml\base
+     */
     public static function get_processor_for_class($class) {
         if (isset(self::$processors[$class])) {
             return self::$processors[$class];
