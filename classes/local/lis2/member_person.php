@@ -35,10 +35,10 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2017 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_replace extends base {
+class member_person extends base {
     const NAMESPACE_DEF = "www.imsglobal.org/services/lis/mms2p0/wsdl11/sync/imsmms_v2p0";
 
-    const MAPPING_PATH = '/enrol/lmb/classes/local/lis2/mappings/member_replace.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/lis2/mappings/member_person.json';
 
     const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_person';
     // TODO loop handling - confirm not needed in spec.
@@ -65,8 +65,8 @@ class member_replace extends base {
         } else if (strcasecmp("student", $role) === 0) {
             $this->dataobj->roletype = "01";
         } else {
-            // TODO - better handling here...
             $this->dataobj->roletype = "00";
+            throw new \enrol_lmb\local\exception\message_exception('exception_member_roletype_unknown', '', $role);
         }
     }
 
@@ -77,18 +77,20 @@ class member_replace extends base {
      * @param array $mapping The mapping for the field
      */
     protected function process_status_node($node, $mapping) {
-        // So far we know of 'Active', but assume there are probably others...
+        // WSDL defines possible values as Active and Inactive, but giving a bit more leeway.
         $active = $node->get_value();
         $this->dataobj->lis_active = $active;
 
-        if (strcasecmp("Active", $active) === 0) {
+        if (strcasecmp("Active", $active) === 0 || $active === '1' || strcasecmp($active, 'true') === 0) {
             $this->dataobj->status = 1;
+        } else if (strcasecmp("Inactive", $active) === 0 || $active === '0' || strcasecmp($active, 'false') === 0) {
+            $this->dataobj->status = 0;
+        } else {
+            $this->dataobj->status = 0;
+            throw new \enrol_lmb\local\exception\message_exception('exception_member_status_unknown', '', $active);
         }
-
-        // TODO better detection of other values...
-        $this->dataobj->status = 0;
     }
 
     // TODO - Student fields.
-    // TODO - rescript fields.
+    // TODO - restrict fields.
 }

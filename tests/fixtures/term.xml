@@ -18,7 +18,7 @@
         </timeframe>
         <enrollcontrol>
             <enrollaccept>1</enrollaccept>
-            <enrollallowed>0</enrollallowed>
+            <enrollallowed>false</enrollallowed>
         </enrollcontrol>
         <extension>
             <luminisgroup>

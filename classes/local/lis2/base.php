@@ -28,6 +28,7 @@ namespace enrol_lmb\local\lis2;
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\xml;
+use enrol_lmb\local\exception;
 
 /**
  * Class for working with messages from XML from the LIS spec.
@@ -37,7 +38,7 @@ use enrol_lmb\local\xml;
  * @copyright  2017 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base extends xml\base {
+class base extends xml\base {
     const NAMESPACE_DEF = false;
 
     /**
@@ -50,7 +51,7 @@ abstract class base extends xml\base {
         $namespacecheck = $this->check_lis_namespace($node);
 
         if (!$namespacecheck) {
-             throw new \enrol_lmb\local\exception\message_exception('exception_lis_namespace');
+             throw new exception\message_exception('exception_lis_namespace');
         }
 
         return parent::process_xml_to_data($node);

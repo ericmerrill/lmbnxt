@@ -202,7 +202,16 @@ abstract class base {
                     }
                     $this->dataobj->{$key}[] = $value;
                 } else if (isset($mapping['type']) && $mapping['type'] == 'bool') {
-                    $this->dataobj->$key = (bool)$value;
+                    // Technically, XML spec only allows values of true, false, 1, and 0, case sensitive.
+                    if ($value === '1' || strcasecmp($value, 'true') === 0) {
+                        $boolvalue = true;
+                    } else if ($value === '0' || strcasecmp($value, 'false') === 0) {
+                        $boolvalue = false;
+                    } else {
+                        // TODO - throw exception.
+                    }
+
+                    $this->dataobj->$key = $boolvalue;
                 } else {
                     $this->dataobj->$key = $value;
                 }

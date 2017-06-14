@@ -37,8 +37,8 @@ use enrol_lmb\local\xml\types;
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class group extends base {
-    const NAMESPACE_DEF = "www.imsglobal.org/services/lis/gms2p0/wsdl11/sync/imsgms_v2p0";
+class membership extends base {
+    const NAMESPACE_DEF = "www.imsglobal.org/services/lis/mms2p0/wsdl11/sync/imsmms_v2p0";
 
     /**
      * The data object path for this object.
@@ -54,21 +54,22 @@ class group extends base {
      * Processes the passed xml_node into a data object of the current type.
      *
      * @param xml_node $xmlobj The node to work on
-     * @return array|enrol_lmb\local\data\person
+     * @return array|enrol_lmb\local\data\member_group|enrol_lmb\local\data\member_user
      */
     public function process_xml_to_data($node) {
         // ID what group type for the XML, then pass on to the correct converter.
-        if (!isset($node->GROUPRECORD->GROUP->GROUPTYPE->TYPEVALUE->ID)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+        if (!isset($node->MEMBERSHIPRECORD->MEMBERSHIP->MEMBERSHIPIDTYPE)) {
+            throw new \enrol_lmb\local\exception\message_exception('exception_membershiptype_not_found');
         }
 
-        switch (strtolower($node->GROUPRECORD->GROUP->GROUPTYPE->TYPEVALUE->ID->get_value())) {
-            case 'term':
-                $term = types::get_processor_for_class('\\enrol_lmb\\local\\lis2\\group_term');
-                return $term->process_xml_to_data($node);
+        // From WSDL valid values are courseTemplate, courseOffering, courseSection, sectionAssociation, and group
+        switch (strtolower($node->MEMBERSHIPRECORD->MEMBERSHIP->MEMBERSHIPIDTYPE->get_value())) {
+            case 'coursesection':
+                $membership = types::get_processor_for_class('\\enrol_lmb\\local\\lis2\\member_person');
+                return $membership->process_xml_to_data($node);
         }
 
-        throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+        throw new \enrol_lmb\local\exception\message_exception('exception_membershiptype_not_found');
     }
 
 }

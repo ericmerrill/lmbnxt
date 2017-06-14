@@ -62,10 +62,30 @@ class xml_node implements \Iterator {
         $this->set_name($name);
     }
 
+    /**
+     * Set all attributes at once.
+     *
+     * @param array $attrs Array of all attributes.
+     */
     public function set_attributes($attrs) {
         $this->attrs = $attrs;
     }
 
+    /**
+     * Set a attribute.
+     *
+     * @param string $name Name of attribute.
+     * @param mixed $value Value of attribute.
+     */
+    public function set_attribute($name, $value) {
+        $this->attrs[$name] = $value;
+    }
+
+    /**
+     * Set the data of this node.
+     *
+     * @param mixed $data All the data.
+     */
     public function set_data($data) {
         $this->value = $data;
     }

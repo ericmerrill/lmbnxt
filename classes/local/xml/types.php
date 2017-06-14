@@ -38,7 +38,7 @@ class types {
     protected static $types = array('person' => '\\enrol_lmb\\local\\xml\\person',
                                     'group' => '\\enrol_lmb\\local\\xml\\group',
                                     'membership' => '\\enrol_lmb\\local\\xml\\membership',
-                                    'replacemembershiprequest' => '\\enrol_lmb\\local\\lis2\\member_replace',
+                                    'replacemembershiprequest' => '\\enrol_lmb\\local\\lis2\\membership',
                                     'replacepersonrequest' => '\\enrol_lmb\\local\\lis2\\person_replace',
                                     'replacegrouprequest' => '\\enrol_lmb\\local\\lis2\\group');
 

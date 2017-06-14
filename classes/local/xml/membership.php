@@ -57,7 +57,7 @@ class membership extends base {
      * Processes the passed xml_node into a data object of the current type.
      *
      * @param xml_node $xmlobj The node to work on
-     * @return enrol_lmb\local\data\person
+     * @return array[enrol_lmb\local\data\member_group|enrol_lmb\local\data\member_user]
      */
     public function process_xml_to_data($node) {
         if (!isset($node->MEMBER)) {

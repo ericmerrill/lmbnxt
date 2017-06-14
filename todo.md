@@ -19,6 +19,11 @@ Settings
 * Use MD5 to see if we have run a file, not timestamp
 * Option to reprocess from DB when settings change
 * Settings controller/change settings based on input
+* Use internal ID instead of SDID or G# in ID Number
+
+# LIS 2 improvements
+* Need LIS 2 response
+* LIS group term allows restrict flag, even though ILP doesn't seem to use
 
 # TODO
 * Doc mappings.json
