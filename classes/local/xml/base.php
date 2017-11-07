@@ -28,6 +28,7 @@ namespace enrol_lmb\local\xml;
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\exception;
+use enrol_lmb\local\response;
 
 /**
  * Class for working with messages from XML.
@@ -68,6 +69,15 @@ abstract class base {
         $this->apply_mappings($node);
 
         return $this->dataobj;
+    }
+
+    /**
+     * Return a response object.
+     *
+     * @return response\base
+     */
+    public function get_response_object() {
+        return new response\xml();
     }
 
     /**

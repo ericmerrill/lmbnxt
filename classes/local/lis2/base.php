@@ -60,6 +60,14 @@ class base extends xml\base {
         return parent::process_xml_to_data($node);
     }
 
+    public function get_response_object() {
+        $res = new response\lis2();
+
+        $res->set_namespace(static::NAMESPACE_DEF);
+
+        return $res;
+    }
+
     /**
      * Confirm the name that the namespace definition is correct.
      *
@@ -83,4 +91,5 @@ class base extends xml\base {
 
         return true;
     }
+
 }

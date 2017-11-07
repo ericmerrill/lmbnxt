@@ -77,29 +77,34 @@ class controller {
      * @param xml_node $xmlobj The XML node to work on.
      */
     public function process_xml_object(local\xml_node $xmlobj) {
-        // Get the processor (cached).
-        $xmlproc = types::get_type_processor($xmlobj->get_name());
+        $message = new message();
+        $message->set_xml_node($xmlobj);
 
-        try {
-            // Convert the node to a data object.
-            $objs = $xmlproc->process_xml_to_data($xmlobj);
-
-            if (!is_array($objs)) {
-                // Convert single object to array for later.
-                $objs = array($objs);
-            }
-
-            // Some nodes (like membership) may return many children.
-            foreach ($objs as $obj) {
-                $obj->log_id();
-                if (empty($this->options['nodb'])) {
-                    $obj->save_to_db();
-                }
-            }
-        } catch (\enrol_lmb\local\exception\message_exception $e) {
-            // There as a fatal exeption for this node.
-            logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
-        }
+        $message->process_to_data();
+//
+//         // Get the processor (cached).
+//         $xmlproc = types::get_type_processor($xmlobj->get_name());
+//
+//         try {
+//             // Convert the node to a data object.
+//             $objs = $xmlproc->process_xml_to_data($xmlobj);
+//
+//             if (!is_array($objs)) {
+//                 // Convert single object to array for later.
+//                 $objs = array($objs);
+//             }
+//
+//             // Some nodes (like membership) may return many children.
+//             foreach ($objs as $obj) {
+//                 $obj->log_id();
+//                 if (empty($this->options['nodb'])) {
+//                     $obj->save_to_db();
+//                 }
+//             }
+//         } catch (\enrol_lmb\local\exception\message_exception $e) {
+//             // There as a fatal exeption for this node.
+//             logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
+//         }
 
     }
 }
