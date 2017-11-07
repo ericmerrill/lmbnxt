@@ -8,11 +8,11 @@
   </soapenv:Header>
   <soapenv:Body>
     <replacePersonRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/pms2p0/wsdl11/sync/imspms_v2p0">
-      <sourcedId>G00030341</sourcedId>
+      <sourcedId>49281</sourcedId>
       <personRecord>
         <sourcedGUID>
           <refAgentInstanceID>ILP</refAgentInstanceID>
-          <sourcedId>G00030341</sourcedId>
+          <sourcedId>49281</sourcedId>
         </sourcedGUID>
         <person>
           <formname>
@@ -104,7 +104,7 @@
             </contactinfoType>
             <contactinfoValue>
               <language>en</language>
-              <textString>test.merrill@oakland.edu</textString>
+              <textString>merrill@example.com</textString>
             </contactinfoValue>
           </contactinfo>
           <roles>
@@ -136,7 +136,7 @@
             <userId>
               <userIdValue>
                 <language>en</language>
-                <textString>test.merrill</textString>
+                <textString>merrill</textString>
               </userIdValue>
               <userIdType>
                 <language>en</language>
@@ -159,12 +159,12 @@
             <extensionField>
               <fieldName>BannerID</fieldName>
               <fieldType>String</fieldType>
-              <fieldValue>G00030341</fieldValue>
+              <fieldValue>A00012121</fieldValue>
             </extensionField>
             <extensionField>
               <fieldName>SourcedId</fieldName>
               <fieldType>String</fieldType>
-              <fieldValue>446161</fieldValue>
+              <fieldValue>49281</fieldValue>
             </extensionField>
           </extension>
         </person>

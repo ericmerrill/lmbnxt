@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\processors\lis2;
+use enrol_lmb\local\response;
 use enrol_lmb\local\exception;
 
 global $CFG;
@@ -61,5 +62,21 @@ class lis2_base_test extends xml_helper {
             $this->assertInstanceOf(exception\message_exception::class, $ex);
             $this->assertContains('LIS message namespace incorrect', $ex->getMessage());
         }
+    }
+
+    public function test_get_response_object() {
+        // First with an empty namespace.
+        $converter = new lis2\base();
+
+        $response = $converter->get_response_object();
+        $this->assertInstanceOf(response\lis2::class, $response);
+        $this->assertAttributeEmpty('namespace', $response);
+
+        // Now one with a namespace.
+        $converter = new lis2\group_term();
+
+        $response = $converter->get_response_object();
+        $this->assertInstanceOf(response\lis2::class, $response);
+        $this->assertAttributeEquals(lis2\group_term::NAMESPACE_DEF, 'namespace', $response);
     }
 }

@@ -1,0 +1,39 @@
+{
+  "COURSESECTIONRECORD": {
+    "SOURCEDGUID": {
+      "SOURCEDID": "sdid"
+    },
+    "COURSESECTION": {
+      "TITLE": {
+        "TEXTSTRING": "title"
+      },
+      "LABEL": {
+        "TEXTSTRING": "rubric"
+      },
+      "ACADEMICSESSION": {
+        "TEXTSTRING": "term"
+      },
+      "STATUS": "status",
+      "TIMEFRAME": {
+        "BEGIN": {
+          "lmbinternal": true,
+          "function": "process_timeframe_node",
+          "nodetype": "begin"
+        },
+        "END": {
+          "lmbinternal": true,
+          "function": "process_timeframe_node",
+          "nodetype": "end"
+        }
+      },
+      "DATASOURCE": "sdidsource",
+      "PARENTOFFERINGID": "parentclass",
+      "LOCATION": {
+        "TEXTSTRING": "location"
+      },
+      "ORG": {
+        "ID": "deptsdid"
+      }
+    }
+  }
+}

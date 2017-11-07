@@ -25,6 +25,7 @@
 
 namespace enrol_lmb\local\moodle;
 use enrol_lmb\logging;
+use enrol_lmb\settings;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -37,12 +38,19 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base {
+
+    protected $settings = null;
+
+    public function __construct() {
+        $this->settings = new settings();
+    }
+
     /**
      * This function takes a data object and attempts to apply it to Moodle.
      *
      * @param data\base $data A data object to process.
      */
-    public static function convert_to_moodle(\enrol_lmb\local\data\base $data) {
+    public function convert_to_moodle(\enrol_lmb\local\data\base $data) {
         debugging("convert_to_moodle must be implemented by child classes.", DEBUG_DEVELOPER);
     }
 }

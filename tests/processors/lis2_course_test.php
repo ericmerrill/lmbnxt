@@ -15,40 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * An object for converting data to moodle.
+ * Tests for the LIS xml parser.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace enrol_lmb\local\moodle;
-use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Abstract object for converting a data object to Moodle.
- *
- * @package    enrol_lmb
- * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2016 Oakland University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class user extends base {
-    protected $record = null;
+use enrol_lmb\local\processors\lis2;
+use enrol_lmb\local\data;
+use enrol_lmb\local\exception;
 
-    /**
-     * This function takes a data object and attempts to apply it to Moodle.
-     *
-     * @param data\base $data A data object to process.
-     */
-    public function convert_to_moodle(\enrol_lmb\local\data\person $data) {
-        $record = new stdClass();
+global $CFG;
+require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
+class lis2_course_test extends xml_helper {
+    public function test_term_group() {
+        global $CFG;
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replaceCourseSectionRequest.xml');
 
+        $converter = new lis2\course();
 
-        // TODO Do something.
+        $course = $converter->process_xml_to_data($node);
+        $this->assertInstanceOf(data\course::class, $course);
+
+        //print "<pre>";var_export($course);print "</pre>\n";
+        // TODO.
+
     }
+
 }

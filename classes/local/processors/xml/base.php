@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\exception;
 use enrol_lmb\local\response;
+use enrol_lmb\local\moodle;
 
 /**
  * Class for working with messages from XML.
@@ -55,6 +56,8 @@ abstract class base {
      */
     const MAPPING_PATH = false;
 
+    const CATEGORY = false;
+
     /**
      * Processes the passed xml_node into a data object of the current type.
      *
@@ -78,6 +81,10 @@ abstract class base {
      */
     public function get_response_object() {
         return new response\xml();
+    }
+
+    public function get_moodle_converter() {
+        return new moodle\base();
     }
 
     /**

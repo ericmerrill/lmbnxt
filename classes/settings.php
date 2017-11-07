@@ -15,40 +15,49 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * An object for converting data to moodle.
+ * The primary controller for file based imports.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2016 Oakland University
+ * @copyright  2017 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\moodle;
-use enrol_lmb\logging;
-
+namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
+
 /**
- * Abstract object for converting a data object to Moodle.
+ * An object that provides settings for the plugin.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2016 Oakland University
+ * @copyright  2017 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user extends base {
-    protected $record = null;
+class settings {
 
-    /**
-     * This function takes a data object and attempts to apply it to Moodle.
-     *
-     * @param data\base $data A data object to process.
-     */
-    public function convert_to_moodle(\enrol_lmb\local\data\person $data) {
-        $record = new stdClass();
+    static protected $settingobj = null;
 
+    protected $settings = null;
 
+    static public function get_settings() {
+        if (empty(static::$settingobj)) {
+            static::$settingobj = new static();
+        }
 
-        // TODO Do something.
+        return static::$settingobj;
+    }
+
+    public function __construct() {
+        $this->settings = get_config('enrol_lmb');
+    }
+
+    public function get($key) {
+        if (!isset($this->setting->$key)) {
+            return null;
+        }
+
+        return $this->setting->$key;
     }
 }

@@ -42,7 +42,10 @@ class types {
                                     'membership' => '\\enrol_lmb\\local\\processors\\xml\\membership',
                                     'replacemembershiprequest' => '\\enrol_lmb\\local\\processors\\lis2\\membership',
                                     'replacepersonrequest' => '\\enrol_lmb\\local\\processors\\lis2\\person_replace',
-                                    'replacegrouprequest' => '\\enrol_lmb\\local\\processors\\lis2\\group');
+                                    'replacecoursesectionrequest' => '\\enrol_lmb\\local\\processors\\lis2\\course',
+                                    'replacegrouprequest' => '\\enrol_lmb\\local\\processors\\lis2\\group',
+                                    'imsx_syncrequestheaderinfo' => '\\enrol_lmb\\local\\processors\\list2\\header');
+
 
     /** @var array Array of processor nodes */
     protected static $processors = array();

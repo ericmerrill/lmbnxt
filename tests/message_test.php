@@ -28,6 +28,90 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
+use \enrol_lmb\message;
+use \enrol_lmb\controller;
+use \enrol_lmb\local\processors;
+use \enrol_lmb\local\response;
+use \enrol_lmb\logging;
+
 class message_test extends xml_helper {
 
+    public static function setUpBeforeClass() {
+        // This will create a logging tester and insert it into the factory instance.
+        new logging_helper();
+    }
+
+    public function test_load_processor() {
+        global $CFG;
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
+        $message = new message(null, $node);
+
+        $this->run_protected_method($message, 'load_processor');
+
+        $this->assertAttributeInstanceOf(processors\xml\person::class, 'processor', $message);
+        $this->assertAttributeInstanceOf(response\xml::class, 'response', $message);
+    }
+
+    public function test_process_to_data() {
+        global $CFG, $DB;
+
+        $this->resetAfterTest(true);
+
+        $this->assertEquals(0, $DB->count_records(\enrol_lmb\local\data\person::TABLE));
+
+        $controller = new controller();
+        $controller->set_option('nodb', true);
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
+        $message = new message($controller, $node);
+
+        $message->process_to_data();
+
+        // Make sure we still didn't save to DB.
+        $this->assertEquals(0, $DB->count_records(\enrol_lmb\local\data\person::TABLE));
+
+        // Now save to the DB.
+        $controller->set_option('nodb', false);
+        $message->process_to_data();
+        $this->assertEquals(1, $DB->count_records(\enrol_lmb\local\data\person::TABLE));
+
+        // Reset a little.
+        $DB->delete_records(\enrol_lmb\local\data\person::TABLE);
+        $this->assertEquals(0, $DB->count_records(\enrol_lmb\local\data\person::TABLE));
+
+        // Now try with a null controller.
+        $message = new message(null, $node);
+        $message->process_to_data();
+        $this->assertEquals(1, $DB->count_records(\enrol_lmb\local\data\person::TABLE));
+
+        // Now we are going to inspect what the result was.
+        $dataobjs = $this->get_protected_attribute($message, 'dataobjs');
+        $this->assertCount(1, $dataobjs);
+        $person = $dataobjs[0];
+
+        $this->assertInstanceOf(\enrol_lmb\local\data\person::class, $person);
+
+        // We expect this to throw a caught exception.
+        $node = $this->get_node_for_xml('<replaceMembershipRequest></replaceMembershipRequest>');
+        $message = new message(null, $node);
+
+        $log = logging::instance();
+        $message->process_to_data();
+
+        // See that we got the expected message.
+        $this->assertEquals("FATAL: Membership type could not be found\n", $log->test_get_flush_buffer());
+    }
+
+    public function test_get_response() {
+        global $CFG;
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/member_replace_teacher.xml');
+        $message = new message(null, $node);
+        $this->run_protected_method($message, 'load_processor');
+
+        $response = $message->get_response();
+
+        $this->assertInstanceOf(response\lis2::class, $response);
+
+    }
 }

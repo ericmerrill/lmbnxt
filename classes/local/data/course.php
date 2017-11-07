@@ -48,6 +48,8 @@ class course extends base {
      */
     const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\course';
 
+    // TODO - should add term column...
+
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('id', 'sdidsource', 'sdid', 'title', 'rubric', 'deptsdidsource', 'deptsdid',
                               'collegesdidsource', 'collegesdid', 'additional', 'timemodified');

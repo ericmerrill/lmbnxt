@@ -11,13 +11,13 @@
         "PERSONSOURCEDID": "sdid",
         "ROLE": {
           "ROLETYPE": {
-			"lmbinternal": true,
-			"function": "process_roletype_node"
-		  },
+            "lmbinternal": true,
+            "function": "process_roletype_node"
+          },
           "STATUS": {
-			"lmbinternal": true,
-			"function": "process_status_node"
-		  }
+            "lmbinternal": true,
+            "function": "process_status_node"
+          }
         }
       }
     }

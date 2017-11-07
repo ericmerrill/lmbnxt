@@ -79,7 +79,9 @@ class parse_processor extends \progressive_parser_processor {
         $this->add_path(strtoupper($path));
         $this->add_path(strtoupper('/enterprise'.$path));
         $this->add_path(strtoupper('/SOAPENV:ENVELOPE/SOAPENV:BODY'.$path));
+        $this->add_path(strtoupper('/SOAPENV:ENVELOPE/SOAPENV:HEADER'.$path));
         $this->add_path(strtoupper('/ENVELOPE/BODY'.$path));
+        $this->add_path(strtoupper('/ENVELOPE/HEADER'.$path));
     }
 
     /**

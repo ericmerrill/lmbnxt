@@ -46,11 +46,17 @@ class person extends base {
      */
     const MAPPING_PATH = '/enrol/lmb/classes/local/processors/xml/mappings/person.json';
 
+    const CATEGORY = 'person';
+
     /**
      * Basic constructor.
      */
     public function __construct() {
         $this->load_mappings();
+    }
+
+    public function get_moodle_converter() {
+        return new moodle\user();
     }
 
     /**

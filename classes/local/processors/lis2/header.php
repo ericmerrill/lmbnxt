@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * An object for converting data to moodle.
+ * Works on types of messages.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,32 +23,51 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\moodle;
-use enrol_lmb\logging;
+namespace enrol_lmb\local\processors\lis2;
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\local\processors\xml\trait_timeframe;
+
 /**
- * Abstract object for converting a data object to Moodle.
+ * Class for working with message types.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2016 Oakland University
+ * @copyright  2017 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user extends base {
-    protected $record = null;
+class header extends base {
+    use trait_timeframe;
 
     /**
-     * This function takes a data object and attempts to apply it to Moodle.
-     *
-     * @param data\base $data A data object to process.
+     * Namespace associated with this object.
      */
-    public function convert_to_moodle(\enrol_lmb\local\data\person $data) {
-        $record = new stdClass();
+    const NAMESPACE_DEF = "www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_v1p0";
 
+    /**
+     * The data object path for this object.
+     */
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\header';
 
+    /**
+     * Path to this objects mappings.
+     */
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/header.json';
 
-        // TODO Do something.
+    const CATEGORY = 'header';
+
+    /**
+     * Basic constructor.
+     */
+    public function __construct() {
+        $this->load_mappings();
     }
+
+    public function process_header($node) {
+        $this->dataobj->version = $node->IMSX_VERSION->get_value();
+        $this->dataobj->messageid = $node->IMSX_MESSAGEIDENTIFIER->get_value();
+        $this->dataobj->namespace = $node->get_attribute("XMLNS:XSI");
+    }
+
 }

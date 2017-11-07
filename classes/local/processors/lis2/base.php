@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\processors\xml;
 use enrol_lmb\local\exception;
+use enrol_lmb\local\response;
 
 /**
  * Class for working with messages from XML from the LIS spec.

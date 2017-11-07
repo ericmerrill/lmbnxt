@@ -279,4 +279,11 @@ abstract class base {
 
         return $DB->get_record(static::TABLE, $params);
     }
+
+    /**
+     * Do any cleanups after loading from XML.
+     */
+//     public function post_xml_load() {
+//
+//     }
 }

@@ -38,10 +38,12 @@ use \enrol_lmb\local\processors\types;
  */
 class controller {
     /** @var array An array of existing type processors for reuse */
-    protected $typeprocessors = array();
+//    protected $typeprocessors = array();
 
     /** @var array Options for this run */
     protected $options = array();
+
+    protected $currentheader = false;
 
     public function import_file($path = null) {
         if (!$path) {
@@ -72,13 +74,43 @@ class controller {
     }
 
     /**
+     * Return a controller option.
+     *
+     * Valid keys:
+     *     nodb - If true, disabled saving to db.
+     *
+     * @param string $key The option key
+     * @return mixed
+     */
+    public function get_option($key) {
+        if (!isset($this->options[$key])) {
+            return null;
+        }
+
+        return $this->options[$key];
+    }
+
+    /**
      * Takes a built XML node and processes it.
      *
      * @param xml_node $xmlobj The XML node to work on.
      */
     public function process_xml_object(local\xml_node $xmlobj) {
-        $message = new message();
-        $message->set_xml_node($xmlobj);
+        if ($xmlnode->get_name() === "IMSX_SYNCREQUESTHEADERINFO") {
+            // We will treat headers specially.
+            $header = new \stdClass();
+            $header->version = $xmlobj->IMSX_VERSION->get_value();
+            $header->messageid = $xmlobj->IMSX_MESSAGEIDENTIFIER->get_value();
+            $header->namespace = $xmlobj->get_attribute("XMLNS:XSI");
+
+            $this->currentheader = $header;
+
+            print "<pre>";var_export($this->currentheader);print "</pre>\n";
+            return;
+        }
+
+
+        $message = new message($this, $xmlobj);
 
         $message->process_to_data();
 //

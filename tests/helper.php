@@ -66,6 +66,20 @@ abstract class xml_helper extends advanced_testcase {
 
         return $node;
     }
+
+    protected function run_protected_method($obj, $name, $args = []) {
+        $class = new ReflectionClass($obj);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method->invokeArgs($obj, $args);
+    }
+
+    protected function get_protected_attribute($obj, $name) {
+        $class = new ReflectionClass($obj);
+        $property = $class->getProperty($name);
+        $property->setAccessible(true);
+        return $property->getValue($obj);
+    }
 }
 
 /**

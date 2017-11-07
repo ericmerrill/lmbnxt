@@ -51,19 +51,24 @@ class message {
     /** @var local\processors\xml\base The singular instances of logging */
     protected $processor = null;
 
+    /** @var controller controller object */
+    protected $controller = null;
+
     /**
-     * Set the XML node for this message.
+     * Build this object
      *
+     * @param controller $controller The controller for this message
      * @param xml_node $node The node for this message
      */
-    public function set_xml_node(xml_node $node) {
+    public function __construct(controller $controller = null, xml_node $node = null) {
+        $this->controller = $controller;
         $this->xmlnode = $node;
     }
 
     /**
      * Load the processor for this message.
      */
-    protected load_processor() {
+    protected function load_processor() {
         // Get the processor (cached).
         $this->processor = processors\types::get_type_processor($this->xmlnode->get_name());
 
@@ -78,6 +83,8 @@ class message {
     public function process_to_data() {
         $this->load_processor();
 
+        // TODO - check setting to skip certain message types.
+
         try {
             // Convert the node to a data object.
             $objs = $this->processor->process_xml_to_data($this->xmlnode);
@@ -88,9 +95,13 @@ class message {
             }
 
             // Some nodes (like membership) may return many children.
+            $nodb = false;
+            if (!empty($this->controller) && !empty($this->controller->get_option('nodb'))) {
+                $nodb = true;
+            }
             foreach ($objs as $obj) {
                 $obj->log_id();
-                if (empty($this->options['nodb'])) {
+                if (!$nodb) {
                     $obj->save_to_db();
                 }
             }
@@ -102,13 +113,20 @@ class message {
         }
     }
 
+    public function process_to_moodle() {
+        $converter = $this->processor->get_moodle_converter();
+        foreach ($this->dataobjs as $dataobj) {
+            $converter->convert_to_moodle($dataobj);
+        }
+    }
+
     /**
      * Return the message's response object.
      *
      * @return local\response\base
      */
     public function get_response() {
-        return $this->response();
+        return $this->response;
     }
 
 }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * An object for converting data to moodle.
+ * Data model object.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,32 +23,36 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\moodle;
+namespace enrol_lmb\local\data;
+use enrol_lmb\local\types;
 use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Abstract object for converting a data object to Moodle.
+ * Object that represents the internal data structure of a course object.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class user extends base {
-    protected $record = null;
+class header extends base {
+
+    /** @var array Array of keys that go in the database object */
+    protected $dbkeys = array('id', 'namespace', 'version', 'messageid', 'additional', 'timemodified');
+
+    /** @var array An array of default property->value pairs */
+    protected $defaults = array();
+
+    /** @var array An array of property->function pairs for converting incoming values */
+    protected $handlers = array();
 
     /**
-     * This function takes a data object and attempts to apply it to Moodle.
-     *
-     * @param data\base $data A data object to process.
+     * Log a unique line to id this object.
      */
-    public function convert_to_moodle(\enrol_lmb\local\data\person $data) {
-        $record = new stdClass();
-
-
-
-        // TODO Do something.
+    public function log_id() {
+        // This doesn't do that...
     }
+
 }
