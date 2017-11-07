@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use enrol_lmb\local\lis2;
+use enrol_lmb\local\processors\lis2;
 use enrol_lmb\local\data;
 use enrol_lmb\local\exception;
 
@@ -37,7 +37,7 @@ class lis2_member_person_test extends xml_helper {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/member_replace_teacher.xml');
 
-        $converter = new \enrol_lmb\local\lis2\membership();
+        $converter = new \enrol_lmb\local\processors\lis2\membership();
 
         $member = $converter->process_xml_to_data($node);
 
@@ -84,7 +84,7 @@ class lis2_member_person_test extends xml_helper {
      * @param int|false $expected The expected return value. False for exception.
      */
     public function test_member_person_status($data, $expected) {
-        $converter = new \enrol_lmb\local\lis2\member_person();
+        $converter = new \enrol_lmb\local\processors\lis2\member_person();
 
         $node = $this->get_node_for_xml('<replaceMembershipRequest><membershipRecord><membership><member><role><status>'.
                                         $data.
@@ -128,7 +128,7 @@ class lis2_member_person_test extends xml_helper {
      * @param int|false $expected The expected return value. False for exception.
      */
     public function test_member_person_roletype($data, $expected) {
-        $converter = new \enrol_lmb\local\lis2\member_person();
+        $converter = new \enrol_lmb\local\processors\lis2\member_person();
 
         $node = $this->get_node_for_xml('<replaceMembershipRequest><membershipRecord><membership><member><role><roleType>'.
                                         $data.
@@ -155,7 +155,7 @@ class lis2_member_person_test extends xml_helper {
         $node = $this->get_node_for_xml('<replaceMembershipRequest><membershipRecord><membership>'.
                                         '</membership></membershipRecord></replaceMembershipRequest>');
 
-        $converter = new \enrol_lmb\local\lis2\membership();
+        $converter = new \enrol_lmb\local\processors\lis2\membership();
 
         try {
             $membership = $converter->process_xml_to_data($node);

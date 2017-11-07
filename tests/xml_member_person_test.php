@@ -33,7 +33,7 @@ class xml_member_person_testcase extends xml_helper {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/member_person.xml');
 
-        $converter = new \enrol_lmb\local\xml\membership();
+        $converter = new \enrol_lmb\local\processors\xml\membership();
 
         $members = $converter->process_xml_to_data($node);
 

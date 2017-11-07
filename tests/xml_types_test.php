@@ -25,14 +25,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use enrol_lmb\local\xml;
+use enrol_lmb\local\processors\types;
+use enrol_lmb\local\processors\xml;
 
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
 class xml_types_test extends xml_helper {
     public function test_get_types() {
-        $types = xml\types::get_types();
+        $types = types::get_types();
 
         $this->assertInternalType('array', $types);
 
@@ -44,15 +45,15 @@ class xml_types_test extends xml_helper {
 
     public function test_get_type_processor() {
         // Check a not set type.
-        $result = xml\types::get_type_processor('unknown');
+        $result = types::get_type_processor('unknown');
         $this->assertFalse($result);
 
         // Now a person processor.
-        $personprocessor1 = xml\types::get_type_processor('person');
+        $personprocessor1 = types::get_type_processor('person');
         $this->assertInstanceOf(xml\person::class, $personprocessor1);
 
         // Now the same thing, but with all caps.
-        $personprocessor2 = xml\types::get_type_processor('PERSON');
+        $personprocessor2 = types::get_type_processor('PERSON');
         $this->assertInstanceOf(xml\person::class, $personprocessor2);
 
         // Should be the same object.
@@ -60,14 +61,14 @@ class xml_types_test extends xml_helper {
     }
 
     public function test_get_processor_for_class() {
-        $personprocessor1 = xml\types::get_processor_for_class('\\enrol_lmb\\local\\xml\\person');
+        $personprocessor1 = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\xml\\person');
         $this->assertInstanceOf(xml\person::class, $personprocessor1);
 
-        $groupprocessor = xml\types::get_processor_for_class('\\enrol_lmb\\local\\xml\\group');
+        $groupprocessor = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\xml\\group');
         $this->assertInstanceOf(xml\group::class, $groupprocessor);
 
         // Now make sure we get the same one back.
-        $personprocessor2 = xml\types::get_processor_for_class('\\enrol_lmb\\local\\xml\\person');
+        $personprocessor2 = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\xml\\person');
         $this->assertInstanceOf(xml\person::class, $personprocessor2);
         $this->assertEquals($personprocessor1, $personprocessor2);
     }

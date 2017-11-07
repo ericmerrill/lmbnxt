@@ -23,7 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\processors;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -36,12 +37,12 @@ defined('MOODLE_INTERNAL') || die();
  */
 class types {
     /** @var array Associative array and message root node names (types) and the processor class */
-    protected static $types = array('person' => '\\enrol_lmb\\local\\xml\\person',
-                                    'group' => '\\enrol_lmb\\local\\xml\\group',
-                                    'membership' => '\\enrol_lmb\\local\\xml\\membership',
-                                    'replacemembershiprequest' => '\\enrol_lmb\\local\\lis2\\membership',
-                                    'replacepersonrequest' => '\\enrol_lmb\\local\\lis2\\person_replace',
-                                    'replacegrouprequest' => '\\enrol_lmb\\local\\lis2\\group');
+    protected static $types = array('person' => '\\enrol_lmb\\local\\processors\\xml\\person',
+                                    'group' => '\\enrol_lmb\\local\\processors\\xml\\group',
+                                    'membership' => '\\enrol_lmb\\local\\processors\\xml\\membership',
+                                    'replacemembershiprequest' => '\\enrol_lmb\\local\\processors\\lis2\\membership',
+                                    'replacepersonrequest' => '\\enrol_lmb\\local\\processors\\lis2\\person_replace',
+                                    'replacegrouprequest' => '\\enrol_lmb\\local\\processors\\lis2\\group');
 
     /** @var array Array of processor nodes */
     protected static $processors = array();

@@ -23,11 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\lis2;
+namespace enrol_lmb\local\processors\lis2;
 
 defined('MOODLE_INTERNAL') || die();
 
-use enrol_lmb\local\xml;
+use enrol_lmb\local\processors\xml;
 use enrol_lmb\local\exception;
 
 /**

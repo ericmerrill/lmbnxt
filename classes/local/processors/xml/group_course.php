@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\processors\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,22 +35,43 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_group extends base {
+class group_course extends base {
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_group';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\course';
 
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/member_group.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/xml/mappings/group_course.json';
 
     /**
      * Basic constructor.
      */
     public function __construct() {
         $this->load_mappings();
+    }
+
+    /**
+     * Proccess a relationship node.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_relationship_node($node, $mapping) {
+        switch (strtolower($node->LABEL->get_value())) {
+            case 'college':
+                $this->dataobj->collegesdidsource = $node->SOURCEDID->SOURCE->get_value();
+                $this->dataobj->collegesdid = $node->SOURCEDID->ID->get_value();
+                break;
+            case 'department':
+                $this->dataobj->deptsdidsource = $node->SOURCEDID->SOURCE->get_value();
+                $this->dataobj->deptsdid = $node->SOURCEDID->ID->get_value();
+                break;
+            default:
+                return;
+        }
     }
 
 }

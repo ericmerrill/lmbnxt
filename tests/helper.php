@@ -76,7 +76,7 @@ abstract class xml_helper extends advanced_testcase {
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class xml_tester extends \enrol_lmb\local\xml\base {
+class xml_tester extends \enrol_lmb\local\processors\xml\base {
     const MAPPING_PATH = '/enrol/lmb/tests/fixtures/testmapping.json';
 
     public function __construct() {

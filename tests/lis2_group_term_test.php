@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use enrol_lmb\local\lis2;
+use enrol_lmb\local\processors\lis2;
 use enrol_lmb\local\data;
 use enrol_lmb\local\exception;
 

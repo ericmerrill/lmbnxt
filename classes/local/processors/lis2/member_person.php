@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\lis2;
+namespace enrol_lmb\local\processors\lis2;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -44,7 +44,7 @@ class member_person extends base {
     /**
      * Path to the mapping file.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/lis2/mappings/member_person.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/member_person.json';
 
     /**
      * Data class used by this type.

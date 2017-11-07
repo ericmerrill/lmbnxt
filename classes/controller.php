@@ -26,7 +26,7 @@
 namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\local\xml\types;
+use \enrol_lmb\local\processors\types;
 
 /**
  * Controller class for importing files and folders.
@@ -54,9 +54,9 @@ class controller {
     }
 
     // Takes a data object from an input source and does things to it.
-    public function process_data(local\types\base\data $data) {
-
-    }
+//     public function process_data(local\types\base\data $data) {
+//
+//     }
 
     /**
      * Set a controller option.

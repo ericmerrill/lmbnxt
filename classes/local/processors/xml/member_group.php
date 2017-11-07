@@ -23,33 +23,34 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\processors\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * A trait for processing timeframe nodes.
+ * Class for working with message types.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-trait trait_timeframe {
+class member_group extends base {
     /**
-     * Proccess a timeframe node.
-     *
-     * @param xml_node|array $node The XML node to process, or array of nodes
-     * @param array $mapping The mapping for the field
+     * The data object path for this object.
      */
-    protected function process_timeframe_node($node, $mapping) {
-        $type = $mapping['nodetype'];
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_group';
 
-        $param = $type.'date';
-        $this->dataobj->$param = $node->get_value();
+    /**
+     * Path to this objects mappings.
+     */
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/xml/mappings/member_group.json';
 
-        $value = $node->get_attribute('RESTRICT');
-        $param = $type.'restrict';
-        $this->dataobj->$param = (bool)$value;
+    /**
+     * Basic constructor.
+     */
+    public function __construct() {
+        $this->load_mappings();
     }
+
 }

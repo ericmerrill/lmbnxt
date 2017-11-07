@@ -23,9 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\processors\lis2;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\processors\types;
 
 /**
  * Class for working with message types.
@@ -35,34 +37,41 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_person extends base {
-    use trait_timeframe;
+class group extends base {
+    /**
+     * Namespace associated with this object.
+     */
+    const NAMESPACE_DEF = "www.imsglobal.org/services/lis/gms2p0/wsdl11/sync/imsgms_v2p0";
+
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_person';
+    const DATA_CLASS = false;
 
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/member_person.json';
+    const MAPPING_PATH = false;
 
     /**
-     * Basic constructor.
-     */
-    public function __construct() {
-        $this->load_mappings();
-    }
-
-    /**
-     * Proccess a role node.
+     * Processes the passed xml_node into a data object of the current type.
      *
-     * @param xml_node|array $node The XML node to process, or array of nodes
-     * @param array $mapping The mapping for the field
+     * @param xml_node $node The node to work on
+     * @return array|enrol_lmb\local\data\person
      */
-    public function process_role_node($node, $mapping) {
-        $this->dataobj->roletype = $node->get_attribute('ROLETYPE');
+    public function process_xml_to_data($node) {
+        // ID what group type for the XML, then pass on to the correct converter.
+        if (!isset($node->GROUPRECORD->GROUP->GROUPTYPE->TYPEVALUE->ID)) {
+            throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+        }
 
-        $this->apply_mappings($node, $mapping['mappings']);
+        switch (strtolower($node->GROUPRECORD->GROUP->GROUPTYPE->TYPEVALUE->ID->get_value())) {
+            case 'term':
+                $term = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\lis2\\group_term');
+                return $term->process_xml_to_data($node);
+        }
+
+        throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
     }
+
 }

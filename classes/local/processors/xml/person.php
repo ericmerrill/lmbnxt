@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\processors\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -44,7 +44,7 @@ class person extends base {
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/person.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/xml/mappings/person.json';
 
     /**
      * Basic constructor.

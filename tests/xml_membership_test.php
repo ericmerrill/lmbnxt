@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use enrol_lmb\local\xml;
+use enrol_lmb\local\processors\xml;
 use enrol_lmb\local\exception;
 
 global $CFG;

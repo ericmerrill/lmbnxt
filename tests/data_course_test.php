@@ -33,7 +33,7 @@ class data_course_testcase extends xml_helper {
         global $CFG;
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/course.xml');
-        $converter = new \enrol_lmb\local\xml\group();
+        $converter = new \enrol_lmb\local\processors\xml\group();
         $course = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
@@ -61,7 +61,7 @@ class data_course_testcase extends xml_helper {
         $this->resetAfterTest(true);
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/course.xml');
-        $converter = new \enrol_lmb\local\xml\group();
+        $converter = new \enrol_lmb\local\processors\xml\group();
         $course = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();

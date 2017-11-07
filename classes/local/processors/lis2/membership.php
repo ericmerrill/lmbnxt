@@ -23,9 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\processors\lis2;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\processors\types;
 
 /**
  * Class for working with message types.
@@ -35,7 +37,12 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class group extends base {
+class membership extends base {
+    /**
+     * Namespace associated with this object.
+     */
+    const NAMESPACE_DEF = "www.imsglobal.org/services/lis/mms2p0/wsdl11/sync/imsmms_v2p0";
+
     /**
      * The data object path for this object.
      */
@@ -50,28 +57,22 @@ class group extends base {
      * Processes the passed xml_node into a data object of the current type.
      *
      * @param xml_node $node The node to work on
-     * @return array|enrol_lmb\local\data\person
+     * @return array|enrol_lmb\local\data\member_group|enrol_lmb\local\data\member_user
      */
     public function process_xml_to_data($node) {
         // ID what group type for the XML, then pass on to the correct converter.
-        if (!isset($node->GROUPTYPE->TYPEVALUE)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+        if (!isset($node->MEMBERSHIPRECORD->MEMBERSHIP->MEMBERSHIPIDTYPE)) {
+            throw new \enrol_lmb\local\exception\message_exception('exception_membershiptype_not_found');
         }
 
-        switch (strtolower($node->GROUPTYPE->TYPEVALUE->get_value())) {
-            case 'term':
-                $term = types::get_processor_for_class('\\enrol_lmb\\local\\xml\\group_term');
-                return $term->process_xml_to_data($node);
+        // From WSDL valid values are courseTemplate, courseOffering, courseSection, sectionAssociation, and group.
+        switch (strtolower($node->MEMBERSHIPRECORD->MEMBERSHIP->MEMBERSHIPIDTYPE->get_value())) {
             case 'coursesection':
-                $section = types::get_processor_for_class('\\enrol_lmb\\local\\xml\\group_section');
-                return $section->process_xml_to_data($node);
-            case 'course':
-                $course = types::get_processor_for_class('\\enrol_lmb\\local\\xml\\group_course');
-                return $course->process_xml_to_data($node);
-
+                $membership = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\lis2\\member_person');
+                return $membership->process_xml_to_data($node);
         }
 
-        throw new \enrol_lmb\local\exception\message_exception('exception_grouptype_not_found');
+        throw new \enrol_lmb\local\exception\message_exception('exception_membershiptype_not_found');
     }
 
 }

@@ -27,7 +27,7 @@ namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
 use \enrol_lmb\local\exception;
-use \enrol_lmb\local\xml;
+use \enrol_lmb\local\processors;
 use \enrol_lmb\local\xml_node;
 
 /**
@@ -48,7 +48,7 @@ class message {
     /** @var local\response\base The response object for this particular message */
     protected $response = null;
 
-    /** @var local\xml\base The singular instances of logging */
+    /** @var local\processors\xml\base The singular instances of logging */
     protected $processor = null;
 
     /**
@@ -65,7 +65,7 @@ class message {
      */
     protected load_processor() {
         // Get the processor (cached).
-        $this->processor = xml\types::get_type_processor($this->xmlnode->get_name());
+        $this->processor = processors\types::get_type_processor($this->xmlnode->get_name());
 
         // Get a new response object for this message.
         $this->response = $this->processor->get_response_object();

@@ -64,7 +64,7 @@ class parser extends \progressive_parser {
      * Loads all of the standard types.
      */
     protected function load_types() {
-        $types = local\xml\types::get_types();
+        $types = local\processors\types::get_types();
         foreach ($types as $type) {
             $this->add_type($type);
         }

@@ -33,7 +33,7 @@ class xml_group_testcase extends xml_helper {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/term.xml');
 
-        $converter = new \enrol_lmb\local\xml\group();
+        $converter = new \enrol_lmb\local\processors\xml\group();
 
         $term = $converter->process_xml_to_data($node);
         $this->assertInstanceOf('\\enrol_lmb\\local\\data\\term', $term);
@@ -42,7 +42,7 @@ class xml_group_testcase extends xml_helper {
     public function test_error_groups() {
         $node = $this->get_node_for_xml('<group><sourcedid><source>Test SCT Banner</source><id>201640</id></sourcedid></group>');
 
-        $converter = new \enrol_lmb\local\xml\group();
+        $converter = new \enrol_lmb\local\processors\xml\group();
 
         try {
             $group = $converter->process_xml_to_data($node);

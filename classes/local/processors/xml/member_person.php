@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\processors\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,16 +35,17 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class group_course extends base {
+class member_person extends base {
+    use trait_timeframe;
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\course';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_person';
 
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/group_course.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/xml/mappings/member_person.json';
 
     /**
      * Basic constructor.
@@ -54,24 +55,14 @@ class group_course extends base {
     }
 
     /**
-     * Proccess a relationship node.
+     * Proccess a role node.
      *
      * @param xml_node|array $node The XML node to process, or array of nodes
      * @param array $mapping The mapping for the field
      */
-    protected function process_relationship_node($node, $mapping) {
-        switch (strtolower($node->LABEL->get_value())) {
-            case 'college':
-                $this->dataobj->collegesdidsource = $node->SOURCEDID->SOURCE->get_value();
-                $this->dataobj->collegesdid = $node->SOURCEDID->ID->get_value();
-                break;
-            case 'department':
-                $this->dataobj->deptsdidsource = $node->SOURCEDID->SOURCE->get_value();
-                $this->dataobj->deptsdid = $node->SOURCEDID->ID->get_value();
-                break;
-            default:
-                return;
-        }
-    }
+    public function process_role_node($node, $mapping) {
+        $this->dataobj->roletype = $node->get_attribute('ROLETYPE');
 
+        $this->apply_mappings($node, $mapping['mappings']);
+    }
 }

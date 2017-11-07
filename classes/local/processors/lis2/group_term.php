@@ -23,9 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\xml;
+namespace enrol_lmb\local\processors\lis2;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\processors\xml\trait_timeframe;
 
 /**
  * Class for working with message types.
@@ -39,6 +41,11 @@ class group_term extends base {
     use trait_timeframe;
 
     /**
+     * Namespace associated with this object.
+     */
+    const NAMESPACE_DEF = "www.imsglobal.org/services/lis/gms2p0/wsdl11/sync/imsgms_v2p0";
+
+    /**
      * The data object path for this object.
      */
     const DATA_CLASS = '\\enrol_lmb\\local\\data\\term';
@@ -46,7 +53,7 @@ class group_term extends base {
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/xml/mappings/group_term.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/group_term.json';
 
     /**
      * Basic constructor.
