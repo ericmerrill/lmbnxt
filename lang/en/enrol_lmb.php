@@ -56,3 +56,15 @@ $string['exception_membershiptype_no_members'] = 'Membership has no members';
 $string['exception_membershiptype_not_found'] = 'Membership type could not be found';
 $string['exception_update_failure'] = 'Failure updating in database';
 $string['exception_xml_boolean'] = 'Could not convert data "{$a}" into boolean.';
+
+// TODO.
+$string['parseperson'] = 'TODO';
+$string['parseperson_help'] = 'TODO';
+$string['createnewusers'] = 'TODO';
+$string['createnewusers_help'] = 'TODO';
+$string['createusersemaildomain'] = 'TODO';
+$string['createusersemaildomain_help'] = 'TODO';
+$string['ignoredomaincase'] = 'TODO';
+$string['ignoredomaincase_help'] = 'TODO';
+$string['donterroremail'] = 'TODO';
+$string['donterroremail_help'] = 'TODO';

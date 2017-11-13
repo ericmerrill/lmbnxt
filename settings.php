@@ -49,17 +49,17 @@ if ($ADMIN->fulltree) {
     // Parse Person --------------------------------------------------------------------------------.
     $settingslmb->add(new admin_setting_heading('enrol_lmb_parseperson', get_string('parseperson', 'enrol_lmb'), ''));
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/parsepersonxml', get_string('parsepersonxml', 'enrol_lmb'),
-            get_string('parsepersonxmlhelp', 'enrol_lmb'), 1));
+            get_string('parsepersonxml_help', 'enrol_lmb'), 1));
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/recordsctid', get_string('recordsctid', 'enrol_lmb'),
 //             get_string('recordsctidhelp', 'enrol_lmb'), 0));
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/createnewusers', get_string('createnewusers', 'enrol_lmb'),
-            get_string('createnewusershelp', 'enrol_lmb'), 1));
+            get_string('createnewusers_help', 'enrol_lmb'), 1));
     $settingslmb->add(new admin_setting_configtext('enrol_lmb/createusersemaildomain',
-            get_string('createusersemaildomain', 'enrol_lmb'), get_string('createusersemaildomainhelp', 'enrol_lmb'), ''));
+            get_string('createusersemaildomain', 'enrol_lmb'), get_string('createusersemaildomain_help', 'enrol_lmb'), ''));
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/ignoredomaincase', get_string('ignoredomaincase', 'enrol_lmb'),
-            get_string('ignoredomaincasehelp', 'enrol_lmb'), 0));
+            get_string('ignoredomaincase_help', 'enrol_lmb'), 0));
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/donterroremail', get_string('donterroremail', 'enrol_lmb'),
-            get_string('donterroremailhelp', 'enrol_lmb'), 1));
+            get_string('donterroremail_help', 'enrol_lmb'), 1));
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/imsdeleteusers', get_string('deleteusers', 'enrol_lmb'),
 //             get_string('deleteusershelp', 'enrol_lmb'), 0));
 }
