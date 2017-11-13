@@ -59,7 +59,8 @@ $string['exception_xml_boolean'] = 'Could not convert data "{$a}" into boolean.'
 
 // TODO.
 $string['parseperson'] = 'TODO';
-$string['parseperson_help'] = 'TODO';
+$string['parsepersonxml'] = 'TODO';
+$string['parsepersonxml_help'] = 'TODO';
 $string['createnewusers'] = 'TODO';
 $string['createnewusers_help'] = 'TODO';
 $string['createusersemaildomain'] = 'TODO';
