@@ -53,6 +53,9 @@ class xml_node implements \Iterator {
     /** @var int An pointer key used for child arrays. */
     protected $arraykey = 0;
 
+    /** @var int Track if this is a header root node or not. */
+    protected $isheader = 0;
+
     /**
      * Basic constructor.
      *
@@ -189,6 +192,24 @@ class xml_node implements \Iterator {
      */
     public function has_data() {
         return !empty($this->attrs) || !is_null($this->value);
+    }
+
+    /**
+     * Returns true if this node is the root node of a header.
+     *
+     * @return bool
+     */
+    public function is_header() {
+        return (bool)$this->isheader;
+    }
+
+    /**
+     * Set that this is the root node of a header.
+     *
+     * @param int|bool $isheader
+     */
+    public function set_is_header($isheader) {
+        $this->isheader = ($isheader) ? 1 : 0;
     }
 
     /**

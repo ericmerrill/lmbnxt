@@ -91,24 +91,25 @@ class controller {
     }
 
     /**
+     * We specially treat header nodes.
+     *
+     * @param xml_node $xmlobj The XML node to work on.
+     */
+    public function process_header_node(local\xml_node $xmlobj) {
+        $header = new \stdClass();
+        $header->version = $xmlobj->IMSX_VERSION->get_value();
+        $header->messageid = $xmlobj->IMSX_MESSAGEIDENTIFIER->get_value();
+        $header->namespace = $xmlobj->get_attribute("XMLNS:XSI");
+
+        $this->currentheader = $header;
+    }
+
+    /**
      * Takes a built XML node and processes it.
      *
      * @param xml_node $xmlobj The XML node to work on.
      */
     public function process_xml_object(local\xml_node $xmlobj) {
-        if ($xmlnode->get_name() === "IMSX_SYNCREQUESTHEADERINFO") {
-            // We will treat headers specially.
-            $header = new \stdClass();
-            $header->version = $xmlobj->IMSX_VERSION->get_value();
-            $header->messageid = $xmlobj->IMSX_MESSAGEIDENTIFIER->get_value();
-            $header->namespace = $xmlobj->get_attribute("XMLNS:XSI");
-
-            $this->currentheader = $header;
-
-            print "<pre>";var_export($this->currentheader);print "</pre>\n";
-            return;
-        }
-
 
         $message = new message($this, $xmlobj);
 

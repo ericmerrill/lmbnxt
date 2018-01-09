@@ -49,6 +49,9 @@ class parse_processor extends \progressive_parser_processor {
     /** @var xml_node The most recently completed node, basically for testing */
     protected $previousnode = null;
 
+    /** @var xml_node The most recently completed node, that was a header */
+    protected $previousheadernode = array();
+
     /** @var controller A reference to the controller object */
     protected $controller;
 
@@ -107,6 +110,11 @@ class parse_processor extends \progressive_parser_processor {
             $this->rootnode->set_attributes($attributes);
             $this->currentrootpath = $path;
             $this->currentnode = $this->rootnode;
+
+            // If HEADER is in the path of a root node, then mark it as a header node.
+            if (strpos($path, 'HEADER') !== false) {
+                $this->rootnode->set_is_header(1);
+            }
 
             logging::instance()->start_message("Processing {$this->currentnode->get_name()} message");
             return;
@@ -169,11 +177,27 @@ class parse_processor extends \progressive_parser_processor {
      */
     protected function process_complete_node(local\xml_node $node) {
         $this->previousnode = $node;
+        if ($node->is_header()) {
+            $this->previousheadernode = $node;
+        }
 
         // Dispatch a completed node.
         if ($this->controller) {
-            $this->controller->process_xml_object($node);
+            if ($node->is_header()) {
+                $this->controller->process_header_node($node);
+            } else {
+                $this->controller->process_xml_object($node);
+            }
         }
+    }
+
+    /**
+     * Returns the last completed XML node that was a header.
+     *
+     * @return xml_node
+     */
+    public function get_previous_header_node() {
+        return $this->previousheadernode;
     }
 
     /**

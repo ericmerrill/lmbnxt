@@ -58,6 +58,7 @@ abstract class xml_helper extends advanced_testcase {
      * @return xml_node|null The xml node
      */
     protected function get_node_for_file($path) {
+        // By not setting a controller, it won't process, just gives us the nodes.
         $parser = new \enrol_lmb\parser();
         $parser->add_type('tests');
         $parser->process_file($path);

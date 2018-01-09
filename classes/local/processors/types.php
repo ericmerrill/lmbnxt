@@ -44,7 +44,7 @@ class types {
                                     'replacepersonrequest' => '\\enrol_lmb\\local\\processors\\lis2\\person_replace',
                                     'replacecoursesectionrequest' => '\\enrol_lmb\\local\\processors\\lis2\\course',
                                     'replacegrouprequest' => '\\enrol_lmb\\local\\processors\\lis2\\group',
-                                    'imsx_syncrequestheaderinfo' => '\\enrol_lmb\\local\\processors\\list2\\header');
+                                    'imsx_syncrequestheaderinfo' => '\\enrol_lmb\\local\\processors\\lis2\\header');
 
 
     /** @var array Array of processor nodes */
