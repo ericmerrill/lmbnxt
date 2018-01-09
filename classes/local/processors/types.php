@@ -44,7 +44,7 @@ class types {
                                     'replacepersonrequest' => '\\enrol_lmb\\local\\processors\\lis2\\person_replace',
                                     'replacecoursesectionrequest' => '\\enrol_lmb\\local\\processors\\lis2\\course',
                                     'replacegrouprequest' => '\\enrol_lmb\\local\\processors\\lis2\\group',
-                                    'imsx_syncrequestheaderinfo' => '\\enrol_lmb\\local\\processors\\lis2\\header');
+                                    'imsx_syncrequestheaderinfo' => false);
 
 
     /** @var array Array of processor nodes */
@@ -83,6 +83,10 @@ class types {
      * @return xml\base
      */
     public static function get_processor_for_class($class) {
+        if (empty($class)) {
+            return false;
+        }
+
         if (isset(self::$processors[$class])) {
             return self::$processors[$class];
         }
