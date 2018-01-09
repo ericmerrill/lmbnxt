@@ -31,6 +31,7 @@ use enrol_lmb\local\exception;
 use enrol_lmb\local\response;
 use enrol_lmb\local\moodle;
 use enrol_lmb\message;
+use enrol_lmb\status;
 
 /**
  * Class for working with messages from XML.
@@ -258,4 +259,27 @@ abstract class base {
         }
     }
 
+    /**
+     * Return a generic success message.
+     *
+     * @return status\base
+     */
+    public function get_success_status() {
+        $status = new status\base();
+        $status->set_success(true);
+
+        return $status;
+    }
+
+    /**
+     * Return a generic failure message.
+     *
+     * @return status\base
+     */
+    public function get_failure_status() {
+        $status = new status\base();
+        $status->set_success(false);
+
+        return $status;
+    }
 }

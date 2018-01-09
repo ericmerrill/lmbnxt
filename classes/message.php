@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 use \enrol_lmb\local\exception;
 use \enrol_lmb\local\processors;
 use \enrol_lmb\local\xml_node;
+use \enrol_lmb\local\status;
 
 /**
  * An object that tracks the flow of a message though its life.
@@ -51,8 +52,11 @@ class message {
     /** @var local\processors\xml\base The singular instances of logging */
     protected $processor = null;
 
-    /** @var controller controller object */
+    /** @var controller The controller object */
     protected $controller = null;
+
+    /** @var status\base A status object */
+    protected $status = null;
 
     /**
      * Build this object
@@ -114,6 +118,9 @@ class message {
             $this->dataobjs = $objs;
         } catch (exception\message_exception $e) {
             // There as a fatal exeption for this node.
+            $status = $this->processor->get_failure_status();
+            $status->set_description('Exception while processing');
+            $this->set_status($status);
             logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
         }
     }
@@ -126,11 +133,37 @@ class message {
     }
 
     /**
+     * Add a status object to this message.
+     *
+     * @param status\base $status The status to use.
+     */
+    public function set_status(status\base $status) {
+        $this->status = $status;
+    }
+
+    /**
+     * Return the current status object for this message.
+     *
+     * @return status\base|null
+     */
+    public function get_status() {
+        if (empty($this->status) && !empty($this->processor)) {
+            return $this->processor->get_success_status();
+        }
+
+        return $this->status;
+    }
+
+    /**
      * Get the root tag for the message.
      *
-     * @return string
+     * @return string|false
      */
     public function get_root_tag() {
+        if (empty($this->xmlnode)) {
+            return false;
+        }
+
         return $this->xmlnode->get_name();
     }
 

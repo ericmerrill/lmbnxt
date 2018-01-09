@@ -35,7 +35,7 @@ class lis2 extends base {
 
     protected $severity = null;
 
-    public function __construct(bool, $success, $major, $severity = 'Status', $minor = null) {
+    public function __construct(bool $success, $major, $severity = 'Status', $minor = null) {
         $this->success = $success;
         $this->major = $major;
         $this->minor = $minor;

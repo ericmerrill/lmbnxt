@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 use enrol_lmb\local\processors\xml;
 use enrol_lmb\local\exception;
 use enrol_lmb\local\response;
+use enrol_lmb\local\status;
 
 /**
  * Class for working with messages from XML from the LIS spec.
@@ -91,4 +92,11 @@ class base extends xml\base {
         return true;
     }
 
+    public function get_success_status() {
+        return new status\lis2(true, 'Success', 'Status', 'fullsuccess');
+    }
+
+    public function get_failure_status() {
+        return new status\lis2(false, 'Failure');
+    }
 }

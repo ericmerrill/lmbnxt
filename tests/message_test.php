@@ -33,6 +33,7 @@ use \enrol_lmb\controller;
 use \enrol_lmb\local\processors;
 use \enrol_lmb\local\response;
 use \enrol_lmb\logging;
+use \enrol_lmb\local\status;
 
 class message_test extends xml_helper {
 
@@ -112,6 +113,30 @@ class message_test extends xml_helper {
         $response = $message->get_response();
 
         $this->assertInstanceOf(response\lis2::class, $response);
+    }
 
+    public function test_get_status() {
+        global $CFG;
+
+        $message = new message(null, null);
+        $this->assertNull($message->get_status());
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/member_replace_teacher.xml');
+        $message = new message(null, $node);
+        $this->run_protected_method($message, 'load_processor');
+        $status = $message->get_status();
+        $this->assertInstanceOf(status\lis2::class, $status);
+        $this->assertTrue($status->get_success());
+    }
+
+    public function test_get_root_tag() {
+        global $CFG;
+
+        $message = new message(null, null);
+        $this->assertFalse($message->get_root_tag());
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/member_replace_teacher.xml');
+        $message = new message(null, $node);
+        $this->assertEquals('REPLACEMEMBERSHIPREQUEST', $message->get_root_tag());
     }
 }

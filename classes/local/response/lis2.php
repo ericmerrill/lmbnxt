@@ -27,6 +27,8 @@ namespace enrol_lmb\local\response;
 
 defined('MOODLE_INTERNAL') || die();
 
+use \enrol_lmb\local\status;
+
 class lis2 extends xml {
 
     protected $namespace = null;
@@ -37,7 +39,7 @@ class lis2 extends xml {
         $response = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">';
 
         // First do the header if we can get it.
-        if ($this->controller) {
+        if ($this->controller && $this->message) {
             $header = $controller->get_current_header();
 
             if ($header) {
@@ -46,18 +48,30 @@ class lis2 extends xml {
                 $headernamespace = $xmlobj->get_attribute("XMLNS:XSI");
                 $responseid = uniqid();
 
+                $messtatus = $this->message->get_status();
+                if ($messtatus instanceof status\lis2) {
+                    throw new \coding_exception("Wrong status type in response.");
+                }
+
                 $status = '<imsx_statusInfo>
-                               <imsx_codeMajor>success</imsx_codeMajor>
-                               <imsx_severity>status</imsx_severity>
-                               <imsx_messageRefIdentifier>'.$messageid.'</imsx_messageRefIdentifier>
-                               <imsx_description/>
-                               <imsx_codeMinor>
+                               <imsx_codeMajor>'.$messtatus->get_major().'</imsx_codeMajor>
+                               <imsx_severity>'.$messtatus->get_severity().'</imsx_severity>
+                               <imsx_messageRefIdentifier>'.$messageid.'</imsx_messageRefIdentifier>';
+                if ($desc = $messtatus->get_description()) {
+                    $status .= '<imsx_description>'.$desc.'</imsx_description>';
+                } else {
+                    $status .= '<imsx_description/>';
+                }
+
+                if ($minor = $messtatus->get_minor()) {
+                    $status .= '<imsx_codeMinor>
                                   <imsx_codeMinorField>
                                      <imsx_codeMinorFieldName>TargetEndSystem</imsx_codeMinorFieldName>
-                                     <imsx_codeMinorFieldValue>fullsuccess</imsx_codeMinorFieldValue>
+                                     <imsx_codeMinorFieldValue>'.$minor.'</imsx_codeMinorFieldValue>
                                   </imsx_codeMinorField>
-                               </imsx_codeMinor>
-                            </imsx_statusInfo>';
+                               </imsx_codeMinor>';
+                }
+                $status .= '</imsx_statusInfo>';
 
                 $response .= '<soapenv:Header>'.
                              '<imsx_syncResponseHeaderInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" '.
@@ -81,8 +95,6 @@ class lis2 extends xml {
         $response .= '</soapenv:Body>';
 
         $response .= '</soapenv:Envelope>';
-
-
     }
 
     public function set_namespace($namespace) {
