@@ -52,9 +52,7 @@ class base extends xml\base {
      * @return enrol_lmb\local\data\base
      */
     public function process_xml_to_data($node) {
-        $namespacecheck = $this->check_lis_namespace($node);
-
-        if (!$namespacecheck) {
+        if (!$this->check_lis_namespace($node)) {
              throw new exception\message_exception('exception_lis_namespace');
         }
 

@@ -71,9 +71,12 @@ class message {
     protected function load_processor() {
         // Get the processor (cached).
         $this->processor = processors\types::get_type_processor($this->xmlnode->get_name());
+        $this->processor->set_message($this);
 
         // Get a new response object for this message.
         $this->response = $this->processor->get_response_object();
+        $this->response->set_controller($this->controller);
+        $this->response->set_message($this);
 
     }
 
@@ -94,11 +97,13 @@ class message {
                 $objs = array($objs);
             }
 
-            // Some nodes (like membership) may return many children.
+            // Don't save to the database in some cases.
             $nodb = false;
             if (!empty($this->controller) && !empty($this->controller->get_option('nodb'))) {
                 $nodb = true;
             }
+
+            // Some nodes (like membership) may return many children.
             foreach ($objs as $obj) {
                 $obj->log_id();
                 if (!$nodb) {
@@ -118,6 +123,15 @@ class message {
         foreach ($this->dataobjs as $dataobj) {
             $converter->convert_to_moodle($dataobj);
         }
+    }
+
+    /**
+     * Get the root tag for the message.
+     *
+     * @return string
+     */
+    public function get_root_tag() {
+        return $this->xmlnode->get_name();
     }
 
     /**

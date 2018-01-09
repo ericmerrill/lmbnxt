@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The base abstract response class.
+ * The base status class.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,39 +23,31 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\response;
+namespace enrol_lmb\local\status;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\controller;
-use \enrol_lmb\message;
+class base {
+    /** @var string A user displayable message */
+    protected $description = false;
 
-abstract class base {
+     /** @var bool If there was success */
+    protected $success = true;
 
-    /** @var controller The controller object */
-    protected $controller = null;
-
-     /** @var message The message object */
-    protected $message = null;
-
-    abstract public function get_response_body();
-
-    /**
-     * Set a controller for this response to use.
-     *
-     * @param controller $controller The controller for this response
-     */
-    public function set_controller($controller) {
-        $this->controller = $controller;
+    public function set_success(bool $success) {
+        $this->success = $success;
     }
 
-    /**
-     * Set a message for this response to use.
-     *
-     * @param message $message The message for this response
-     */
-    public function set_message(message $message) {
-        $this->message = $message;
+    public function get_success() {
+        return $this->success;
+    }
+
+    public function set_description($message) {
+        $this->usermessage = $message;
+    }
+
+    public function get_description() {
+        return $this->usermessage;
     }
 
 }

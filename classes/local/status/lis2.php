@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The base abstract response class.
+ * A status for LIS 2 messages.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -23,39 +23,34 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\response;
+namespace enrol_lmb\local\status;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\controller;
-use \enrol_lmb\message;
+class lis2 extends base {
 
-abstract class base {
+    protected $major = null;
 
-    /** @var controller The controller object */
-    protected $controller = null;
+    protected $minor = null;
 
-     /** @var message The message object */
-    protected $message = null;
+    protected $severity = null;
 
-    abstract public function get_response_body();
-
-    /**
-     * Set a controller for this response to use.
-     *
-     * @param controller $controller The controller for this response
-     */
-    public function set_controller($controller) {
-        $this->controller = $controller;
+    public function __construct(bool, $success, $major, $severity = 'Status', $minor = null) {
+        $this->success = $success;
+        $this->major = $major;
+        $this->minor = $minor;
+        $this->severity = $severity;
     }
 
-    /**
-     * Set a message for this response to use.
-     *
-     * @param message $message The message for this response
-     */
-    public function set_message(message $message) {
-        $this->message = $message;
+    public function get_major() {
+        return $this->major;
     }
 
+    public function get_minor() {
+        return $this->minor;
+    }
+
+    public function get_severity() {
+        return $this->severity;
+    }
 }

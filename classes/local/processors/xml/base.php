@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 use enrol_lmb\local\exception;
 use enrol_lmb\local\response;
 use enrol_lmb\local\moodle;
+use enrol_lmb\message;
 
 /**
  * Class for working with messages from XML.
@@ -45,6 +46,9 @@ abstract class base {
 
     /** @var enrol_lmb\local\data\base The currently in progress data object */
     protected $dataobj = null;
+
+    /** @var message The message object that this applies to */
+    protected $message = null;
 
     /**
      * The data object path for this object.
@@ -83,8 +87,22 @@ abstract class base {
         return new response\xml();
     }
 
+    /**
+     * Get the moodle converter for this processor.
+     *
+     * @return moodle\base
+     */
     public function get_moodle_converter() {
         return new moodle\base();
+    }
+
+    /**
+     * Set the message object that this object can work with.
+     *
+     * @param message $message
+     */
+    public function set_message(message $message) {
+        $this->message = $message;
     }
 
     /**

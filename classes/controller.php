@@ -43,6 +43,7 @@ class controller {
     /** @var array Options for this run */
     protected $options = array();
 
+    /** @var local\xml_node Most recent header node seen */
     protected $currentheader = false;
 
     public function import_file($path = null) {
@@ -91,17 +92,22 @@ class controller {
     }
 
     /**
+     * Get the node of the most recent header we have seen.
+     *
+     * @return local\xml_node
+     */
+    public function get_current_header() {
+        return $this->currentheader;
+    }
+
+    /**
      * We specially treat header nodes.
      *
      * @param xml_node $xmlobj The XML node to work on.
      */
     public function process_header_node(local\xml_node $xmlobj) {
-        $header = new \stdClass();
-        $header->version = $xmlobj->IMSX_VERSION->get_value();
-        $header->messageid = $xmlobj->IMSX_MESSAGEIDENTIFIER->get_value();
-        $header->namespace = $xmlobj->get_attribute("XMLNS:XSI");
-
-        $this->currentheader = $header;
+        // Just saving this for later use.
+        $this->currentheader = $xmlobj;
     }
 
     /**
