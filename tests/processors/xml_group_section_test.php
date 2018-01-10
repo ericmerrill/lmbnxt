@@ -42,6 +42,7 @@ class xml_group_section_testcase extends xml_helper {
         $this->assertEquals('10001.201640', $section->sdid);
         $this->assertEquals('Course Title', $section->title);
         $this->assertEquals('English Dept', $section->deptname);
+        $this->assertEquals('ENG', $section->deptsdid);
 
         $this->assertEquals('1472515200', $section->begindate);
         $this->assertEquals('1481932800', $section->enddate);

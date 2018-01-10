@@ -5,7 +5,10 @@
   },
   "DESCRIPTION": {
     "SHORT": "crn",
-    "LONG": "rubric",
+    "LONG": {
+      "lmbinternal": true,
+      "function": "process_rubric_node"
+    },
     "FULL": "title"
   },
   "ORG": {

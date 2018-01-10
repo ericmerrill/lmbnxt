@@ -11,7 +11,7 @@
         "TEXTSTRING": "rubric"
       },
       "ACADEMICSESSION": {
-        "TEXTSTRING": "term"
+        "TEXTSTRING": "termsdid"
       },
       "STATUS": "status",
       "TIMEFRAME": {
@@ -27,12 +27,17 @@
         }
       },
       "DATASOURCE": "sdidsource",
-      "PARENTOFFERINGID": "parentclass",
+      "PARENTOFFERINGID": "coursesdid",
       "LOCATION": {
         "TEXTSTRING": "location"
       },
       "ORG": {
-        "ID": "deptsdid"
+        "ORGNAME": {
+          "TEXTSTRING": "deptname"
+        },
+        "ID": {
+          "TEXTSTRING": "deptsdid"
+        }
       }
     }
   }

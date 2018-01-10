@@ -30,14 +30,14 @@ defined('MOODLE_INTERNAL') || die();
 use enrol_lmb\local\processors\xml\trait_timeframe;
 
 /**
- * Class for working with message types.
+ * Class for working with course section message types.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
  * @copyright  2017 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course extends base {
+class section extends base {
     use trait_timeframe;
 
     /**
@@ -48,12 +48,12 @@ class course extends base {
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\course';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\section';
 
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/course.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/section.json';
 
     /**
      * Basic constructor.

@@ -32,17 +32,37 @@ use enrol_lmb\local\exception;
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class lis2_course_test extends xml_helper {
+class lis2_section_test extends xml_helper {
     public function test_term_group() {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replaceCourseSectionRequest.xml');
 
-        $converter = new lis2\course();
+        $converter = new lis2\section();
 
-        $course = $converter->process_xml_to_data($node);
-        $this->assertInstanceOf(data\course::class, $course);
+        $section = $converter->process_xml_to_data($node);
+        $this->assertInstanceOf(data\section::class, $section);
 
-        //print "<pre>";var_export($course);print "</pre>\n";
+        $this->assertEquals('44654.201740', $section->sdid);
+        $this->assertEquals('Banner', $section->sdidsource);
+
+        $this->assertEquals('Fall Semester 2017 - Contemporary Fiction (ENG-3705-0)', $section->title);
+        $this->assertEquals('201740 ENG-3705-0', $section->rubric);
+
+        $this->assertEquals('English Dept', $section->deptname);
+        $this->assertEquals('ENG', $section->deptsdid);
+        $this->assertEquals('201740', $section->termsdid);
+        $this->assertEquals('Active', $section->status);
+
+        $this->assertEquals(1504224000, $section->begindate);
+        $this->assertEquals(0, $section->beginrestrict);
+        $this->assertEquals(1514678400, $section->enddate);
+        $this->assertEquals(0, $section->endrestrict);
+
+        $this->assertEquals('ENG.3705', $section->coursesdid);
+        $this->assertEquals('Main Campus', $section->location);
+
+
+        print "<pre>";var_export($section);print "</pre>\n";
         // TODO.
 
     }

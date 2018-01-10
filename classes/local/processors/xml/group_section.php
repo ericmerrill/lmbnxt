@@ -99,4 +99,19 @@ class group_section extends base {
         }
     }
 
+    /**
+     * Process the rubic node to extract extra data.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_rubric_node($node, $mapping) {
+        $rubric = $node->get_value();
+        $this->dataobj->rubric = $rubric;
+
+        if (preg_match('|([a-z0-9]*)-[a-z0-9]*-[a-z0-9]*|i', $rubric, $matches)) {
+            $this->dataobj->deptsdid = $matches[1];
+        }
+    }
+
 }
