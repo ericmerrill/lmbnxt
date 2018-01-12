@@ -119,7 +119,11 @@ class controller {
 
         $message = new message($this, $xmlobj);
 
-        $message->process_to_data();
+        $message->process();
+
+
+        // TODO get response.
+
 //
 //         // Get the processor (cached).
 //         $xmlproc = types::get_type_processor($xmlobj->get_name());

@@ -8,11 +8,11 @@
   </soapenv:Header>
   <soapenv:Body>
     <replaceGroupRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/gms2p0/wsdl11/sync/imsgms_v2p0">
-      <sourcedId>201640</sourcedId>
+      <sourcedId>201740</sourcedId>
       <groupRecord>
         <sourcedGUID>
           <refAgentInstanceID>ILP</refAgentInstanceID>
-          <sourcedId>201640</sourcedId>
+          <sourcedId>201740</sourcedId>
         </sourcedGUID>
         <group>
           <groupType>
@@ -33,12 +33,12 @@
             </typevalue>
           </groupType>
           <timeframe>
-            <begin>2016-08-30T00:00:00</begin>
-            <end>2016-12-17T00:00:00</end>
+            <begin>2017-08-30T00:00:00</begin>
+            <end>2017-12-17T00:00:00</end>
           </timeframe>
           <description>
-            <shortDescription>Short201640</shortDescription>
-            <longDescription>Fall 2016</longDescription>
+            <shortDescription>Short201740</shortDescription>
+            <longDescription>Fall Semester 2017</longDescription>
           </description>
         </group>
       </groupRecord>

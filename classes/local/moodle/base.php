@@ -24,10 +24,12 @@
  */
 
 namespace enrol_lmb\local\moodle;
-use enrol_lmb\logging;
-use enrol_lmb\settings;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\logging;
+use enrol_lmb\settings;
+use enrol_lmb\local\data;
 
 /**
  * Abstract object for converting a data object to Moodle.
@@ -41,8 +43,10 @@ abstract class base {
 
     protected $settings = null;
 
+    protected $data = null;
+
     public function __construct() {
-        $this->settings = new settings();
+        $this->settings = settings::get_settings();
     }
 
     /**
@@ -50,7 +54,16 @@ abstract class base {
      *
      * @param data\base $data A data object to process.
      */
-    public function convert_to_moodle(\enrol_lmb\local\data\base $data) {
+    public function convert_to_moodle(data\base $data) {
         debugging("convert_to_moodle must be implemented by child classes.", DEBUG_DEVELOPER);
+    }
+
+    /**
+     * Set the data object for this object.
+     *
+     * @param data\base $data A data object to process.
+     */
+    public function set_data(data\base $data) {
+        $this->data = $data;
     }
 }

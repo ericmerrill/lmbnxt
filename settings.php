@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use \enrol_lmb\settings;
+
 $settings = new admin_category('enrolsettingscat', get_string('pluginname', 'enrol_lmb'), $settings->hidden);
 $settingslmb = new admin_settingpage('enrolsettingslmb', get_string('settings'), 'moodle/site:config');
 
@@ -62,6 +64,70 @@ if ($ADMIN->fulltree) {
             get_string('donterroremail_help', 'enrol_lmb'), 1));
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/imsdeleteusers', get_string('deleteusers', 'enrol_lmb'),
 //             get_string('deleteusershelp', 'enrol_lmb'), 0));
+
+    // Parse Course --------------------------------------------------------------------------------.
+    $settingslmb->add(new admin_setting_heading('enrol_lmb_parsecourse', get_string('parsecourse', 'enrol_lmb'), ''));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/parsecoursexml', get_string('parsecoursexml', 'enrol_lmb'),
+            get_string('parsecoursexml_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/coursetitle', get_string('coursetitle', 'enrol_lmb'),
+            get_string('coursetitle_help', 'enrol_lmb'), '[RUBRIC]-[CRN]-[FULL]'));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcetitle', get_string('forcetitle', 'enrol_lmb'),
+            get_string('forcetitle_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/courseshorttitle', get_string('courseshorttitle', 'enrol_lmb'),
+            get_string('courseshorttitle_help', 'enrol_lmb'), '[DEPT][NUM]-[CRN][TERM]'));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forceshorttitle', get_string('forceshorttitle', 'enrol_lmb'),
+            get_string('forceshorttitle_help', 'enrol_lmb'), 1));
+
+    unset($options);
+    $options = array();
+    $options[settings::CREATE_COURSE_VISIBLE] = get_string('coursehiddenhidden', 'enrol_lmb');
+    $options[settings::CREATE_COURSE_CRON] = get_string('coursehiddencron', 'enrol_lmb');
+    $options[settings::CREATE_COURSE_HIDDEN] = get_string('coursehiddenvisible', 'enrol_lmb');
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/coursehidden', get_string('coursehidden', 'enrol_lmb'),
+            get_string('coursehidden_help', 'enrol_lmb'), settings::CREATE_COURSE_VISIBLE, $options));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/cronunhidecourses', get_string('cronunhidecourses', 'enrol_lmb'),
+            get_string('cronunhidecourses_help', 'enrol_lmb'), 0));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/cronunhidedays', get_string('cronunhidedays', 'enrol_lmb'),
+            get_string('cronunhidedays_help', 'enrol_lmb'), '0'));
+
+    unset($options);
+    $options = array();
+    $options['term'] = get_string('termcat', 'enrol_lmb');
+    $options['dept'] = get_string('deptcat', 'enrol_lmb');
+    $options['deptcode'] = get_string('deptcodecat', 'enrol_lmb');
+    $options['termdept'] = get_string('termdeptcat', 'enrol_lmb');
+    $options['termdeptcode'] = get_string('termdeptcodecat', 'enrol_lmb');
+    $options['other'] = get_string('selectedcat', 'enrol_lmb');
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/cattype', get_string('categorytype', 'enrol_lmb'),
+            get_string('categorytype_help', 'enrol_lmb'), 'term', $options));
+
+    $displaylist = coursecat::make_categories_list();
+
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/catselect', get_string('catselect', 'enrol_lmb'),
+            get_string('catselect_help', 'enrol_lmb'), 1, $displaylist));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/cathidden', get_string('cathidden', 'enrol_lmb'),
+            get_string('cathidden_help', 'enrol_lmb'), 0));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcecat', get_string('forcecat', 'enrol_lmb'),
+            get_string('forcecat_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/usemoodlecoursesettings',
+            get_string('usemoodlecoursesettings', 'enrol_lmb'), get_string('usemoodlecoursesettings_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/computesections', get_string('computesections', 'enrol_lmb'),
+            get_string('computesections_help', 'enrol_lmb'), 0));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcecomputesections',
+            get_string('forcecomputesections', 'enrol_lmb'), get_string('forcecomputesections_help', 'enrol_lmb'), 0));
+
 }
 
 $settings->add('enrolsettingscat', $settingslmb);

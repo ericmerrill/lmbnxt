@@ -24,9 +24,11 @@
  */
 
 namespace enrol_lmb\local\data;
-use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\logging;
+use enrol_lmb\local\moodle;
 
 /**
  * Object that represents the internal data structure.
@@ -60,7 +62,7 @@ abstract class base {
     /**
      * The class of the Moodle converter for this data object.
      */
-    const MOODLE_TYPE = false;
+    const MOODLE_CLASS = false;
 
     /**
      * Basic constructor.
@@ -278,6 +280,15 @@ abstract class base {
         $params = array('sdid' => $this->__get('sdid'), 'sdidsource' => $this->__get('sdidsource'));
 
         return $DB->get_record(static::TABLE, $params);
+    }
+
+    /**
+     * Get the moodle converter for this data object.
+     *
+     * @return moodle\base
+     */
+    public function get_moodle_converter() {
+        return new moodle\base();
     }
 
     /**

@@ -85,6 +85,14 @@ class message {
     }
 
     /**
+     * Run the full process.
+     */
+    public function process() {
+        $this->process_to_data();
+        $this->process_to_moodle();
+    }
+
+    /**
      * Process the xml node into data objects.
      */
     public function process_to_data() {
@@ -126,8 +134,8 @@ class message {
     }
 
     public function process_to_moodle() {
-        $converter = $this->processor->get_moodle_converter();
         foreach ($this->dataobjs as $dataobj) {
+            $converter = $dataobj->get_moodle_converter();
             $converter->convert_to_moodle($dataobj);
         }
     }

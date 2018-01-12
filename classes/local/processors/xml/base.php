@@ -76,6 +76,9 @@ abstract class base {
         // First we are going to use the simple static mappings.
         $this->apply_mappings($node);
 
+        // Do any post mapping work that we might want to.
+        $this->post_mappings();
+
         return $this->dataobj;
     }
 
@@ -86,15 +89,6 @@ abstract class base {
      */
     public function get_response_object() {
         return new response\xml();
-    }
-
-    /**
-     * Get the moodle converter for this processor.
-     *
-     * @return moodle\base
-     */
-    public function get_moodle_converter() {
-        return new moodle\base();
     }
 
     /**
@@ -165,6 +159,13 @@ abstract class base {
                 }
             }
         }
+    }
+
+    /**
+     * Do any work that we might want to after loading all the data from mappings.
+     */
+    protected function post_mappings() {
+        return;
     }
 
     /**

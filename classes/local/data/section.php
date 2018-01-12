@@ -24,10 +24,12 @@
  */
 
 namespace enrol_lmb\local\data;
-use enrol_lmb\local\types;
-use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\types;
+use enrol_lmb\logging;
+use enrol_lmb\local\moodle;
 
 /**
  * Object that represents the internal data structure of a section object.
@@ -76,6 +78,10 @@ class section extends base {
         } else {
             logging::instance()->log_line("Section \"{$desc}\", ID \"{$id}\" from \"{$source}\"");
         }
+    }
+
+    public function get_moodle_converter() {
+        return new moodle\course();
     }
 
 }

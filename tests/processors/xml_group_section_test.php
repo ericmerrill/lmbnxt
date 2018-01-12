@@ -39,16 +39,16 @@ class xml_group_section_testcase extends xml_helper {
         $this->assertInstanceOf('\\enrol_lmb\\local\\data\\section', $section);
 
         $this->assertEquals('Test SCT Banner', $section->sdidsource);
-        $this->assertEquals('10001.201640', $section->sdid);
+        $this->assertEquals('10001.201740', $section->sdid);
         $this->assertEquals('Course Title', $section->title);
         $this->assertEquals('English Dept', $section->deptname);
         $this->assertEquals('ENG', $section->deptsdid);
 
-        $this->assertEquals('1472515200', $section->begindate);
-        $this->assertEquals('1481932800', $section->enddate);
+        $this->assertEquals('1504051200', $section->begindate);
+        $this->assertEquals('1513468800', $section->enddate);
 
         $this->assertEquals('Test SCT Banner', $section->termsdidsource);
-        $this->assertEquals('201640', $section->termsdid);
+        $this->assertEquals('201740', $section->termsdid);
         $this->assertEquals('Test SCT Banner', $section->coursesdidsource);
         $this->assertEquals('ENG-101', $section->coursesdid);
 
@@ -60,19 +60,21 @@ class xml_group_section_testcase extends xml_helper {
 
         $this->assertEquals('10001', $section->crn);
         $this->assertEquals('ENG-101-001', $section->rubric);
+        $this->assertEquals('101', $section->coursenumber);
+        $this->assertEquals('001', $section->sectionnumber);
 
         $this->assertCount(2, $section->events);
         $this->assertEquals('Section Meeting', $section->events[0]->eventdescription);
-        $this->assertEquals('2016-08-30', $section->events[0]->begindate);
-        $this->assertEquals('2016-12-17', $section->events[0]->enddate);
+        $this->assertEquals('2017-08-30', $section->events[0]->begindate);
+        $this->assertEquals('2017-12-17', $section->events[0]->enddate);
         $this->assertEquals('mf', $section->events[0]->daysofweek);
         $this->assertEquals('08:00:00', $section->events[0]->begintime);
         $this->assertEquals('09:07:00', $section->events[0]->endtime);
         $this->assertEquals('HH 113', $section->events[0]->location);
 
         $this->assertEquals('Section Meeting', $section->events[1]->eventdescription);
-        $this->assertEquals('2016-08-30', $section->events[1]->begindate);
-        $this->assertEquals('2016-12-17', $section->events[1]->enddate);
+        $this->assertEquals('2017-08-30', $section->events[1]->begindate);
+        $this->assertEquals('2017-12-17', $section->events[1]->enddate);
         $this->assertEquals('w', $section->events[1]->daysofweek);
         $this->assertEquals('10:00:00', $section->events[1]->begintime);
         $this->assertEquals('11:07:00', $section->events[1]->endtime);

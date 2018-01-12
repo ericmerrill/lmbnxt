@@ -28,6 +28,8 @@ namespace enrol_lmb\local\processors\lis2;
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\processors\xml\trait_timeframe;
+use enrol_lmb\local\data\term;
+use enrol_lmb\local\moodle;
 
 /**
  * Class for working with course section message types.
@@ -60,6 +62,56 @@ class section extends base {
      */
     public function __construct() {
         $this->load_mappings();
+    }
+
+    protected function post_mappings() {
+        // See if we can extract the CRN from the SourcedID.
+        $sdid = $this->dataobj->sdid;
+        $term = $this->dataobj->termsdid;
+
+        if (!empty($sdid) && !empty($term)) {
+            // Only do this with this specfic format...
+            if (preg_match('|^(\d{5}).'.$term.'$|', $sdid, $matches)) {
+                $this->dataobj->crn = $matches[1];
+            }
+        }
+
+        // See if the rubric has the term prepended to it and remove it.
+        $rubric = $this->dataobj->rubric;
+        if (!empty($rubric) && !empty($term)) {
+            // Only do this with this specfic format...
+            if (preg_match('|^'.$term.' (.*)$|', $rubric, $matches)) {
+                $this->dataobj->rubric = $matches[1];
+            }
+        }
+
+        // Now see if the term name is added to the title, and remove if so.
+        $title = $this->dataobj->title;
+        if (!empty($title) && !empty($term)) {
+            if ($termobj = term::get_term($term)) {
+                if (preg_match('|^'.$termobj->description.' - (.*)$|', $title, $matches)) {
+                    $this->dataobj->title = $matches[1];
+                }
+            }
+        }
+
+        // And remove the rubric from the title.
+        $title = $this->dataobj->title;
+        $rubric = $this->dataobj->rubric;
+        if (!empty($title) && !empty($rubric)) {
+            if (preg_match('|^(.*) \('.$rubric.'\)$|', $title, $matches)) {
+                $this->dataobj->title = $matches[1];
+            }
+        }
+
+        $rubric = $this->dataobj->rubric;
+        $dept = $this->dataobj->deptsdid;
+        if (!empty($rubric) && !empty($dept)) {
+            if (preg_match('|^'.$dept.'-([a-zA-Z\d]*)-([a-zA-Z\d]*)$|', $rubric, $matches)) {
+                $this->dataobj->coursenumber = $matches[1];
+                $this->dataobj->sectionnumber = $matches[2];
+            }
+        }
     }
 
 }

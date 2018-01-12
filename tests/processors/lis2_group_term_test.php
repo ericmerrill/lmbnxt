@@ -43,22 +43,22 @@ class lis2_group_term_test extends xml_helper {
         $this->assertInstanceOf(data\term::class, $term);
 
         $this->assertEmpty($term->sdidsource);
-        $this->assertEquals('201640', $term->sdid);
+        $this->assertEquals('201740', $term->sdid);
 
         $this->assertEquals('ILP', $term->referenceagent);
-        $this->assertEquals('201640', $term->messagereference);
+        $this->assertEquals('201740', $term->messagereference);
 
-        $this->assertEquals('1472515200', $term->begindate);
-        $this->assertEquals('1481932800', $term->enddate);
+        $this->assertEquals('1504051200', $term->begindate);
+        $this->assertEquals('1513468800', $term->enddate);
 
         // TODO restrict settings.
         $this->assertEquals('0', $term->beginrestrict);
         $this->assertEquals('0', $term->endrestrict);
 
-        $this->assertEquals('201640', $term->sortorder);
+        $this->assertEquals('201740', $term->sortorder);
 
-        $this->assertEquals('Fall 2016', $term->description);
-        $this->assertEquals('Short201640', $term->shortdescription);
+        $this->assertEquals('Fall Semester 2017', $term->description);
+        $this->assertEquals('Short201740', $term->shortdescription);
 
     }
 

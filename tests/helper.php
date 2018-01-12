@@ -81,6 +81,7 @@ abstract class xml_helper extends advanced_testcase {
         $property->setAccessible(true);
         return $property->getValue($obj);
     }
+
 }
 
 /**
@@ -147,6 +148,13 @@ class data_test extends \enrol_lmb\local\data\base {
         return $value * 2;
     }
 
+    /**
+     * Allows us to directly update a value in a data object, bypassing handlers.
+     */
+    public static function set_value($obj, $key, $value) {
+        $obj->record->$key = $value;
+    }
+
 }
 
 /**
@@ -208,4 +216,15 @@ class logging_helper extends \enrol_lmb\logging {
         $this->depth = 0;
     }
 
+}
+
+class settings_helper extends \enrol_lmb\settings {
+    public static function set($key, $value) {
+        $settings = \enrol_lmb\settings::get_settings();
+        $settings->settings->$key = $value;
+    }
+
+    public static function reset() {
+        \enrol_lmb\settings::$settingobj = null;
+    }
 }

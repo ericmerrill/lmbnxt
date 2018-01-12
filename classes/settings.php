@@ -37,11 +37,15 @@ defined('MOODLE_INTERNAL') || die();
  */
 class settings {
 
-    static protected $settingobj = null;
+    const CREATE_COURSE_VISIBLE = 0;
+    const CREATE_COURSE_HIDDEN = 1;
+    const CREATE_COURSE_CRON = 2;
+
+    protected static $settingobj = null;
 
     protected $settings = null;
 
-    static public function get_settings() {
+    public static function get_settings() {
         if (empty(static::$settingobj)) {
             static::$settingobj = new static();
         }
@@ -49,15 +53,15 @@ class settings {
         return static::$settingobj;
     }
 
-    public function __construct() {
+    protected function __construct() {
         $this->settings = get_config('enrol_lmb');
     }
 
     public function get($key) {
-        if (!isset($this->setting->$key)) {
+        if (!isset($this->settings->$key)) {
             return null;
         }
 
-        return $this->setting->$key;
+        return $this->settings->$key;
     }
 }

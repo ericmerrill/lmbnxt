@@ -63,6 +63,9 @@ class term extends base {
                                 'begindate' => 'handler_date',
                                 'enddate' => 'handler_date');
 
+    /** @var An array of preexisting term object to use. */
+    protected static $terms = array();
+
     /**
      * Log a unique line to id this object.
      */
@@ -84,6 +87,31 @@ class term extends base {
         } else {
             logging::instance()->log_line("Term \"{$desc}\", ID \"{$id}\" from \"{$source}\"".$extramsg);
         }
+    }
+
+    /**
+     * Returns a cached object of the specified array.
+     *
+     * @param string $sdid The ID of the term.
+     * @return false|term
+     */
+    public static function get_term($sdid) {
+        global $DB;
+
+        $params = array('sdid' => $sdid);
+
+        return $DB->get_record(static::TABLE, $params);
+
+        // TODO testing save caching?
+        /*
+        if (!isset(self::$terms[$sdid])) {
+            $params = array('sdid' => $sdid);
+
+            self::$terms[$sdid] = $DB->get_record(static::TABLE, $params);
+        }
+
+        return self::$terms[$sdid];
+        */
     }
 
 }

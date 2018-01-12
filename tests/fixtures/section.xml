@@ -2,7 +2,7 @@
     <group recstatus="1">
         <sourcedid>
             <source>Test SCT Banner</source>
-            <id>10001.201640</id>
+            <id>10001.201740</id>
         </sourcedid>
         <grouptype>
             <scheme>Luminis</scheme>
@@ -17,8 +17,8 @@
             <orgunit>English Dept</orgunit>
         </org>
         <timeframe>
-            <begin restrict="0">2016-08-30</begin>
-            <end restrict="1">2016-12-17</end>
+            <begin restrict="0">2017-08-30</begin>
+            <end restrict="1">2017-12-17</end>
         </timeframe>
         <enrollcontrol>
             <enrollaccept>1</enrollaccept>
@@ -27,7 +27,7 @@
         <relationship relation="1">
             <sourcedid>
                 <source>Test SCT Banner</source>
-                <id>201640</id>
+                <id>201740</id>
             </sourcedid>
             <label>Term</label>
         </relationship>
@@ -50,8 +50,8 @@
                 <events>
                     <recurringevent>
                         <eventdescription>Section Meeting</eventdescription>
-                        <begindate>2016-08-30</begindate>
-                        <enddate>2016-12-17</enddate>
+                        <begindate>2017-08-30</begindate>
+                        <enddate>2017-12-17</enddate>
                         <daysofweek>mf</daysofweek>
                         <begintime>08:00:00</begintime>
                         <endtime>09:07:00</endtime>
@@ -59,8 +59,8 @@
                     </recurringevent>
                     <recurringevent>
                         <eventdescription>Section Meeting</eventdescription>
-                        <begindate>2016-08-30</begindate>
-                        <enddate>2016-12-17</enddate>
+                        <begindate>2017-08-30</begindate>
+                        <enddate>2017-12-17</enddate>
                         <daysofweek>w</daysofweek>
                         <begintime>10:00:00</begintime>
                         <endtime>11:07:00</endtime>

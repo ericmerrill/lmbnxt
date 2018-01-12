@@ -27,6 +27,8 @@ namespace enrol_lmb\local\processors\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
+use \enrol_lmb\local\moodle;
+
 /**
  * Class for working with message types.
  *
@@ -109,8 +111,10 @@ class group_section extends base {
         $rubric = $node->get_value();
         $this->dataobj->rubric = $rubric;
 
-        if (preg_match('|([a-z0-9]*)-[a-z0-9]*-[a-z0-9]*|i', $rubric, $matches)) {
+        if (preg_match('|([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)|i', $rubric, $matches)) {
             $this->dataobj->deptsdid = $matches[1];
+            $this->dataobj->coursenumber = $matches[2];
+            $this->dataobj->sectionnumber = $matches[3];
         }
     }
 
