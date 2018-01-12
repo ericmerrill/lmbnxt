@@ -375,24 +375,25 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2017052502, 'enrol', 'lmb');
     }
 
-    if ($oldversion < 2000000000) {
-        // TODO - when releasing, this will need to happen.
-        $hiddentsetting = get_config('enrol_lmb', 'coursehidden');
-        switch ($hiddentsetting) {
-            case 'never':
-                $hiddentsetting = settings::CREATE_COURSE_VISIBLE;
-                break;
-            case 'always':
-                $hiddentsetting = settings::CREATE_COURSE_HIDDEN;
-                break;
-            case 'hidden':
-                $hiddentsetting = settings::CREATE_COURSE_CRON;
-                break;
-        }
-        set_config('coursehidden', $hiddentsetting, 'enrol_lmb');
-
-
-        //upgrade_plugin_savepoint(true, 2017052502, 'enrol', 'lmb');
-    }
+    // TODO - when releasing, this will need to happen.
+//     if ($oldversion < 2000000000) {
+//
+//         $hiddentsetting = get_config('enrol_lmb', 'coursehidden');
+//         switch ($hiddentsetting) {
+//             case 'never':
+//                 $hiddentsetting = settings::CREATE_COURSE_VISIBLE;
+//                 break;
+//             case 'always':
+//                 $hiddentsetting = settings::CREATE_COURSE_HIDDEN;
+//                 break;
+//             case 'hidden':
+//                 $hiddentsetting = settings::CREATE_COURSE_CRON;
+//                 break;
+//         }
+//         set_config('coursehidden', $hiddentsetting, 'enrol_lmb');
+//
+//
+//         //upgrade_plugin_savepoint(true, 2017052502, 'enrol', 'lmb');
+//     }
 
 }
