@@ -115,17 +115,16 @@ class course extends base {
             } else {
                 logging::instance()->log_line('Updating Moodle course');
                 update_course($course);
+            }
+            // Update the count of sections.
+            // We can just use the presense of numsections to tell us if we need to do this or not.
+            if (!empty($course->numsections)) {
+                $sectioncount = $DB->count_records('course_sections', array('course' => $course->id));
+                // Remove 1 to account for the general section.
+                $sectioncount -= 1;
 
-                // Update the count of sections.
-                // We can just use the presense of numsections to tell us if we need to do this or not.
-                if (!empty($course->numsections)) {
-                    $sectioncount = $DB->count_records('course_sections', array('course' => $course->id));
-                    // Remove 1 to account for the general section.
-                    $sectioncount -= 1;
-
-                    if ($course->numsections > $sectioncount) {
-                        course_create_sections_if_missing($course->id, range(0, $course->numsections));
-                    }
+                if ($course->numsections > $sectioncount) {
+                    course_create_sections_if_missing($course->id, range(0, $course->numsections));
                 }
             }
         } catch (\moodle_exception $e) {
