@@ -100,8 +100,21 @@ class logging {
             $handle = fopen($path, 'a');
             if ($handle) {
                 $this->logfilehandle = $handle;
+                // Make sure the log file gets closed properly when we are done.
+                \core_shutdown_manager::register_function(array($this, 'close_log_file'));
             }
         }
+    }
+
+    /**
+     * Close the log file resource handle.
+     */
+    public function close_log_file() {
+        if (!empty($this->logfilehandle)) {
+            fclose($this->logfilehandle);
+        }
+
+        $this->logfilehandle = false;
     }
 
     public function set_logging_level($level) {
