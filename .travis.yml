@@ -19,7 +19,7 @@ php:
 
 env:
  global:
-  - PHPUNIT_IGNORE_PATHS=cli,db,settings.php,version.php
+  - PHPUNIT_IGNORE_PATHS=cli,db,settings.php,version.php,ws_endpoint.php
   - COVERALLS=FALSE
 
  matrix:
