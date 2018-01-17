@@ -47,8 +47,14 @@ class logging {
     /** @var int The current error level */
     protected $errorlevel = self::ERROR_NONE;
 
-    /** @var int The error level setting TODO - make setting! */
+    /** @var int The error level setting */
     protected $outputerrorlevel = self::ERROR_NONE;
+
+    /** @var bool If true, don't output to the std out */
+    protected $silencestdout = false;
+
+    /** @var resource File pointer to the log file */
+    protected $logfilehandle = false;
 
     /**
      * No current error.
@@ -88,10 +94,27 @@ class logging {
      */
     protected function __construct() {
         $this->outputerrorlevel = get_config('enrol_lmb', 'logginglevel');
+
+        $path = get_config('enrol_lmb', 'logpath');
+        if (!empty($path)) {
+            $handle = fopen($path, 'a');
+            if ($handle) {
+                $this->logfilehandle = $handle;
+            }
+        }
     }
 
     public function set_logging_level($level) {
         $this->outputerrorlevel = $level;
+    }
+
+    /**
+     * Change the silence standard out setting.
+     *
+     * @param bool $silence
+     */
+    public function set_silence_std_out($silence = true) {
+        $this->silencestdout = (bool)$silence;
     }
 
     // Log a line with an optional error level.
@@ -177,10 +200,15 @@ class logging {
     }
 
     protected function print_line($line) {
-        mtrace($line);
+        if (!$this->silencestdout) {
+            mtrace($line);
+        }
+
+        if ($this->logfilehandle) {
+            // TODO - Date/time format.
+            fwrite($this->logfilehandle, date('Y-m-d\TH:i:s - ') . $line . "\n");
+        }
     }
-
-
 
     // Add a line to the message buffer.
     protected function buffer_line($line, $error = self::ERROR_NONE) {

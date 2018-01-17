@@ -40,16 +40,17 @@ class lis2 extends xml {
 
         // First do the header if we can get it.
         if ($this->controller && $this->message) {
-            $header = $controller->get_current_header();
+            $header = $this->controller->get_current_header();
 
             if ($header) {
-                $version = $xmlobj->IMSX_VERSION->get_value();
-                $messageid = $xmlobj->IMSX_MESSAGEIDENTIFIER->get_value();
-                $headernamespace = $xmlobj->get_attribute("XMLNS:XSI");
+                $version = $header->IMSX_VERSION->get_value();
+                $messageid = $header->IMSX_MESSAGEIDENTIFIER->get_value();
+                $headernamespace = $header->get_attribute("XMLNS:XSI");
                 $responseid = uniqid();
 
                 $messtatus = $this->message->get_status();
-                if ($messtatus instanceof status\lis2) {
+
+                if (!($messtatus instanceof status\lis2)) {
                     throw new \coding_exception("Wrong status type in response.");
                 }
 
@@ -88,13 +89,15 @@ class lis2 extends xml {
         $response .= '<soapenv:Body>';
 
         if ($responsetag = $this->get_response_tag()) {
-            $response .= '<'.$reqtype.'Response xmlns:xsd="http://www.w3.org/2001/XMLSchema" '.
+            $response .= '<'.$responsetag.' xmlns:xsd="http://www.w3.org/2001/XMLSchema" '.
                          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="'.$this->namespace.'" />';
         }
 
         $response .= '</soapenv:Body>';
 
         $response .= '</soapenv:Envelope>';
+
+        return $response;
     }
 
     public function set_namespace($namespace) {

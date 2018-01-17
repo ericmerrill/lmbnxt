@@ -15,41 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The base status class.
+ * The webservice endpoint.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2017 Oakland University
+ * @copyright  2018 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb\local\status;
+//define('AJAX_SCRIPT', true);
+define('NO_MOODLE_COOKIES', true);
 
-defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__."/../../config.php");
 
-class base {
-    /** @var string A user displayable message */
-    protected $description = false;
-
-     /** @var bool If there was success */
-    protected $success = true;
-
-    protected $usermessage = false;
-
-    public function set_success(bool $success) {
-        $this->success = $success;
-    }
-
-    public function get_success() {
-        return $this->success;
-    }
-
-    public function set_description($message) {
-        $this->usermessage = $message;
-    }
-
-    public function get_description() {
-        return $this->usermessage;
-    }
-
-}
+$controller = new \enrol_lmb\controller();
+$controller->process_ws_call();

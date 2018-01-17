@@ -46,6 +46,9 @@ class controller {
     /** @var local\xml_node Most recent header node seen */
     protected $currentheader = false;
 
+    /** @var local\response\base Most response seen */
+    protected $lastresponse = false;
+
     public function import_file($path = null) {
         if (!$path) {
             $path = get_config('enrol_lmb', 'xmlpath');
@@ -60,6 +63,67 @@ class controller {
 //     public function process_data(local\types\base\data $data) {
 //
 //     }
+
+    /**
+     * Process a web-service type call.
+     */
+    public function process_ws_call() {
+        // Silence standard outputs from logging.
+        logging::instance()->set_silence_std_out();
+
+        header('Content-type: text/xml;charset="utf-8"');
+
+        // TODO - Authentication, etc.
+        $xml = file_get_contents('php://input');
+
+        if (empty($xml)) {
+            // TODO - maybe a XML fatal response? Check spec.
+
+            logging::instance()->log_line("No input received", logging::ERROR_MAJOR);
+            header("HTTP/1.0 400 Bad Request");
+            header("Status: 400 Bad Request");
+        }
+
+        $response = $this->process_xml_message($xml, true);
+
+        if (!empty($response)) {
+            echo $response;
+        } else {
+            // TODO - some response/headers/errors.
+        }
+    }
+
+    /**
+     * Process a chunk of XML, and optionally give an appropriate response.
+     *
+     * @param string $message
+     * @param bool   $wsresponse If true, we want a webservice response in string form.
+     * @return null|string
+     */
+    public function process_xml_message($message, $wsresponse = false) {
+        $parser = new parser();
+        $parser->set_controller($this);
+        $parser->process_string($message);
+
+        if ($wsresponse) {
+            $response = false;
+
+            if (!empty($this->lastresponse)) {
+                $response = $this->lastresponse->get_response_body();
+            }
+
+            if (empty($response)) {
+                // TODO - Error.
+                logging::instance()->log_line("No webservice response found.", logging::ERROR_MAJOR);
+                return;
+            }
+
+            return $response;
+
+        }
+
+        return;
+    }
 
     /**
      * Set a controller option.
@@ -120,6 +184,8 @@ class controller {
         $message = new message($this, $xmlobj);
 
         $message->process();
+
+        $this->lastresponse = $message->get_response();
 
 
         // TODO get response.

@@ -53,4 +53,16 @@ class controller_test extends xml_helper {
         $this->assertDebuggingNotCalled();
     }
 
+    public function test_process_xml_object() {
+        global $CFG;
+        $this->resetAfterTest();
+
+        $controller = new \enrol_lmb\controller();
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replaceCourseSectionRequest.xml');
+//print "<pre>";print_r($node);print "</pre>";
+        //$controller->process_xml_object($node);
+
+    }
+
 }
