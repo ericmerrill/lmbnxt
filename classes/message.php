@@ -136,7 +136,9 @@ class message {
     public function process_to_moodle() {
         foreach ($this->dataobjs as $dataobj) {
             $converter = $dataobj->get_moodle_converter();
-            $converter->convert_to_moodle($dataobj);
+            if (!empty($converter)) {
+                $converter->convert_to_moodle($dataobj);
+            }
         }
     }
 

@@ -71,7 +71,7 @@ $string['donterroremail'] = 'TODO';
 $string['donterroremail_help'] = 'TODO';
 
 
-$string['parsecourse'] = 'TODO';
+$string['parsecourse'] = 'Course Processing';
 $string['parsecoursexml'] = 'TODO';
 $string['parsecoursexml_help'] = 'TODO';
 $string['coursetitle'] = 'Course full name';
@@ -107,27 +107,35 @@ $string['coursehidden_help'] = "Specify the visibility of new courses. Options:
 $string['coursehiddenhidden'] = 'Hidden';
 $string['coursehiddencron'] = 'Based on date settings';
 $string['coursehiddenvisible'] = 'Visible';
-$string['cathidden'] = 'TODO';
-$string['cathidden_help'] = 'TODO';
+$string['cathidden'] = 'Create new categories as hidden';
+$string['cathidden_help'] = '';
 $string['cronunhidecourses'] = 'Automatically unhide courses';
 $string['cronunhidecourses_help'] = 'TODO';
 $string['cronunhidedays'] = 'Unhide this many days before course start';
 $string['cronunhidedays_help'] = 'TODO';
-$string['forcecat'] = 'TODO';
-$string['forcecat_help'] = 'TODO';
+$string['forcecat'] = 'Force category on update';
+$string['forcecat_help'] = 'This option will cause the category to changed to the above setting whenever a LMB/Banner update occurs, even if it has been manually changed.';
 $string['usemoodlecoursesettings'] = 'TODO';
 $string['usemoodlecoursesettings_help'] = 'TODO';
 $string['computesections'] = 'Compute number of sections';
 $string['computesections_help'] = 'Compute the number of sections/topics to display, based on the number of weeks in a course.';
 $string['forcecomputesections'] = 'Force computed sections on update';
 $string['forcecomputesections_help'] = 'Force section count on update, but only more than existing, never removes sections.';
-$string['categorytype'] = 'TODO';
-$string['categorytype_help'] = 'TODO';
-$string['catselect'] = 'TODO';
-$string['catselect_help'] = 'TODO';
-$string['termcat'] = 'TODO';
-$string['deptcat'] = 'TODO';
-$string['termdeptcat'] = 'TODO';
-$string['deptcodecat'] = 'TODO';
-$string['termdeptcodecat'] = 'TODO';
-$string['selectedcat'] = 'TODOz-1';
+$string['categorytype'] = 'Course Categories';
+$string['categorytype_help'] = 'This allows you select what categories you would like courses to be created in. Options:
+<ul>
+<li>Terms: This setting will cause courses to be placed in categories with the name of their term/semester.
+<li>Departments: This setting will cause courses to be placed in categories with the name of their host department.
+<li>Department Codes: Uses the department short code, instead of full name.
+<li>Terms then Departments: This setting will cause courses to be placed in categories with the name of their host department, which is contained in a parent term named for the term/semester.
+<li>Terms then Department Codes: Same as Terms then Departments, but uses the department short code instead of its full name.
+<li>Selected: With this setting, select the existing category you would like courses to be placed in from the second drop down menu.
+</ul>';
+$string['catselect'] = 'Selected Category';
+$string['catselect_help'] = '';
+$string['termcat'] = 'Terms';
+$string['deptcat'] = 'Departments - TODO';
+$string['termdeptcat'] = 'Terms then Departments - TODO';
+$string['deptcodecat'] = 'Department Codes - TODO';
+$string['termdeptcodecat'] = 'Terms then Department Codes - TODO';
+$string['selectedcat'] = 'Selected - TODO';

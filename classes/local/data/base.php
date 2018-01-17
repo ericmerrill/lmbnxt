@@ -188,6 +188,11 @@ abstract class base {
         return $time;
     }
 
+    public function load_from_record($record) {
+        $this->record = $record;
+        $this->additionaldata = json_decode($record->additional);
+    }
+
     public function save_to_db() {
         $this->update_if_needed();
     }

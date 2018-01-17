@@ -100,7 +100,16 @@ class term extends base {
 
         $params = array('sdid' => $sdid);
 
-        return $DB->get_record(static::TABLE, $params);
+        $record = $DB->get_record(static::TABLE, $params);
+
+        if (empty($record)) {
+            return false;
+        }
+
+        $term = new self();
+        $term->load_from_record($record);
+
+        return $term;
 
         // TODO testing save caching?
         /*
@@ -112,6 +121,11 @@ class term extends base {
 
         return self::$terms[$sdid];
         */
+    }
+
+    public function get_moodle_converter() {
+        // A term doesn't become a moodle item directly.
+        return false;
     }
 
 }

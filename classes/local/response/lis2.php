@@ -33,7 +33,8 @@ class lis2 extends xml {
 
     protected $namespace = null;
 
-    protected $responsetags = array('REPLACECOURSESECTIONREQUEST' => 'replaceCourseSectionResponse');
+    protected $responsetags = array('REPLACECOURSESECTIONREQUEST' => 'replaceCourseSectionResponse',
+                                    'REPLACEGROUPREQUEST' => 'replaceGroupResponse');
 
     public function get_response_body() {
         $response = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">';

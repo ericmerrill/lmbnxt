@@ -99,14 +99,14 @@ if ($ADMIN->fulltree) {
 
     unset($options);
     $options = array();
-    $options['term'] = get_string('termcat', 'enrol_lmb');
-    $options['dept'] = get_string('deptcat', 'enrol_lmb');
-    $options['deptcode'] = get_string('deptcodecat', 'enrol_lmb');
-    $options['termdept'] = get_string('termdeptcat', 'enrol_lmb');
-    $options['termdeptcode'] = get_string('termdeptcodecat', 'enrol_lmb');
-    $options['other'] = get_string('selectedcat', 'enrol_lmb');
+    $options[settings::COURSE_CATS_TERMS] = get_string('termcat', 'enrol_lmb');
+    $options[settings::COURSE_CATS_DEPTS] = get_string('deptcat', 'enrol_lmb');
+    $options[settings::COURSE_CATS_DEPTS_SHORT] = get_string('deptcodecat', 'enrol_lmb');
+    $options[settings::COURSE_CATS_TERM_DEPTS] = get_string('termdeptcat', 'enrol_lmb');
+    $options[settings::COURSE_CATS_TERM_DEPTS_SHORT] = get_string('termdeptcodecat', 'enrol_lmb');
+    $options[settings::COURSE_CATS_SELECTED] = get_string('selectedcat', 'enrol_lmb');
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/cattype', get_string('categorytype', 'enrol_lmb'),
-            get_string('categorytype_help', 'enrol_lmb'), 'term', $options));
+            get_string('categorytype_help', 'enrol_lmb'), settings::COURSE_CATS_TERMS, $options));
 
     $displaylist = coursecat::make_categories_list();
 

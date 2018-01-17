@@ -41,6 +41,13 @@ class settings {
     const CREATE_COURSE_HIDDEN = 1;
     const CREATE_COURSE_CRON = 2;
 
+    const COURSE_CATS_TERMS = 1;
+    const COURSE_CATS_DEPTS = 2;
+    const COURSE_CATS_TERM_DEPTS = 3;
+    const COURSE_CATS_DEPTS_SHORT = 4;
+    const COURSE_CATS_TERM_DEPTS_SHORT = 5;
+    const COURSE_CATS_SELECTED = 6;
+
     protected static $settingobj = null;
 
     protected $settings = null;

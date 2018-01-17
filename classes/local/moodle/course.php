@@ -135,12 +135,22 @@ class course extends base {
         }
     }
 
+    /**
+     * If exists, find an existing course that matches this data object.
+     *
+     * @return false|\stdClass
+     */
     protected function find_existing_course() {
         global $DB;
 
         return $DB->get_record('course', array('idnumber' => $this->data->sdid));
     }
 
+    /**
+     * Create a new base course object.
+     *
+     * @return \stdClass
+     */
     protected function create_new_course_object() {
         // Get the standard default course settings.
         $course = get_config('moodlecourse');
@@ -216,8 +226,7 @@ class course extends base {
     }
 
     protected function get_category_id() {
-        // TODO.
-        return 1;
+        return category::get_category_id($this->data);
     }
 
     /**
