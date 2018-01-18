@@ -8,11 +8,11 @@
   </soapenv:Header>
   <soapenv:Body>
     <replacePersonRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/pms2p0/wsdl11/sync/imspms_v2p0">
-      <sourcedId>49281</sourcedId>
+      <sourcedId>1000001</sourcedId>
       <personRecord>
         <sourcedGUID>
           <refAgentInstanceID>ILP</refAgentInstanceID>
-          <sourcedId>49281</sourcedId>
+          <sourcedId>1000001</sourcedId>
         </sourcedGUID>
         <person>
           <formname>
@@ -29,7 +29,7 @@
             </formnameType>
             <formattedName>
               <language>en</language>
-              <textString> Eric Andrew Merrill</textString>
+              <textString>Mr. Test A User Jr.</textString>
             </formattedName>
           </formname>
           <name>
@@ -56,7 +56,7 @@
               </instanceName>
               <instanceValue>
                 <language>en</language>
-                <textString>Eric</textString>
+                <textString>Test</textString>
               </instanceValue>
             </partName>
             <partName>
@@ -71,7 +71,7 @@
               </instanceName>
               <instanceValue>
                 <language>en</language>
-                <textString>Merrill</textString>
+                <textString>User</textString>
               </instanceValue>
             </partName>
             <partName>
@@ -86,7 +86,67 @@
               </instanceName>
               <instanceValue>
                 <language>en</language>
-                <textString>Andrew</textString>
+                <textString>A</textString>
+              </instanceValue>
+            </partName>
+            <partName>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/partnamevocabularyv1p0</instanceVocabulary>
+              <instanceName>
+                <language>en</language>
+                <textString>Prefix</textString>
+              </instanceName>
+              <instanceValue>
+                <language>en</language>
+                <textString>Mr.</textString>
+              </instanceValue>
+            </partName>
+            <partName>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/partnamevocabularyv1p0</instanceVocabulary>
+              <instanceName>
+                <language>en</language>
+                <textString>Suffix</textString>
+              </instanceName>
+              <instanceValue>
+                <language>en</language>
+                <textString>Jr.</textString>
+              </instanceValue>
+            </partName>
+            <partName>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/partnamevocabularyv1p0</instanceVocabulary>
+              <instanceName>
+                <language>en</language>
+                <textString>Nickname</textString>           <!-- TODO - We don't know the field that banner uses for this -->
+              </instanceName>
+              <instanceValue>
+                <language>en</language>
+                <textString>Nick</textString>
+              </instanceValue>
+            </partName>
+            <partName>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/partnamevocabularyv1p0</instanceVocabulary>
+              <instanceName>
+                <language>en</language>
+                <textString>NotValid</textString>           <!-- An intentionally unknown name part. -->
+              </instanceName>
+              <instanceValue>
+                <language>en</language>
+                <textString>NotValid</textString>
               </instanceValue>
             </partName>
           </name>
@@ -151,6 +211,28 @@
                 <textString>ldap</textString>
               </authenticationType>
             </userId>
+            <userId>
+              <userIdValue>
+                <language>en</language>
+                <textString>user_blah</textString>					<!-- User_ID and Student_ID VALUE -->
+              </userIdValue>
+              <userIdType>
+                <language>en</language>
+                <textString>Email ID</textString>
+              </userIdType>
+              <password>
+                <language>en</language>
+                <textString>{SSHA}JCkADpIzxrezO7Y9H0Swprn6veJNUEMxTENRVg==</textString>
+              </password>
+              <pwEncryptionType>
+                <language>en</language>
+                <textString>SSHA</textString>
+              </pwEncryptionType>
+              <authenticationType>
+                <language>en</language>
+                <textString></textString>
+              </authenticationType>
+            </userId>
           </roles>
           <dataSource>Banner</dataSource>
           <extension>
@@ -159,12 +241,12 @@
             <extensionField>
               <fieldName>BannerID</fieldName>
               <fieldType>String</fieldType>
-              <fieldValue>A00012121</fieldValue>
+              <fieldValue>BannerIDExtension</fieldValue>
             </extensionField>
             <extensionField>
               <fieldName>SourcedId</fieldName>
               <fieldType>String</fieldType>
-              <fieldValue>49281</fieldValue>
+              <fieldValue>SourcedIDExtension</fieldValue>
             </extensionField>
           </extension>
         </person>

@@ -1,0 +1,31 @@
+{
+  "PERSONRECORD": {
+    "SOURCEDGUID": {
+        "REFAGENTINSTANCEID": "referenceagent",
+        "SOURCEDID": "sdid"
+    },
+    "PERSON": {
+      "FORMNAME": {
+        "lmbinternal": true,
+        "function": "process_formname_node"
+      },
+      "NAME": {
+        "lmbinternal": true,
+        "function": "process_name_node"
+      },
+      "ROLES": {
+        "USERID": {
+          "lmbinternal": true,
+          "function": "process_userid_node"
+        }
+      },
+      "EXTENSION": {
+        "EXTENSIONFIELD": {
+          "lmbinternal": true,
+          "function": "process_extensionfield_node"
+        }
+      }
+      
+    }
+  }
+}

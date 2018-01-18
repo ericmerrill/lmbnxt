@@ -144,4 +144,16 @@ class person extends base {
         }
     }
 
+    protected function post_mappings() {
+        // Nickname may come in "Nickname Family" format. We want just the nickname.
+        if (!empty($this->dataobj->nickname) && !empty($this->dataobj->familyname)) {
+            $fullnick = $this->dataobj->nickname;
+            $family = $this->dataobj->familyname;
+
+            if (preg_match('|^(.*) '.$family.'$|', $fullnick, $matches)) {
+                $this->dataobj->nickname = $matches[1];
+            }
+        }
+    }
+
 }

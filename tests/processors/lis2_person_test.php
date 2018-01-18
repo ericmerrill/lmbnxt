@@ -32,16 +32,35 @@ use enrol_lmb\local\exception;
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class lis2_section_test extends xml_helper {
-    public function test_section() {
+class lis2_person_test extends xml_helper {
+    public function test_person() {
         global $CFG;
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replaceCourseSectionRequest.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replace_person.xml');
 
-        $converter = new lis2\section();
+        $converter = new lis2\person();
 
-        $section = $converter->process_xml_to_data($node);
+        $person = $converter->process_xml_to_data($node);
+
+        //print "<pre>";var_export($person);print "</pre>";
+
+        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\person', $person);
+        $this->assertEquals('ILP', $person->referenceagent);
+        $this->assertEquals('SourcedIDExtension', $person->sdid);
+
+        $this->assertEquals('Mr. Test A User Jr.', $person->fullname);
+        $this->assertEquals('Nick', $person->nickname);
+        $this->assertEquals('User', $person->familyname);
+        $this->assertEquals('Test', $person->givenname);
+        $this->assertEquals('Mr.', $person->prefix);
+        $this->assertEquals('Jr.', $person->suffix);
+        $this->assertEquals('A', $person->middlename);
+
+        $this->assertEquals('BannerIDExtension', $person->sctid);
+
+        return;
+
         $this->assertInstanceOf(data\section::class, $section);
 
         $this->assertEquals('44654.201740', $section->sdid);
