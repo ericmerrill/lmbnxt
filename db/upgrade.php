@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\settings;
+use enrol_lmb\settings;
 
 /**
  * Upgrade file.

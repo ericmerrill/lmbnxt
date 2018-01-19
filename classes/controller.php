@@ -26,7 +26,7 @@
 namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\local\processors\types;
+use enrol_lmb\local\processors\types;
 
 /**
  * Controller class for importing files and folders.

@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\local\xml_node;
+use enrol_lmb\local\xml_node;
 
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');

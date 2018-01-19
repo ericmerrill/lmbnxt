@@ -27,8 +27,8 @@ namespace enrol_lmb\local\response;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\controller;
-use \enrol_lmb\message;
+use enrol_lmb\controller;
+use enrol_lmb\message;
 
 abstract class base {
 

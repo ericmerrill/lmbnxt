@@ -27,7 +27,7 @@ namespace enrol_lmb\local\processors\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\local\moodle;
+use enrol_lmb\local\moodle;
 
 /**
  * Class for working with message types.

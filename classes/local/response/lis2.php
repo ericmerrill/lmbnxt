@@ -27,7 +27,7 @@ namespace enrol_lmb\local\response;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\local\status;
+use enrol_lmb\local\status;
 
 class lis2 extends xml {
 

@@ -26,10 +26,10 @@
 namespace enrol_lmb;
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\local\exception;
-use \enrol_lmb\local\processors;
-use \enrol_lmb\local\xml_node;
-use \enrol_lmb\local\status;
+use enrol_lmb\local\exception;
+use enrol_lmb\local\processors;
+use enrol_lmb\local\xml_node;
+use enrol_lmb\local\status;
 
 /**
  * An object that tracks the flow of a message though its life.

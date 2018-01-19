@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \enrol_lmb\settings;
+use enrol_lmb\settings;
 
 $settings = new admin_category('enrolsettingscat', get_string('pluginname', 'enrol_lmb'), $settings->hidden);
 $settingslmb = new admin_settingpage('enrolsettingslmb', get_string('settings'), 'moodle/site:config');
