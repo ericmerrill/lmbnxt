@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\local\processors\xml;
+use enrol_lmb\local\data;
+
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
@@ -33,7 +36,7 @@ class xml_member_person_testcase extends xml_helper {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/member_person.xml');
 
-        $converter = new \enrol_lmb\local\processors\xml\membership();
+        $converter = new xml\membership();
 
         $members = $converter->process_xml_to_data($node);
 
@@ -41,7 +44,7 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertCount(2, $members);
 
         $member = $members[0];
-        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\member_person', $member);
+        $this->assertInstanceOf(data\member_person::class, $member);
 
         $this->assertEquals('Test SCT Banner', $member->sdidsource);
         $this->assertEquals('1000002', $member->sdid);
@@ -60,7 +63,7 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertEquals(1, $member->membertype);
 
         $member = $members[1];
-        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\member_person', $member);
+        $this->assertInstanceOf(data\member_person::class, $member);
         $this->assertEquals('Test SCT Banner', $member->sdidsource);
         $this->assertEquals('1000001', $member->sdid);
 

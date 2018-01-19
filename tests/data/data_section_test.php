@@ -25,6 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\local\exception;
+use enrol_lmb\local\processors\xml;
+use enrol_lmb\local\data;
+use enrol_lmb\logging;
+
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
@@ -33,11 +38,11 @@ class data_section_testcase extends xml_helper {
         global $CFG;
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/section.xml');
-        $converter = new \enrol_lmb\local\processors\xml\group();
+        $converter = new xml\group();
         $section = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+        $log->set_logging_level(logging::ERROR_NONE);
 
         $section->log_id();
 
@@ -48,8 +53,8 @@ class data_section_testcase extends xml_helper {
         try {
             $section->log_id();
             $this->fail('message_exception expected');
-        } catch (\enrol_lmb\local\exception\message_exception $ex) {
-            $this->assertInstanceOf('\\enrol_lmb\\local\\exception\\message_exception', $ex);
+        } catch (exception\message_exception $ex) {
+            $this->assertInstanceOf(exception\message_exception::class, $ex);
             $expected = get_string('exception_bad_section', 'enrol_lmb');
             $this->assertRegExp("|{$expected}|", $ex->getMessage());
         }
@@ -61,11 +66,11 @@ class data_section_testcase extends xml_helper {
         $this->resetAfterTest(true);
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/section.xml');
-        $converter = new \enrol_lmb\local\processors\xml\group();
+        $converter = new xml\group();
         $section = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+        $log->set_logging_level(logging::ERROR_NONE);
 
         // First insert.
         $section->save_to_db();
@@ -82,7 +87,7 @@ class data_section_testcase extends xml_helper {
 
         // Now lets get it from the DB and check it.
         $params = array('sdid' => $section->sdid, 'sdidsource' => $section->sdidsource);
-        $dbrecord = $DB->get_record(\enrol_lmb\local\data\section::TABLE, $params);
+        $dbrecord = $DB->get_record(data\section::TABLE, $params);
 
         $this->assertNotEmpty($dbrecord);
 

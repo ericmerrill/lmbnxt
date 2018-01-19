@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use \enrol_lmb\local\xml_node;
+
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
@@ -41,7 +43,7 @@ class xml_node_testcase extends xml_helper {
                           array('n' => 'N2', 'v' => 'V5'),
                           array('n' => 'N3', 'v' => 'V4'));
         foreach ($node as $key => $child) {
-            $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child);
+            $this->assertInstanceOf(xml_node::class, $child);
             $this->assertEquals($expected[$i]['v'], $child->get_value());
             $this->assertEquals($expected[$i]['n'], $key);
             $i++;
@@ -49,7 +51,7 @@ class xml_node_testcase extends xml_helper {
         $i = 0;
         // Do it again to make sure reset worked.
         foreach ($node as $key => $child) {
-            $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child);
+            $this->assertInstanceOf(xml_node::class, $child);
             $this->assertEquals($expected[$i]['v'], $child->get_value());
             $this->assertEquals($expected[$i]['n'], $key);
             $i++;
@@ -60,11 +62,11 @@ class xml_node_testcase extends xml_helper {
         $xml = '<tests><n1><n2>V2</n2></n1></tests>';
         $parent = $this->get_node_for_xml($xml);
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $parent);
+        $this->assertInstanceOf(xml_node::class, $parent);
         $child1 = $parent->N1;
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child1);
+        $this->assertInstanceOf(xml_node::class, $child1);
         $child2 = $child1->N2;
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $child2);
+        $this->assertInstanceOf(xml_node::class, $child2);
 
         $this->assertEquals($child1, $child2->get_parent());
         $this->assertEquals($parent, $child1->get_parent());
@@ -75,7 +77,7 @@ class xml_node_testcase extends xml_helper {
         $xml = '<tests><n1>V1</n1><n2>V2</n2><n2>V3</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N1);
+        $this->assertInstanceOf(xml_node::class, $node->N1);
         $this->assertEquals('V1', $node->N1->get_value());
         $this->assertInternalType('array', $node->N2);
         $this->assertEquals('V2', $node->N2[0]->get_value());
@@ -90,8 +92,8 @@ class xml_node_testcase extends xml_helper {
         $xml = '<tests><n1>V1</n1><n2>V2</n2></tests>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N1);
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N2);
+        $this->assertInstanceOf(xml_node::class, $node->N1);
+        $this->assertInstanceOf(xml_node::class, $node->N2);
 
         $this->assertTrue(isset($node->N2));
         unset($node->N2);
@@ -147,7 +149,7 @@ class xml_node_testcase extends xml_helper {
         $xml = '<tEsts><node a1="v1" A2="V2">1</node><nOde>2</nOde><NODE>Val3</NODE></tEsts>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node);
+        $this->assertInstanceOf(xml_node::class, $node);
 
         // All tag and attribute names should be converted to lowercase.
         // Data should remain in source case.

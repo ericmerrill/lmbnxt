@@ -25,6 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\local\exception;
+use enrol_lmb\local\processors\xml;
+use enrol_lmb\local\data;
+use enrol_lmb\logging;
+
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
@@ -33,11 +38,11 @@ class data_member_group_testcase extends xml_helper {
         global $CFG;
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/member_group.xml');
-        $converter = new \enrol_lmb\local\processors\xml\membership();
+        $converter = new xml\membership();
         $members = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+        $log->set_logging_level(logging::ERROR_NONE);
 
         foreach ($members as $member) {
             $member->log_id();
@@ -50,8 +55,8 @@ class data_member_group_testcase extends xml_helper {
             try {
                 $member->log_id();
                 $this->fail('message_exception expected');
-            } catch (\enrol_lmb\local\exception\message_exception $ex) {
-                $this->assertInstanceOf('\\enrol_lmb\\local\\exception\\message_exception', $ex);
+            } catch (exception\message_exception $ex) {
+                $this->assertInstanceOf(exception\message_exception::class, $ex);
                 $expected = get_string('exception_bad_member_group', 'enrol_lmb');
                 $this->assertRegExp("|{$expected}|", $ex->getMessage());
             }
@@ -64,11 +69,11 @@ class data_member_group_testcase extends xml_helper {
         $this->resetAfterTest(true);
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/member_group.xml');
-        $converter = new \enrol_lmb\local\processors\xml\membership();
+        $converter = new xml\membership();
         $members = $converter->process_xml_to_data($node);
 
         $log = new logging_helper();
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+        $log->set_logging_level(logging::ERROR_NONE);
 
         foreach ($members as $member) {
             // First insert.
@@ -87,7 +92,7 @@ class data_member_group_testcase extends xml_helper {
             // Now lets get it from the DB and check it.
             $params = array('sdid' => $member->sdid, 'sdidsource' => $member->sdidsource,
                     'groupsdid' => $member->groupsdid, 'groupsdidsource' => $member->groupsdidsource);
-            $dbrecord = $DB->get_record(\enrol_lmb\local\data\member_group::TABLE, $params);
+            $dbrecord = $DB->get_record(data\member_group::TABLE, $params);
 
             $this->assertNotEmpty($dbrecord);
 

@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\local\processors\xml;
+use enrol_lmb\local\data;
+
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
@@ -33,10 +36,10 @@ class xml_group_course_testcase extends xml_helper {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/course.xml');
 
-        $converter = new \enrol_lmb\local\processors\xml\group();
+        $converter = new xml\group();
 
         $course = $converter->process_xml_to_data($node);
-        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\course', $course);
+        $this->assertInstanceOf(data\course::class, $course);
 
         $this->assertEquals('Test SCT Banner', $course->sdidsource);
         $this->assertEquals('CRSENG-101', $course->sdid);

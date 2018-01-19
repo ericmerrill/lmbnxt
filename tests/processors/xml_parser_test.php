@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use \enrol_lmb\local\xml_node;
+
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
@@ -39,7 +41,7 @@ class xml_parser_testcase extends xml_helper {
 
         // Node n1.
         $this->assertTrue(isset($node->N1));
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N1);
+        $this->assertInstanceOf(xml_node::class, $node->N1);
         $this->assertTrue($node->N1->has_data());
         $this->assertEquals('vn1', $node->N1->get_value());
         $this->assertEquals('N1', $node->N1->get_name());
@@ -47,7 +49,7 @@ class xml_parser_testcase extends xml_helper {
 
         // Node n2.
         $this->assertTrue(isset($node->N2));
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N2);
+        $this->assertInstanceOf(xml_node::class, $node->N2);
         $this->assertFalse($node->N2->has_data());
         $this->assertNull($node->N2->get_value());
 
@@ -60,7 +62,7 @@ class xml_parser_testcase extends xml_helper {
 
         // Node n3.
         $this->assertTrue(isset($node->N3));
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N3);
+        $this->assertInstanceOf(xml_node::class, $node->N3);
         $this->assertTrue($node->N3->has_data());
         $this->assertInternalType('array', $node->N3->get_attributes());
         $this->assertCount(2, $node->N3->get_attributes());
@@ -73,8 +75,8 @@ class xml_parser_testcase extends xml_helper {
         $xml = '<enterprise><tests><n1>V</n1></tests></enterprise>';
         $node = $this->get_node_for_xml($xml);
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node);
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N1);
+        $this->assertInstanceOf(xml_node::class, $node);
+        $this->assertInstanceOf(xml_node::class, $node->N1);
         $this->assertEquals('V', $node->N1->get_value());
     }
 
@@ -95,8 +97,8 @@ class xml_parser_testcase extends xml_helper {
         $processor = $parser->get_processor();
         $node = $processor->get_previous_node();
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node);
-        $this->assertInstanceOf('\\enrol_lmb\\local\\xml_node', $node->N1);
+        $this->assertInstanceOf(xml_node::class, $node);
+        $this->assertInstanceOf(xml_node::class, $node->N1);
         $this->assertEquals('V', $node->N1->get_value());
     }
 

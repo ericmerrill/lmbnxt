@@ -25,6 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\local\processors\xml;
+use enrol_lmb\local\data;
+use enrol_lmb\local\exception;
+
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
@@ -33,22 +37,22 @@ class xml_group_testcase extends xml_helper {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/term.xml');
 
-        $converter = new \enrol_lmb\local\processors\xml\group();
+        $converter = new xml\group();
 
         $term = $converter->process_xml_to_data($node);
-        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\term', $term);
+        $this->assertInstanceOf(data\term::class, $term);
     }
 
     public function test_error_groups() {
         $node = $this->get_node_for_xml('<group><sourcedid><source>Test SCT Banner</source><id>201640</id></sourcedid></group>');
 
-        $converter = new \enrol_lmb\local\processors\xml\group();
+        $converter = new xml\group();
 
         try {
             $group = $converter->process_xml_to_data($node);
             $this->fail("Expected exception not thrown.");
-        } catch (Exception $ex) {
-            $this->assertInstanceOf('\\enrol_lmb\\local\\exception\\message_exception', $ex);
+        } catch (\Exception $ex) {
+            $this->assertInstanceOf(exception\message_exception::class, $ex);
             $this->assertStringStartsWith('Group type not found', $ex->getMessage());
         }
 
@@ -58,8 +62,8 @@ class xml_group_testcase extends xml_helper {
         try {
             $group = $converter->process_xml_to_data($node);
             $this->fail("Expected exception not thrown.");
-        } catch (Exception $ex) {
-            $this->assertInstanceOf('\\enrol_lmb\\local\\exception\\message_exception', $ex);
+        } catch (\Exception $ex) {
+            $this->assertInstanceOf(exception\message_exception::class, $ex);
             $this->assertStringStartsWith('Group type not found', $ex->getMessage());
         }
     }

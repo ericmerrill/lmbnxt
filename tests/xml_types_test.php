@@ -61,14 +61,14 @@ class xml_types_test extends xml_helper {
     }
 
     public function test_get_processor_for_class() {
-        $personprocessor1 = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\xml\\person');
+        $personprocessor1 = types::get_processor_for_class(xml\person::class);
         $this->assertInstanceOf(xml\person::class, $personprocessor1);
 
-        $groupprocessor = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\xml\\group');
+        $groupprocessor = types::get_processor_for_class(xml\group::class);
         $this->assertInstanceOf(xml\group::class, $groupprocessor);
 
         // Now make sure we get the same one back.
-        $personprocessor2 = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\xml\\person');
+        $personprocessor2 = types::get_processor_for_class(xml\person::class);
         $this->assertInstanceOf(xml\person::class, $personprocessor2);
         $this->assertEquals($personprocessor1, $personprocessor2);
     }

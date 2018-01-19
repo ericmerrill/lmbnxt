@@ -24,10 +24,10 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\logging;
+
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
-
-use \enrol_lmb\logging;
 
 class logging_testcase extends advanced_testcase {
 
@@ -40,7 +40,7 @@ class logging_testcase extends advanced_testcase {
         $log = logging::instance();
         $log->test_get_flush_buffer();
 
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+        $log->set_logging_level(logging::ERROR_NONE);
     }
 
     public function test_instance() {
@@ -52,7 +52,7 @@ class logging_testcase extends advanced_testcase {
 
         // Use the factory to get an instance.
         $log = logging::instance();
-        $this->assertInstanceOf('\\enrol_lmb\\logging', $log);
+        $this->assertInstanceOf(logging::class, $log);
 
         // Make sure the factory will return the same instance again.
         $this->assertSame($log, logging::instance());
@@ -70,9 +70,9 @@ class logging_testcase extends advanced_testcase {
 
         // Use the factory to get an instance.
         $log = logging::instance();
-        $this->assertInstanceOf('\\enrol_lmb\\logging', $log);
+        $this->assertInstanceOf(logging::class, $log);
 
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+        $log->set_logging_level(logging::ERROR_NONE);
 
         $expected = "Logged Line\n".
                     "Logged Line2\n".
@@ -99,7 +99,7 @@ class logging_testcase extends advanced_testcase {
 
     protected function log_all_messages($log) {
         $log->start_message("Notice 1");
-        $log->log_line("Notice 1 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->log_line("Notice 1 sub", logging::ERROR_NOTICE);
         $log->end_message();
 
         $log->start_message("None 1");
@@ -107,22 +107,22 @@ class logging_testcase extends advanced_testcase {
         $log->end_message();
 
         $log->start_message("Notice 2");
-        $log->log_line("Notice 2 sub", \enrol_lmb\logging::ERROR_NOTICE);
+        $log->log_line("Notice 2 sub", logging::ERROR_NOTICE);
         $log->end_message();
 
         $log->start_message("Warn 1");
-        $log->log_line("Warn 1 sub", \enrol_lmb\logging::ERROR_WARN);
+        $log->log_line("Warn 1 sub", logging::ERROR_WARN);
         $log->end_message();
 
         $log->start_message("Major 1");
-        $log->log_line("Major 1 sub", \enrol_lmb\logging::ERROR_MAJOR);
+        $log->log_line("Major 1 sub", logging::ERROR_MAJOR);
         $log->end_message();
     }
 
     public function test_all() {
         $log = logging::instance();
 
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
+        $log->set_logging_level(logging::ERROR_NONE);
 
         $this->log_all_messages($log);
 
@@ -142,7 +142,7 @@ class logging_testcase extends advanced_testcase {
     public function test_notice() {
         $log = logging::instance();
 
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_NOTICE);
+        $log->set_logging_level(logging::ERROR_NOTICE);
 
         $this->log_all_messages($log);
 
@@ -160,7 +160,7 @@ class logging_testcase extends advanced_testcase {
     public function test_warn() {
         $log = logging::instance();
 
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_WARN);
+        $log->set_logging_level(logging::ERROR_WARN);
 
         $this->log_all_messages($log);
 
@@ -174,7 +174,7 @@ class logging_testcase extends advanced_testcase {
     public function test_major() {
         $log = logging::instance();
 
-        $log->set_logging_level(\enrol_lmb\logging::ERROR_MAJOR);
+        $log->set_logging_level(logging::ERROR_MAJOR);
 
         $this->log_all_messages($log);
 
