@@ -41,7 +41,7 @@ class moodle_course_testcase extends xml_helper {
         $this->resetAfterTest(true);
 
         // First a LIS 2 based node.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replaceCourseSectionRequest.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_course.xml');
         $converter = new lis2\section();
         $section = $converter->process_xml_to_data($node);
 
@@ -64,7 +64,7 @@ class moodle_course_testcase extends xml_helper {
         $this->assertEquals('Fall Semester 2017 - Contemporary Fiction', $result);
 
         // Load up the term into the DB.
-        $termnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/term_replace.xml');
+        $termnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/term_replace.xml');
         $termconverter = new lis2\group_term();
         $term = $termconverter->process_xml_to_data($termnode);
         $term->save_to_db();
@@ -74,7 +74,7 @@ class moodle_course_testcase extends xml_helper {
         $this->assertEquals('Fall Semester 2017', $result);
 
         // Now lets try the LIS 1.x based course XML.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/section.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/section.xml');
         $converter = new xml\group();
         $section = $converter->process_xml_to_data($node);
 
@@ -192,7 +192,7 @@ class moodle_course_testcase extends xml_helper {
         $this->resetAfterTest(true);
 
         // First a LIS 2 based node.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replaceCourseSectionRequest.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_course.xml');
         $converter = new lis2\section();
         $section = $converter->process_xml_to_data($node);
 

@@ -37,7 +37,7 @@ class lis2_person_test extends xml_helper {
         global $CFG;
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replace_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/replace_person.xml');
 
         $converter = new lis2\person();
 
@@ -45,9 +45,9 @@ class lis2_person_test extends xml_helper {
 
         //print "<pre>";var_export($person);print "</pre>";
 
-        $this->assertInstanceOf('\\enrol_lmb\\local\\data\\person', $person);
+        $this->assertInstanceOf(data\person::class, $person);
         $this->assertEquals('ILP', $person->referenceagent);
-        $this->assertEquals('SourcedIDExtension', $person->sdid);
+        $this->assertEquals('extensionSourcedID', $person->sdid);
 
         $this->assertEquals('Mr. Test A User Jr.', $person->fullname);
         $this->assertEquals('Nick', $person->nickname);
@@ -59,45 +59,32 @@ class lis2_person_test extends xml_helper {
 
         $this->assertEquals('BannerIDExtension', $person->sctid);
 
+        $this->assertInternalType('array', $person->userid);
+        $this->assertCount(4, $person->userid);
+
+        $userid = $person->userid['Logon ID'];
+        $this->assertEquals('logonUserID', $userid->userid);
+        $this->assertEquals('11111111-2222-1111-3333-111111111111', $userid->password);
+
+        $userid = $person->userid['SCTID'];
+        $this->assertEquals('SCTIDUserid', $userid->userid);
+        $this->assertFalse(isset($userid->password));
+
+        $userid = $person->userid['Email ID'];
+        $this->assertEquals('emailUserID', $userid->userid);
+        $this->assertEquals('{SSHA}FakeSHAPassword==', $userid->password);
+        $this->assertEquals('SSHA', $userid->pwencryptiontype);
+
+        $userid = $person->userid['Other ID'];
+        $this->assertEquals('otherUserID', $userid->userid);
+        $this->assertFalse(isset($userid->password));
+
+        unset($node->PERSONRECORD->PERSON->EXTENSION);
+        $person = $converter->process_xml_to_data($node);
+
+        $this->assertEquals('personSourcedID', $person->sdid);
+
         return;
-
-        $this->assertInstanceOf(data\section::class, $section);
-
-        $this->assertEquals('44654.201740', $section->sdid);
-        $this->assertEquals('44654', $section->crn);
-        $this->assertEquals('201740', $section->termsdid);
-        $this->assertEquals('Banner', $section->sdidsource);
-
-        $this->assertEquals('Fall Semester 2017 - Contemporary Fiction', $section->title);
-        $this->assertEquals('ENG-3705-001', $section->rubric);
-        $this->assertEquals('3705', $section->coursenumber);
-        $this->assertEquals('001', $section->sectionnumber);
-
-        $this->assertEquals('English Dept', $section->deptname);
-        $this->assertEquals('ENG', $section->deptsdid);
-        $this->assertEquals('Active', $section->status);
-
-        $this->assertEquals(1504224000, $section->begindate);
-        $this->assertEquals(0, $section->beginrestrict);
-        $this->assertEquals(1514678400, $section->enddate);
-        $this->assertEquals(0, $section->endrestrict);
-
-        $this->assertEquals('ENG.3705', $section->coursesdid);
-        $this->assertEquals('Main Campus', $section->location);
-
-        // Now we are going to load up the term, because that changes the title.
-        $termnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/term_replace.xml');
-        $termconverter = new lis2\group_term();
-        $term = $termconverter->process_xml_to_data($termnode);
-        $term->save_to_db();
-
-        $section = $converter->process_xml_to_data($node);
-        $this->assertInstanceOf(data\section::class, $section);
-
-        $this->assertEquals('Contemporary Fiction', $section->title);
-
-        //print "<pre>";var_export($section);print "</pre>\n";
-        // TODO.
 
     }
 

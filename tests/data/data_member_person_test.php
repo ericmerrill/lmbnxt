@@ -32,7 +32,7 @@ class data_member_person_testcase extends xml_helper {
     public function test_log_id() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/member_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/member_person.xml');
         $converter = new \enrol_lmb\local\processors\xml\membership();
         $members = $converter->process_xml_to_data($node);
 
@@ -63,7 +63,7 @@ class data_member_person_testcase extends xml_helper {
 
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/member_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/member_person.xml');
         $converter = new \enrol_lmb\local\processors\xml\membership();
         $members = $converter->process_xml_to_data($node);
 

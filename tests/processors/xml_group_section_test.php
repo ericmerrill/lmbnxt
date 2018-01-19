@@ -31,7 +31,7 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class xml_group_section_testcase extends xml_helper {
     public function test_conversion() {
         global $CFG;
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/section.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/section.xml');
 
         $converter = new \enrol_lmb\local\processors\xml\group();
 

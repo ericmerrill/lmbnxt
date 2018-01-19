@@ -37,7 +37,7 @@ class lis2_section_test extends xml_helper {
         global $CFG;
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/replaceCourseSectionRequest.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/replace_course.xml');
 
         $converter = new lis2\section();
 
@@ -67,7 +67,7 @@ class lis2_section_test extends xml_helper {
         $this->assertEquals('Main Campus', $section->location);
 
         // Now we are going to load up the term, because that changes the title.
-        $termnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/term_replace.xml');
+        $termnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/term_replace.xml');
         $termconverter = new lis2\group_term();
         $term = $termconverter->process_xml_to_data($termnode);
         $term->save_to_db();

@@ -167,6 +167,7 @@ class person extends base {
     protected function process_userid_node($node, $mapping) {
         if (!isset($node->USERIDVALUE->TEXTSTRING) || !isset($node->USERIDTYPE->TEXTSTRING)) {
             // We need the userid value and the type to continue.
+            return;
         }
 
 //         if (!isset($this->dataobj->userid)) {
@@ -176,13 +177,16 @@ class person extends base {
 
         $userid = new \stdClass();
         $userid->userid = $node->USERIDVALUE->TEXTSTRING->get_value();
-        if (isset($node->PWENCRYPTIONTYPE->TEXTSTRING) && isset($node->PASSWORD->TEXTSTRING)) {
+        if (isset($node->PASSWORD->TEXTSTRING)) {
             $userid->password = $node->PASSWORD->TEXTSTRING->get_value();
-            $userid->pwencryptiontype = $node->PWENCRYPTIONTYPE->TEXTSTRING->get_value();
+        } else {
 
         }
+        if (isset($node->PWENCRYPTIONTYPE->TEXTSTRING)) {
+            $userid->pwencryptiontype = $node->PWENCRYPTIONTYPE->TEXTSTRING->get_value();
+        }
 
-        $useridtype = $node->USERIDVALUE->TEXTSTRING->get_value();
+        $useridtype = $node->USERIDTYPE->TEXTSTRING->get_value();
         $this->dataobj->userid[$useridtype] = $userid;
 
         switch ($useridtype) {

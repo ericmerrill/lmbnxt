@@ -45,7 +45,7 @@ class message_test extends xml_helper {
     public function test_load_processor() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/person.xml');
         $message = new message(null, $node);
 
         $this->run_protected_method($message, 'load_processor');
@@ -63,7 +63,7 @@ class message_test extends xml_helper {
 
         $controller = new controller();
         $controller->set_option('nodb', true);
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/person.xml');
         $message = new message($controller, $node);
 
         $message->process_to_data();
@@ -106,7 +106,7 @@ class message_test extends xml_helper {
     public function test_get_response() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/member_replace_teacher.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
         $message = new message(null, $node);
         $this->run_protected_method($message, 'load_processor');
 
@@ -121,7 +121,7 @@ class message_test extends xml_helper {
         $message = new message(null, null);
         $this->assertNull($message->get_status());
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/member_replace_teacher.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
         $message = new message(null, $node);
         $this->run_protected_method($message, 'load_processor');
         $status = $message->get_status();
@@ -135,7 +135,7 @@ class message_test extends xml_helper {
         $message = new message(null, null);
         $this->assertFalse($message->get_root_tag());
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/member_replace_teacher.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
         $message = new message(null, $node);
         $this->assertEquals('REPLACEMEMBERSHIPREQUEST', $message->get_root_tag());
     }

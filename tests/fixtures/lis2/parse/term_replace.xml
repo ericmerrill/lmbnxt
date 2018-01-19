@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Header>
+    <imsx_syncRequestHeaderInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/gms2p0/wsdl11/sync/imsgms_v2p0">
+      <imsx_version>V1.0</imsx_version>
+      <imsx_messageIdentifier>2</imsx_messageIdentifier>
+    </imsx_syncRequestHeaderInfo>
+  </soapenv:Header>
+  <soapenv:Body>
+    <replaceGroupRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/gms2p0/wsdl11/sync/imsgms_v2p0">
+      <sourcedId>201740</sourcedId>
+      <groupRecord>
+        <sourcedGUID>
+          <refAgentInstanceID>ILP</refAgentInstanceID>
+          <sourcedId>201740</sourcedId>
+        </sourcedGUID>
+        <group>
+          <groupType>
+            <scheme>
+              <language>en</language>
+              <textString>IMS-LIS2.0</textString>
+            </scheme>
+            <typevalue>
+              <id>TERM</id>
+              <type>
+                <language>en</language>
+                <textString>TERM</textString>
+              </type>
+              <level>
+                <language>en</language>
+                <textString>1</textString>
+              </level>
+            </typevalue>
+          </groupType>
+          <timeframe>
+            <begin>2017-08-30T00:00:00</begin>
+            <end>2017-12-17T00:00:00</end>
+          </timeframe>
+          <description>
+            <shortDescription>Short201740</shortDescription>
+            <longDescription>Fall Semester 2017</longDescription>
+          </description>
+        </group>
+      </groupRecord>
+    </replaceGroupRequest>
+  </soapenv:Body>
+</soapenv:Envelope>

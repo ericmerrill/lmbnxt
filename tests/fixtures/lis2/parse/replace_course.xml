@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Header>
+    <imsx_syncRequestHeaderInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_v1p0">
+      <imsx_version>V1.0</imsx_version>
+      <imsx_messageIdentifier>2</imsx_messageIdentifier>
+    </imsx_syncRequestHeaderInfo>
+  </soapenv:Header>
+  <soapenv:Body>
+    <replaceCourseSectionRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_v1p0">
+      <sourcedId>44654.201740</sourcedId>
+      <courseSectionRecord>
+        <sourcedGUID>
+          <sourcedId>44654.201740</sourcedId>
+        </sourcedGUID>
+        <courseSection>
+          <label>
+            <language>en</language>
+            <textString>201740 ENG-3705-001</textString>
+          </label>
+          <title>
+            <language>en</language>
+            <textString>Fall Semester 2017 - Contemporary Fiction (ENG-3705-001)</textString>
+          </title>
+          <academicSession>
+            <language>en</language>
+            <textString>201740</textString>
+          </academicSession>
+          <catalogDescription>
+            <shortDescription>
+              <language>en</language>
+              <textString>Narrative literature from 1950 to the present day.</textString>
+            </shortDescription>
+            <longDescription>
+              <language>en</language>
+              <textString>Narrative literature from 1950 to the present day. 9/1/2017 - 12/31/2017, Lecture</textString>
+            </longDescription>
+          </catalogDescription>
+          <status>Active</status>
+          <timeFrame>
+            <begin>2017-09-01T00:00:00</begin>
+            <end>2017-12-31T00:00:00</end>
+          </timeFrame>
+          <dataSource>Banner</dataSource>
+          <parentOfferingId>ENG.3705</parentOfferingId>
+          <defaultCredits>
+            <language>en</language>
+            <textString>4</textString>
+          </defaultCredits>
+          <maxNumberofStudents>25</maxNumberofStudents>
+          <location>
+            <language>en</language>
+            <textString>Main Campus</textString>
+          </location>
+          <notes>
+            <language>en</language>
+            <textString />
+          </notes>
+          <meeting>
+            <language>en</language>
+            <textString>0800 - 0947</textString>
+          </meeting>
+          <org>
+            <orgName>
+              <language>en</language>
+              <textString>English Dept</textString>
+            </orgName>
+            <orgUnit>
+              <language>en</language>
+              <textString>ENG</textString>
+            </orgUnit>
+            <id>
+              <language>en</language>
+              <textString>ENG</textString>
+            </id>
+          </org>
+        </courseSection>
+      </courseSectionRecord>
+    </replaceCourseSectionRequest>
+  </soapenv:Body>
+</soapenv:Envelope>

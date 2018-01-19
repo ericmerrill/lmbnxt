@@ -35,7 +35,7 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class lis2_group_term_test extends xml_helper {
     public function test_term_group() {
         global $CFG;
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/term_replace.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/term_replace.xml');
 
         $converter = new lis2\group();
 

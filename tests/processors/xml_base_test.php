@@ -65,7 +65,7 @@ class xml_base_testcase extends xml_helper {
 
     public function test_process_field() {
         global $CFG;
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/person.xml');
         $converter = new \enrol_lmb\local\processors\xml\person();
 
         // Pass a bad mapping array.

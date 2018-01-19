@@ -35,7 +35,7 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class lis2_member_person_test extends xml_helper {
     public function test_member_person_teacher() {
         global $CFG;
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/member_replace_teacher.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
 
         $converter = new \enrol_lmb\local\processors\lis2\membership();
 
