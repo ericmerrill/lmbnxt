@@ -49,6 +49,7 @@ class lis2_person_test extends xml_helper {
         $this->assertEquals('ILP', $person->referenceagent);
         $this->assertEquals('extensionSourcedID', $person->sdid);
 
+        // Some name stuff.
         $this->assertEquals('Mr. Test A User Jr.', $person->fullname);
         $this->assertEquals('Nick', $person->nickname);
         $this->assertEquals('User', $person->familyname);
@@ -59,6 +60,7 @@ class lis2_person_test extends xml_helper {
 
         $this->assertEquals('BannerIDExtension', $person->sctid);
 
+        // Some UserID stuff.
         $this->assertInternalType('array', $person->userid);
         $this->assertCount(4, $person->userid);
 
@@ -79,10 +81,39 @@ class lis2_person_test extends xml_helper {
         $this->assertEquals('otherUserID', $userid->userid);
         $this->assertFalse(isset($userid->password));
 
+        // Check extensions.
+        $this->assertInternalType('array', $person->extension);
+        $this->assertCount(3, $person->extension);
+
+        $extension = $person->extension['BannerID'];
+        $this->assertEquals('BannerIDExtension', $extension->value);
+        $this->assertEquals('String', $extension->type);
+
+        $extension = $person->extension['SourcedId'];
+        $this->assertEquals('extensionSourcedID', $extension->value);
+        $this->assertEquals('String', $extension->type);
+
+        $extension = $person->extension['UnknownExtension'];
+        $this->assertEquals('UnknownValue', $extension->value);
+        $this->assertFalse($extension->type);
+
+        // Contact info.
+        $this->assertEquals('useremail@example.com', $person->email);
+
+        // Roles.
+        $this->assertEquals(1, $person->rolestaff);
+        $this->assertEquals(1, $person->rolestudent);
+        $this->assertEquals(1, $person->roleprospectivestudent);
+        $this->assertEquals(1, $person->rolefaculty);
+        $this->assertEquals(1, $person->rolealumni);
+        $this->assertEquals('Faculty', $person->primaryrole);
+
+        // Now make sure it's falling back correctly with missing nodes.
         unset($node->PERSONRECORD->PERSON->EXTENSION);
         $person = $converter->process_xml_to_data($node);
 
         $this->assertEquals('personSourcedID', $person->sdid);
+        $this->assertEquals('SCTIDUserid', $person->sctid);
 
         return;
 

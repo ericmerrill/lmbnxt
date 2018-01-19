@@ -95,6 +95,48 @@ class person extends base {
         }
     }
 
+    protected function process_contactinfo_node($node, $mapping) {
+        if (!isset($node->CONTACTINFOTYPE->INSTANCEIDENTIFIER->TEXTSTRING) || !isset($node->CONTACTINFOVALUE->TEXTSTRING)) {
+            return;
+        }
+
+        // We are only going to work with the full name.
+        if (strcasecmp('EmailPrimary', $node->CONTACTINFOTYPE->INSTANCEIDENTIFIER->TEXTSTRING->get_value()) === 0) {
+            $this->dataobj->email = $node->CONTACTINFOVALUE->TEXTSTRING->get_value();
+        }
+    }
+
+    protected function process_institutionrole_node($node, $mapping) {
+        $isset = isset($node->INSTITUTIONROLETYPE->INSTANCEIDENTIFIER->TEXTSTRING);
+        if (!$isset || !isset($node->INSTITUTIONROLETYPE->INSTANCEVALUE->TEXTSTRING)) {
+            return;
+        }
+
+        $type = $node->INSTITUTIONROLETYPE->INSTANCEIDENTIFIER->TEXTSTRING->get_value();
+        switch ($type) {
+            case ('Student'):
+                $this->dataobj->rolestudent = 1;
+                break;
+            case ('Faculty'):
+                $this->dataobj->rolefaculty = 1;
+                break;
+            case ('Staff'):
+                $this->dataobj->rolestaff = 1;
+                break;
+            case ('Alumni'):
+                $this->dataobj->rolealumni = 1;
+                break;
+            case ('ProspectiveStudent'):
+                $this->dataobj->roleprospectivestudent = 1;
+                break;
+        }
+
+        if (isset($node->PRIMARYROLETYPE) && (strcasecmp('true', $node->PRIMARYROLETYPE->get_value()) === 0)) {
+            // Save the primary role type.
+            $this->dataobj->primaryrole = $type;
+        }
+    }
+
     protected function process_partname_node($part) {
         if (!isset($part->INSTANCENAME->TEXTSTRING) || !isset($part->INSTANCEVALUE->TEXTSTRING)) {
             // We can't do anything without the part name and value.
@@ -144,24 +186,25 @@ class person extends base {
 
         $fieldname = $node->FIELDNAME->get_value();
 
+        $extension = new \stdClass();
+        $extension->value = $node->FIELDVALUE->get_value();
+        if (isset($node->FIELDTYPE)) {
+            $extension->type = $node->FIELDTYPE->get_value();
+        } else {
+            $extension->type = false;
+        }
+
+        $this->dataobj->extension[$fieldname] = $extension;
+
         switch ($fieldname) {
             case "BannerID":
-                $destination = 'sctid';
+                $this->dataobj->sctid = $extension->value;
                 break;
             case "SourcedId":
                 // This is a good backup method for making sure we get the true sourcedid.
-                $destination = 'sdid';
+                $this->dataobj->sdid = $extension->value;
                 break;
-            default:
-                $destination = false;
         }
-
-        if ($destination === false) {
-            // We don't know this name parts destination.
-            return;
-        }
-
-        $this->dataobj->$destination = $node->FIELDVALUE->get_value();
     }
 
     protected function process_userid_node($node, $mapping) {
@@ -169,11 +212,6 @@ class person extends base {
             // We need the userid value and the type to continue.
             return;
         }
-
-//         if (!isset($this->dataobj->userid)) {
-//             // This is going to be an array, so create it.
-//             $this->dataobj->userid = array();
-//         }
 
         $userid = new \stdClass();
         $userid->userid = $node->USERIDVALUE->TEXTSTRING->get_value();

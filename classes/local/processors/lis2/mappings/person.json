@@ -13,7 +13,15 @@
         "lmbinternal": true,
         "function": "process_name_node"
       },
+      "CONTACTINFO": {
+        "lmbinternal": true,
+        "function": "process_contactinfo_node"
+      },
       "ROLES": {
+        "INSTITUTIONROLE": {
+          "lmbinternal": true,
+          "function": "process_institutionrole_node"
+        },
         "USERID": {
           "lmbinternal": true,
           "function": "process_userid_node"

@@ -32,6 +32,34 @@
               <textString>Mr. Test A User Jr.</textString>
             </formattedName>
           </formname>
+          <name>                                <!-- A name with only 1 part. -->
+            <nameType>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/formatnmetypevocabularyv1p0</instanceVocabulary>
+              <instanceValue>
+                <language>en</language>
+                <textString>Full</textString>
+              </instanceValue>
+            </nameType>
+            <partName>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/partnamevocabularyv1p0</instanceVocabulary>
+              <instanceName>
+                <language>en</language>
+                <textString>First</textString>
+              </instanceName>
+              <instanceValue>
+                <language>en</language>
+                <textString>FirstFirst</textString>
+              </instanceValue>
+            </partName>
+          </name>
           <name>
             <nameType>
               <instanceIdentifier>
@@ -149,6 +177,45 @@
                 <textString>NotValid</textString>
               </instanceValue>
             </partName>
+            <partName>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/partnamevocabularyv1p0</instanceVocabulary>
+              <instanceName>
+                <language>en</language>
+                <textString>NotValid</textString>
+              </instanceName>                               <!-- Missinga. instanceValue node, so invalid. -->
+            </partName>
+          </name>
+          <name>
+            <nameType>                                      <!-- This name is not of the Full type -->
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/formatnmetypevocabularyv1p0</instanceVocabulary>
+              <instanceValue>
+                <language>en</language>
+                <textString>NotFull</textString>
+              </instanceValue>
+            </nameType>
+            <partName>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>?</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/partnamevocabularyv1p0</instanceVocabulary>
+              <instanceName>
+                <language>en</language>
+                <textString>First</textString>
+              </instanceName>
+              <instanceValue>
+                <language>en</language>
+                <textString>InvalidFull</textString>
+              </instanceValue>
+            </partName>
           </name>
           <contactinfo>
             <contactinfoType>
@@ -164,8 +231,46 @@
             </contactinfoType>
             <contactinfoValue>
               <language>en</language>
-              <textString>merrill@example.com</textString>
+              <textString>useremail@example.com</textString>
             </contactinfoValue>
+          </contactinfo>
+          <contactinfo>
+            <contactinfoType>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>OtherEmail</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/contactinfotypevocabularyv1p0</instanceVocabulary>
+              <instanceValue>
+                <language>en</language>
+                <textString>OtherEmail</textString>
+              </instanceValue>
+            </contactinfoType>
+            <contactinfoValue>
+              <language>en</language>
+              <textString>otheruseremail@example.com</textString>
+            </contactinfoValue>
+          </contactinfo>
+          <contactinfo>
+            <contactinfoType>
+            </contactinfoType>
+            <contactinfoValue>
+              <language>en</language>
+              <textString>invalid1@example.com</textString>
+            </contactinfoValue>
+          </contactinfo>
+          <contactinfo>
+            <contactinfoType>
+              <instanceIdentifier>
+                <language>en</language>
+                <textString>Invalid2</textString>
+              </instanceIdentifier>
+              <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/contactinfotypevocabularyv1p0</instanceVocabulary>
+              <instanceValue>
+                <language>en</language>
+                <textString>Invalid2</textString>
+              </instanceValue>
+            </contactinfoType>
           </contactinfo>
           <roles>
             <enterpriserolesType>
@@ -192,6 +297,83 @@
                 </instanceValue>
               </institutionroletype>
               <primaryroletype>true</primaryroletype>
+            </institutionRole>
+            <institutionRole>
+              <institutionroletype>
+                <instanceIdentifier>
+                  <language>en</language>
+                  <textString>Student</textString>
+                </instanceIdentifier>
+                <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/institutionroletypevocabularyv1p0</instanceVocabulary>
+                <instanceValue>
+                  <language>en</language>
+                  <textString>Student</textString>
+                </instanceValue>
+              </institutionroletype>
+              <primaryroletype>false</primaryroletype>
+            </institutionRole>
+            <institutionRole>
+              <institutionroletype>
+                <instanceIdentifier>
+                  <language>en</language>
+                  <textString>Staff</textString>
+                </instanceIdentifier>
+                <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/institutionroletypevocabularyv1p0</instanceVocabulary>
+                <instanceValue>
+                  <language>en</language>
+                  <textString>Staff</textString>
+                </instanceValue>
+              </institutionroletype>
+              <primaryroletype>false</primaryroletype>
+            </institutionRole>
+            <institutionRole>
+              <institutionroletype>
+                <instanceIdentifier>
+                  <language>en</language>
+                  <textString>Alumni</textString>
+                </instanceIdentifier>
+                <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/institutionroletypevocabularyv1p0</instanceVocabulary>
+                <instanceValue>
+                  <language>en</language>
+                  <textString>Alumni</textString>
+                </instanceValue>
+              </institutionroletype>
+              <primaryroletype>false</primaryroletype>
+            </institutionRole>
+            <institutionRole>
+              <institutionroletype>
+                <instanceIdentifier>
+                  <language>en</language>
+                  <textString>ProspectiveStudent</textString>
+                </instanceIdentifier>
+                <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/institutionroletypevocabularyv1p0</instanceVocabulary>
+                <instanceValue>
+                  <language>en</language>
+                  <textString>ProspectiveStudent</textString>
+                </instanceValue>
+              </institutionroletype>
+            </institutionRole>
+            <institutionRole>
+              <institutionroletype>
+                <instanceIdentifier>
+                  <language>en</language>
+                  <textString>UnknownRole</textString>
+                </instanceIdentifier>
+                <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/institutionroletypevocabularyv1p0</instanceVocabulary>
+                <instanceValue>
+                  <language>en</language>
+                  <textString>UnknownRole</textString>
+                </instanceValue>
+              </institutionroletype>
+            </institutionRole>
+            <institutionRole>
+              <institutionroletype>
+                <instanceIdentifier>
+                  <language>en</language>
+                  <textString>InvalidRole</textString>
+                </instanceIdentifier>
+                <instanceVocabulary>http://www.imsglobal.org/lis/pmsv2p0/institutionroletypevocabularyv1p0</instanceVocabulary>
+              </institutionroletype>
             </institutionRole>
             <userId>
               <userIdValue>
@@ -276,7 +458,6 @@
             </extensionField>
             <extensionField>
               <fieldName>UnknownExtension</fieldName>
-              <fieldType>String</fieldType>
               <fieldValue>UnknownValue</fieldValue>
             </extensionField>
             <extensionField>
