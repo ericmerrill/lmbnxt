@@ -87,6 +87,7 @@ class xml_person_testcase extends xml_helper {
         $this->assertEquals(1, $person->roleprospectivestudent);
         $this->assertEquals(1, $person->rolefaculty);
         $this->assertEquals(1, $person->rolealumni);
+        $this->assertEquals('Faculty', $person->primaryrole);
 
         $this->assertEquals('Undeclared', $person->major);
         $this->assertEquals('Lecturer', $person->title);

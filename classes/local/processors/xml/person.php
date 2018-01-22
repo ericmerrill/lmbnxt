@@ -125,6 +125,12 @@ class person extends base {
     protected function process_instituterole_node($node, $mapping) {
         $type = $node->get_attribute('INSTITUTIONROLETYPE');
 
+
+        $primary = $node->get_attribute('PRIMARYROLE');
+        if (!empty($primary) && (strcasecmp($primary, 'Yes') === 0)) {
+            $this->dataobj->primaryrole = $type;
+        }
+
         switch ($type) {
             case ('Student'):
                 $this->dataobj->rolestudent = 1;
