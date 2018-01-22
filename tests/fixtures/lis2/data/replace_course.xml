@@ -8,19 +8,19 @@
   </soapenv:Header>
   <soapenv:Body>
     <replaceCourseSectionRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_v1p0">
-      <sourcedId>44654.201740</sourcedId>
+      <sourcedId>10001.201740</sourcedId>
       <courseSectionRecord>
         <sourcedGUID>
-          <sourcedId>44654.201740</sourcedId>
+          <sourcedId>10001.201740</sourcedId>
         </sourcedGUID>
         <courseSection>
           <label>
             <language>en</language>
-            <textString>201740 ENG-3705-001</textString>
+            <textString>201740 ENG-101-001</textString>
           </label>
           <title>
             <language>en</language>
-            <textString>Fall Semester 2017 - Contemporary Fiction (ENG-3705-001)</textString>
+            <textString>Fall Semester 2017 - Course Title (ENG-101-001)</textString>
           </title>
           <academicSession>
             <language>en</language>
@@ -29,20 +29,20 @@
           <catalogDescription>
             <shortDescription>
               <language>en</language>
-              <textString>Narrative literature from 1950 to the present day.</textString>
+              <textString>Course Title.</textString>
             </shortDescription>
             <longDescription>
               <language>en</language>
-              <textString>Narrative literature from 1950 to the present day. 9/1/2017 - 12/31/2017, Lecture</textString>
+              <textString>Course Title. 8/30/2017 - 12/17/2017, Lecture</textString>
             </longDescription>
           </catalogDescription>
           <status>Active</status>
           <timeFrame>
-            <begin>2017-09-01T00:00:00</begin>
-            <end>2017-12-31T00:00:00</end>
+            <begin>2017-08-30T00:00:00</begin>
+            <end>2017-12-17T00:00:00</end>
           </timeFrame>
           <dataSource>Banner</dataSource>
-          <parentOfferingId>ENG.3705</parentOfferingId>
+          <parentOfferingId>ENG.101</parentOfferingId>
           <defaultCredits>
             <language>en</language>
             <textString>4</textString>

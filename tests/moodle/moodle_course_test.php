@@ -49,19 +49,19 @@ class moodle_course_testcase extends xml_helper {
         $moodlecourse->set_data($section);
 
         $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[SOURCEDID]']);
-        $this->assertEquals('44654.201740', $result);
+        $this->assertEquals('10001.201740', $result);
         $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[CRN]:[TERM]']);
-        $this->assertEquals('44654:201740', $result);
+        $this->assertEquals('10001:201740', $result);
         // The term isn't in the DB, so we just expect the term code.
         $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[TERMNAME]']);
         $this->assertEquals('201740', $result);
         $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[LONG]']);
-        $this->assertEquals('ENG-3705-001', $result);
+        $this->assertEquals('ENG-101-001', $result);
         $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[RUBRIC]:[DEPT]:[NUM]:[SECTION]']);
-        $this->assertEquals('ENG-3705:ENG:3705:001', $result);
+        $this->assertEquals('ENG-101:ENG:101:001', $result);
         // This one will have the full semester name in the title, because we haven't loaded the term in the DB yet.
         $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[FULL]']);
-        $this->assertEquals('Fall Semester 2017 - Contemporary Fiction', $result);
+        $this->assertEquals('Fall Semester 2017 - Course Title', $result);
 
         // Load up the term into the DB.
         $termnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/term_replace.xml');
@@ -186,15 +186,38 @@ class moodle_course_testcase extends xml_helper {
         $this->assertEquals($maxsections, $result);
     }
 
-    public function test_convert_to_moodle() {
+    /**
+     * Data provider for test_convert_to_moodle.
+     *
+     * @return array
+     */
+    public function convert_to_moodle_testcases() {
+        global $CFG;
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_course.xml');
+        $converter = new lis2\section();
+        $section1 = $converter->process_xml_to_data($node);
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/section.xml');
+        $converter = new xml\group_section();
+        $section2 = $converter->process_xml_to_data($node);
+
+        $output = ['lis2' => [$section1],
+                   'xml'  => [$section2]];
+
+        return $output;
+    }
+
+    /**
+     * Test that two identical courses are made from LIS1-XML and LIS2 content.
+     *
+     * @dataProvider convert_to_moodle_testcases
+     * @param data\section $section The input section
+     */
+    public function test_convert_to_moodle($section) {
         global $CFG, $DB;
 
         $this->resetAfterTest(true);
-
-        // First a LIS 2 based node.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_course.xml');
-        $converter = new lis2\section();
-        $section = $converter->process_xml_to_data($node);
 
         $moodlecourse = new moodle\course();
 
@@ -209,11 +232,11 @@ class moodle_course_testcase extends xml_helper {
 
         $moodlecourse->convert_to_moodle($section);
 
-        $dbcourse = $DB->get_record('course', array('idnumber' => '44654.201740'), '*', MUST_EXIST);
+        $dbcourse = $DB->get_record('course', array('idnumber' => '10001.201740'), '*', MUST_EXIST);
         $this->assertInstanceOf(\stdClass::class, $dbcourse);
 
-        $this->assertEquals('44654:201740', $dbcourse->fullname);
-        $this->assertEquals('ENG3705', $dbcourse->shortname);
+        $this->assertEquals('10001:201740', $dbcourse->fullname);
+        $this->assertEquals('ENG101', $dbcourse->shortname);
 
         $this->assertEquals(0, $dbcourse->startdate);
         $this->assertEquals(0, $dbcourse->enddate);
@@ -235,7 +258,7 @@ class moodle_course_testcase extends xml_helper {
         // Now run an update make sure things don't force change.
         $moodlecourse->convert_to_moodle($section);
 
-        $dbcourse = $DB->get_record('course', array('idnumber' => '44654.201740'), '*', MUST_EXIST);
+        $dbcourse = $DB->get_record('course', array('idnumber' => '10001.201740'), '*', MUST_EXIST);
         $this->assertInstanceOf(\stdClass::class, $dbcourse);
 
         $this->assertEquals('Full name', $dbcourse->fullname);
@@ -258,11 +281,11 @@ class moodle_course_testcase extends xml_helper {
 
         $moodlecourse->convert_to_moodle($section);
 
-        $dbcourse = $DB->get_record('course', array('idnumber' => '44654.201740'), '*', MUST_EXIST);
+        $dbcourse = $DB->get_record('course', array('idnumber' => '10001.201740'), '*', MUST_EXIST);
         $this->assertInstanceOf(\stdClass::class, $dbcourse);
 
-        $this->assertEquals('44654:201740', $dbcourse->fullname);
-        $this->assertEquals('ENG3705', $dbcourse->shortname);
+        $this->assertEquals('10001:201740', $dbcourse->fullname);
+        $this->assertEquals('ENG101', $dbcourse->shortname);
 
         $this->assertEquals(1504224000, $dbcourse->startdate);
         $this->assertEquals(1514678400, $dbcourse->enddate);

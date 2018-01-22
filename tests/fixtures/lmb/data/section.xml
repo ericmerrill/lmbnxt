@@ -1,0 +1,74 @@
+<enterprise>
+    <group recstatus="1">
+        <sourcedid>
+            <source>Test SCT Banner</source>
+            <id>10001.201740</id>
+        </sourcedid>
+        <grouptype>
+            <scheme>Luminis</scheme>
+            <typevalue level="1">CourseSection</typevalue>
+        </grouptype>
+        <description>
+            <short>10001</short>
+            <long>ENG-101-001</long>
+            <full>Course Title</full>
+        </description>
+        <org>
+            <orgunit>English Dept</orgunit>
+        </org>
+        <timeframe>
+            <begin restrict="0">2017-08-30</begin>
+            <end restrict="1">2017-12-17</end>
+        </timeframe>
+        <enrollcontrol>
+            <enrollaccept>1</enrollaccept>
+            <enrollallowed>0</enrollallowed>
+        </enrollcontrol>
+        <relationship relation="1">
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>201740</id>
+            </sourcedid>
+            <label>Term</label>
+        </relationship>
+        <relationship relation="1">
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>ENG-101</id>
+            </sourcedid>
+            <label>Course</label>
+        </relationship>
+        <relationship relation="1">
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>OTHR</id>
+            </sourcedid>
+            <label>Unknown</label>
+        </relationship>
+        <extension>
+            <luminisgroup>
+                <events>
+                    <recurringevent>
+                        <eventdescription>Section Meeting</eventdescription>
+                        <begindate>2017-08-30</begindate>
+                        <enddate>2017-12-17</enddate>
+                        <daysofweek>mf</daysofweek>
+                        <begintime>08:00:00</begintime>
+                        <endtime>09:07:00</endtime>
+                        <location>HH 113</location>
+                    </recurringevent>
+                    <recurringevent>
+                        <eventdescription>Section Meeting</eventdescription>
+                        <begindate>2017-08-30</begindate>
+                        <enddate>2017-12-17</enddate>
+                        <daysofweek>w</daysofweek>
+                        <begintime>10:00:00</begintime>
+                        <endtime>11:07:00</endtime>
+                        <location>HH 113</location>
+                    </recurringevent>
+                </events>
+                <deliverysystem>MOODLE</deliverysystem>
+            </luminisgroup>
+        </extension>
+    </group>
+</enterprise>
