@@ -40,6 +40,7 @@ class lis2_base_test extends xml_helper {
         $converter = new lis2\base();
         try {
             $converter->process_xml_to_data($node);
+            $this->fail("Expected exception not thrown.");
         } catch (\Exception $ex) {
             $this->assertInstanceOf(\coding_exception::class, $ex);
             $this->assertContains('NAMESPACE_DEF must be defined', $ex->getMessage());
@@ -49,6 +50,7 @@ class lis2_base_test extends xml_helper {
         $converter = new lis2\group_term();
         try {
             $converter->process_xml_to_data($node);
+            $this->fail("Expected exception not thrown.");
         } catch (\Exception $ex) {
             $this->assertInstanceOf(exception\message_exception::class, $ex);
             $this->assertContains('LIS message namespace incorrect', $ex->getMessage());
@@ -58,6 +60,7 @@ class lis2_base_test extends xml_helper {
         $node->set_attribute('XMLNS', 'Unknown');
         try {
             $converter->process_xml_to_data($node);
+            $this->fail("Expected exception not thrown.");
         } catch (\Exception $ex) {
             $this->assertInstanceOf(exception\message_exception::class, $ex);
             $this->assertContains('LIS message namespace incorrect', $ex->getMessage());
