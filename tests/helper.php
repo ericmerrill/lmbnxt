@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\settings;
+
 /**
  * A base testcase for XML tests.
  *
@@ -34,6 +36,10 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class xml_helper extends advanced_testcase {
+
+    public function setUp() {
+        settings_helper::reset();
+    }
 
     /**
      * Returns a xml_node for a given xml string.

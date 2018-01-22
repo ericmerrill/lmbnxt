@@ -57,20 +57,38 @@ $string['exception_membershiptype_not_found'] = 'Membership type could not be fo
 $string['exception_update_failure'] = 'Failure updating in database';
 $string['exception_xml_boolean'] = 'Could not convert data "{$a}" into boolean.';
 
-// TODO.
+// Person Settings.
 $string['parseperson'] = 'TODO';
 $string['parsepersonxml'] = 'TODO';
 $string['parsepersonxml_help'] = 'TODO';
-$string['createnewusers'] = 'TODO';
-$string['createnewusers_help'] = 'TODO';
+$string['createnewusers'] = 'Create new user accounts';
+$string['createnewusers_help'] = 'This setting will allow the LMB module to create new Moodle users as directed by Banner/LMB.';
 $string['createusersemaildomain'] = 'TODO';
 $string['createusersemaildomain_help'] = 'TODO';
 $string['ignoredomaincase'] = 'TODO';
 $string['ignoredomaincase_help'] = 'TODO';
 $string['donterroremail'] = 'TODO';
 $string['donterroremail_help'] = 'TODO';
+$string['usernamesource'] = 'Username source';
+$string['usernamesource_help'] = "This determines what will be the username of created users
+<ul>
+<li>Full email address: The entire email address is used as the username.
+<li>Email name (before @): Use the portion of the email address before the @.
+<li>useridtype - Login ID: Use the value supplied in the userid tag marked 'Login ID'.
+<li>useridtype - SCTID: Use the value supplied in the userid tag marked 'SCTID'.
+<li>useridtype - Email ID: Use the value supplied in the userid tag marked 'Email ID'.
+<li>useridtype - Other: Use the value supplied in the userid tag marked as indicated in the text box.
+</ul>";
+$string['fullemail'] = 'Full email address';
+$string['emailname'] = 'Email before @';
+$string['useridtypelogin'] = 'useridtype - Login ID';
+$string['useridtypesctid'] = 'useridtype - SCTID';
+$string['useridtypeemail'] = 'useridtype - Email ID';
+$string['useridtypeother'] = 'useridtype - Other';
+$string['otheruserid'] = 'Other User ID Source';
+$string['otheruserid_help'] = '';
 
-
+// Course Settings.
 $string['parsecourse'] = 'Course Processing';
 $string['parsecoursexml'] = 'TODO';
 $string['parsecoursexml_help'] = 'TODO';

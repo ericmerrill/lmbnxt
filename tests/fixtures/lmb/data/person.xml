@@ -1,0 +1,53 @@
+<enterprise>
+    <person>
+        <sourcedid>
+            <source>Test SCT Banner</source>
+            <id>1000001</id>
+        </sourcedid>
+        <userid useridtype="Logon ID" password="012345">LogonIDUserID</userid>
+        <userid useridtype="SCTID" password="234567">SCTIDUserid</userid>
+        <userid useridtype="UDCIdentifier" password="456789">UDCIdUserid</userid>
+        <userid useridtype="Email ID" password="678901">EmailIDUserid</userid>
+        <userid useridtype="Other ID" password="890123">OtherIDUserid</userid>
+        <userid password="890123">InvalidUserid</userid>
+        <name>
+            <fn>Test A User</fn>
+            <nickname>Nick User</nickname>
+            <n>
+                <family>User</family>
+                <given>Test</given>
+                <prefix>Mr.</prefix>
+                <suffix>Jr.</suffix>
+                <partname partnametype="MiddleName">A</partname>
+            </n>
+        </name>
+        <demographics>
+            <gender>2</gender>
+        </demographics>
+        <email>testUser@eXample.com</email>
+        <tel teltype="1">989-555-9898</tel>
+        <tel teltype="2">989-555-4545</tel>
+        <tel teltype="3">989-555-1212</tel>
+        <adr>
+            <street>123 Fake St.</street>
+            <locality>Springfield</locality>
+            <region>MI</region>
+            <pcode>55555</pcode>
+            <country>USA</country>
+        </adr>
+        <institutionrole primaryrole="No" institutionroletype="ProspectiveStudent"/>
+        <institutionrole primaryrole="No" institutionroletype="Staff"/>
+        <institutionrole primaryrole="No" institutionroletype="Student"/>
+        <institutionrole primaryrole="Yes" institutionroletype="Faculty"/>
+        <institutionrole primaryrole="No" institutionroletype="Alumni"/>
+        <extension>
+            <luminisperson status="3">
+                <academicmajor>Undeclared</academicmajor>
+                <academictitle>Lecturer</academictitle>
+                <academicdegree>MS Computer Science</academicdegree>
+                <customrole>ApplicantAccept</customrole>
+                <customrole>BannerINB</customrole>
+            </luminisperson>
+        </extension>
+    </person>
+</enterprise>

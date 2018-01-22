@@ -50,20 +50,123 @@ if ($ADMIN->fulltree) {
 
     // Parse Person --------------------------------------------------------------------------------.
     $settingslmb->add(new admin_setting_heading('enrol_lmb_parseperson', get_string('parseperson', 'enrol_lmb'), ''));
+
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/parsepersonxml', get_string('parsepersonxml', 'enrol_lmb'),
             get_string('parsepersonxml_help', 'enrol_lmb'), 1));
+
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/recordsctid', get_string('recordsctid', 'enrol_lmb'),
 //             get_string('recordsctidhelp', 'enrol_lmb'), 0));
+
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/createnewusers', get_string('createnewusers', 'enrol_lmb'),
             get_string('createnewusers_help', 'enrol_lmb'), 1));
+
     $settingslmb->add(new admin_setting_configtext('enrol_lmb/createusersemaildomain',
             get_string('createusersemaildomain', 'enrol_lmb'), get_string('createusersemaildomain_help', 'enrol_lmb'), ''));
+
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/ignoredomaincase', get_string('ignoredomaincase', 'enrol_lmb'),
-            get_string('ignoredomaincase_help', 'enrol_lmb'), 0));
+            get_string('ignoredomaincase_help', 'enrol_lmb'), 1));
+
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/donterroremail', get_string('donterroremail', 'enrol_lmb'),
             get_string('donterroremail_help', 'enrol_lmb'), 1));
+
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/imsdeleteusers', get_string('deleteusers', 'enrol_lmb'),
 //             get_string('deleteusershelp', 'enrol_lmb'), 0));
+//
+
+    unset($options);
+    $options = array();
+    $options[settings::USER_NAME_EMAIL] = get_string('fullemail', 'enrol_lmb');
+    $options[settings::USER_NAME_EMAILNAME] = get_string('emailname', 'enrol_lmb');
+    $options[settings::USER_NAME_LOGONID] = get_string('useridtypelogin', 'enrol_lmb');
+    $options[settings::USER_NAME_SCTID] = get_string('useridtypesctid', 'enrol_lmb');
+    $options[settings::USER_NAME_EMAILID] = get_string('useridtypeemail', 'enrol_lmb');
+    $options[settings::USER_NAME_OTHER] = get_string('useridtypeother', 'enrol_lmb');
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/usernamesource', get_string('usernamesource', 'enrol_lmb'),
+            get_string('usernamesource_help', 'enrol_lmb'), settings::USER_NAME_EMAILNAME, $options));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/useridtypeother', get_string('otheruserid', 'enrol_lmb'),
+            get_string('otheruserid_help', 'enrol_lmb'), ''));
+
+    // TODO - Option to allow no email address.
+
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/ignoreemailcase', get_string('ignoreemailcase', 'enrol_lmb'),
+//             get_string('ignoreemailcasehelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/sourcedidfallback', get_string('sourdidfallback', 'enrol_lmb'),
+//             get_string('sourdidfallbackhelp', 'enrol_lmb'), 1));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/consolidateusernames',
+//             get_string('consolidateusers', 'enrol_lmb'), get_string('consolidateusershelp', 'enrol_lmb'), 1));
+//
+//     $settingslmb->add(new admin_setting_configtext('enrol_lmb/customfield1mapping', get_string('customfield1mapping', 'enrol_lmb'),
+//             get_string('customfield1help', 'enrol_lmb'), ''));
+//
+//     $settingslmb->add(new admin_setting_configselect('enrol_lmb/customfield1source', get_string('customfield1source', 'enrol_lmb'),
+//             get_string('customfield1sourcehelp', 'enrol_lmb'), 'email', $options));
+//
+//     unset($options);
+//     $modules = \core\plugininfo\auth::get_enabled_plugins();
+//     $options = array();
+//     foreach ($modules as $module => $path) {
+//         $options[$module] = get_string("pluginname", "auth_".$module);
+//     }
+//     $settingslmb->add(new admin_setting_configselect('enrol_lmb/auth', get_string('authmethod', 'enrol_lmb'),
+//             get_string('authmethodhelp', 'enrol_lmb'), 'manual', $options));
+//
+//     unset($options);
+//     $options = array();
+//     $options['none'] = get_string('none', 'enrol_lmb');
+//     $options['loginid'] = get_string('useridtypelogin', 'enrol_lmb');
+//     $options['sctid'] = get_string('useridtypesctid', 'enrol_lmb');
+//     $options['emailid'] = get_string('useridtypeemail', 'enrol_lmb');
+//     $options['other'] = get_string('useridtypeother', 'enrol_lmb');
+//     $settingslmb->add(new admin_setting_configselect('enrol_lmb/passwordnamesource', get_string('passwordsource', 'enrol_lmb'),
+//             get_string('passwordsourcehelp', 'enrol_lmb'), 'none', $options));
+//
+//     $settingslmb->add(new admin_setting_configtext('enrol_lmb/passworduseridtypeother', get_string('otherpassword', 'enrol_lmb'),
+//             get_string('otherpasswordhelp', 'enrol_lmb'), ''));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcepassword', get_string('forcepassword', 'enrol_lmb'),
+//             get_string('forcepasswordhelp', 'enrol_lmb'), 1));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/nickname', get_string('nickname', 'enrol_lmb'),
+//             get_string('nicknamehelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcename', get_string('forcename', 'enrol_lmb'),
+//             get_string('forcenamehelp', 'enrol_lmb'), 1));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forceemail', get_string('forceemail', 'enrol_lmb'),
+//             get_string('forceemailhelp', 'enrol_lmb'), 1));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/includetelephone', get_string('includetele', 'enrol_lmb'),
+//             get_string('includetelehelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcetelephone', get_string('forcetele', 'enrol_lmb'),
+//             get_string('forcetelehelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/includeaddress', get_string('includeadr', 'enrol_lmb'),
+//             get_string('includeadrhelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forceaddress', get_string('forceadr', 'enrol_lmb'),
+//             get_string('forceadrhelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/includecity', get_string('includecity', 'enrol_lmb'),
+//             get_string('includecityhelp', 'enrol_lmb'), 0));
+//
+//     unset($options);
+//     $options = array();
+//     $options['xml'] = get_string('locality', 'enrol_lmb');
+//     $options['standardxml'] = get_string('usestandardcityxml', 'enrol_lmb');
+//     $options['standard'] = get_string('usestandardcity', 'enrol_lmb');
+//     $settingslmb->add(new admin_setting_configselect('enrol_lmb/defaultcity', get_string('defaultcity', 'enrol_lmb'),
+//             get_string('defaultcityhelp', 'enrol_lmb'), 'xml', $options));
+//
+//     $settingslmb->add(new admin_setting_configtext('enrol_lmb/standardcity', get_string('standardcity', 'enrol_lmb'),
+//             get_string('standardcityhelp', 'enrol_lmb'), ''));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcecity', get_string('forcecity', 'enrol_lmb'),
+//             get_string('forcecityhelp', 'enrol_lmb'), 0));
 
     // Parse Course --------------------------------------------------------------------------------.
     $settingslmb->add(new admin_setting_heading('enrol_lmb_parsecourse', get_string('parsecourse', 'enrol_lmb'), ''));
@@ -127,6 +230,7 @@ if ($ADMIN->fulltree) {
 
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcecomputesections',
             get_string('forcecomputesections', 'enrol_lmb'), get_string('forcecomputesections_help', 'enrol_lmb'), 0));
+
 
 }
 

@@ -164,7 +164,7 @@
             </contactinfoType>
             <contactinfoValue>
               <language>en</language>
-              <textString>merrill@example.com</textString>
+              <textString>testUser@eXample.com</textString>
             </contactinfoValue>
           </contactinfo>
           <roles>
@@ -196,7 +196,7 @@
             <userId>
               <userIdValue>
                 <language>en</language>
-                <textString>merrill</textString>
+                <textString>LogonIDUserID</textString>
               </userIdValue>
               <userIdType>
                 <language>en</language>
@@ -204,7 +204,7 @@
               </userIdType>
               <password>
                 <language>en</language>
-                <textString>1c694edf-0d6e-455f-9286-c31748f8d358</textString>
+                <textString>11111111-2222-1111-3333-111111111111</textString>
               </password>
               <authenticationType>
                 <language>en</language>
@@ -214,7 +214,7 @@
             <userId>
               <userIdValue>
                 <language>en</language>
-                <textString>user_blah</textString>					<!-- User_ID and Student_ID VALUE -->
+                <textString>EmailUserID</textString>
               </userIdValue>
               <userIdType>
                 <language>en</language>
@@ -222,7 +222,7 @@
               </userIdType>
               <password>
                 <language>en</language>
-                <textString>{SSHA}JCkADpIzxrezO7Y9H0Swprn6veJNUEMxTENRVg==</textString>
+                <textString>{SSHA}FakeSHAPassword==</textString>
               </password>
               <pwEncryptionType>
                 <language>en</language>
@@ -232,6 +232,32 @@
                 <language>en</language>
                 <textString></textString>
               </authenticationType>
+            </userId>
+            <userId>
+              <userIdValue>
+                <language>en</language>
+                <textString>SCTIDUserid</textString>
+              </userIdValue>
+              <userIdType>
+                <language>en</language>
+                <textString>SCTID</textString>
+              </userIdType>
+            </userId>
+            <userId>
+              <userIdValue>
+                <language>en</language>
+                <textString>OtherUserID</textString>
+              </userIdValue>
+              <userIdType>
+                <language>en</language>
+                <textString>Other ID</textString>
+              </userIdType>
+            </userId>
+            <userId>
+              <userIdType>
+                <language>en</language>
+                <textString>Intentionally Bad ID</textString>
+              </userIdType>
             </userId>
           </roles>
           <dataSource>Banner</dataSource>

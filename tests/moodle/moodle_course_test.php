@@ -230,6 +230,16 @@ class moodle_course_testcase extends xml_helper {
 
         data_test::set_value($section, 'begindate', 0);
 
+        // Test with a bad data object.
+        $baddata = new data\person();
+        try {
+            $moodlecourse->convert_to_moodle($baddata);
+            $this->fail("Expected exception not thrown.");
+        } catch (\Exception $ex) {
+            $this->assertInstanceOf(\coding_exception::class, $ex);
+            $this->assertContains('Expected instance of data\section to be passed', $ex->getMessage());
+        }
+
         $moodlecourse->convert_to_moodle($section);
 
         $dbcourse = $DB->get_record('course', array('idnumber' => '10001.201740'), '*', MUST_EXIST);

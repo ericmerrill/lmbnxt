@@ -52,9 +52,11 @@ class course extends base {
     public function convert_to_moodle(data\base $data) {
         global $DB;
 
-        $this->data = $data;
+        if (!($data instanceof data\section)) {
+            throw new \coding_exception('Expected instance of data\section to be passed.');
+        }
 
-        $sdid = $data->sdid;
+        $this->data = $data;
 
         // First see if we are going to be working with an existing or new course.
         $new = false;
@@ -106,6 +108,8 @@ class course extends base {
             // TODO Category finder.
             $course->category = $this->get_category_id();
         }
+
+        // TODO - Recalculate visibility based on changes in start date.
 
         try {
             if ($new) {

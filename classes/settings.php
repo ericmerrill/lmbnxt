@@ -48,6 +48,13 @@ class settings {
     const COURSE_CATS_TERM_DEPTS_SHORT = 5;
     const COURSE_CATS_SELECTED = 6;
 
+    const USER_NAME_EMAIL = 1;
+    const USER_NAME_EMAILNAME = 2;
+    const USER_NAME_LOGONID = 3;
+    const USER_NAME_SCTID = 4;
+    const USER_NAME_EMAILID = 5;
+    const USER_NAME_OTHER = 6;
+
     protected static $settingobj = null;
 
     protected $settings = null;
