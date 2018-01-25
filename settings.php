@@ -89,9 +89,10 @@ if ($ADMIN->fulltree) {
 
     // TODO - Option to allow no email address.
 
-//
-//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/ignoreemailcase', get_string('ignoreemailcase', 'enrol_lmb'),
-//             get_string('ignoreemailcasehelp', 'enrol_lmb'), 0));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/lowercaseemails', get_string('lowercaseemails', 'enrol_lmb'),
+            get_string('lowercaseemails_help', 'enrol_lmb'), 0));
+
 //
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/sourcedidfallback', get_string('sourdidfallback', 'enrol_lmb'),
 //             get_string('sourdidfallbackhelp', 'enrol_lmb'), 1));

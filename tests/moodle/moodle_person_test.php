@@ -129,6 +129,9 @@ class moodle_user_testcase extends xml_helper {
 
         $moodleuser = new moodle\user();
 
+        $log = new logging_helper();
+        $log->set_logging_level(logging::ERROR_NOTICE);
+
         // Test with a bad data object.
         $baddata = new data\section();
         try {
@@ -147,8 +150,28 @@ class moodle_user_testcase extends xml_helper {
         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
         $this->assertFalse($dbuser);
 
+        // Now enabled.
         settings_helper::set('createnewusers', 1);
 
+        // Now try some bad email settings.
+        settings_helper::set('createusersemaildomain', 'example.com');
+        settings_helper::set('ignoredomaincase', 0);
+        settings_helper::set('donterroremail', 0);
+        $moodleuser->convert_to_moodle($person);
+        $error = 'WARNING: User email not allowed by email domain settings.';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        // Test no error setting.
+        settings_helper::set('donterroremail', 1);
+        $moodleuser->convert_to_moodle($person);
+        $resulterror = $log->test_get_flush_buffer();
+        $error = "User email not allowed by email domain settings.\n";
+        $this->assertEquals($error, $resulterror);
+
+        // Now put the setting back.
+        settings_helper::set('createusersemaildomain', '');
+
+        // Test a normally created user.
         $moodleuser->convert_to_moodle($person);
         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
         $this->assertInstanceOf(\stdClass::class, $dbuser);
@@ -156,108 +179,6 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('testuser', $dbuser->username);
 
         $this->assertEquals('testUser@eXample.com', $dbuser->email);
-
-
-        // Some additional tests.
-        // Check with an empty email.
-//         unset($person->email);
-//
-//         $log = new logging_helper();
-//         $log->set_logging_level(logging::ERROR_NOTICE);
-//
-//
-//         // First check that we don't force email.
-//         settings_helper::set('forceemail', 0);
-//         $moodleuser->convert_to_moodle($person);
-//         $this->assertContains("WARNING: User has no username with current settings. Keeping testuser", $log->test_get_flush_buffer());
-//         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
-//         $this->assertEquals('testUser@eXample.com', $dbuser->email);
-//
-//         // Now check that we do force, and it is an empty string.
-//
-//
-//         settings_helper::set('forceemail', 1);
-//         $moodleuser->convert_to_moodle($person);
-//         $this->assertContains("WARNING: User has no username with current settings. Keeping testuser", $log->test_get_flush_buffer());
-//         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
-//         $this->assertEquals('', $dbuser->email);
-
-
-
-//print "<pre>";var_export($DB->get_record('user', array('idnumber')));print "</pre>";
-
-//         settings_helper::set('coursetitle', '[CRN]:[TERM]');
-//         settings_helper::set('forcetitle', 0);
-//         settings_helper::set('courseshorttitle', '[DEPT][NUM]');
-//         settings_helper::set('forceshorttitle', 0);
-//         settings_helper::set('computesections', 0);
-//         settings_helper::set('forcecomputesections', 0);
-//
-//         data_test::set_value($section, 'begindate', 0);
-//
-//         $moodlecourse->convert_to_moodle($section);
-//
-//         $dbcourse = $DB->get_record('course', array('idnumber' => '10001.201740'), '*', MUST_EXIST);
-//         $this->assertInstanceOf(\stdClass::class, $dbcourse);
-//
-//         $this->assertEquals('10001:201740', $dbcourse->fullname);
-//         $this->assertEquals('ENG101', $dbcourse->shortname);
-//
-//         $this->assertEquals(0, $dbcourse->startdate);
-//         $this->assertEquals(0, $dbcourse->enddate);
-//
-//         $sections = $DB->count_records('course_sections', array('course' => $dbcourse->id));
-//         $sections -= 1; // Remove 1 to account for the general section.
-//         $this->assertEquals(get_config('moodlecourse', 'numsections'), $sections);
-//
-//         // Now we are going to change some things in the DB, to make sure they don't get overwritten.
-//         $dbcourse->fullname = 'Full name';
-//         $dbcourse->shortname = 'Short name';
-//         $DB->update_record('course', $dbcourse);
-//
-//         settings_helper::set('computesections', 1);
-//
-//         data_test::set_value($section, 'begindate', 1504224000);
-//         data_test::set_value($section, 'enddate', 0);
-//
-//         // Now run an update make sure things don't force change.
-//         $moodlecourse->convert_to_moodle($section);
-//
-//         $dbcourse = $DB->get_record('course', array('idnumber' => '10001.201740'), '*', MUST_EXIST);
-//         $this->assertInstanceOf(\stdClass::class, $dbcourse);
-//
-//         $this->assertEquals('Full name', $dbcourse->fullname);
-//         $this->assertEquals('Short name', $dbcourse->shortname);
-//
-//         // Dates currently always get overwritten.
-//         $this->assertEquals(1504224000, $dbcourse->startdate);
-//         $this->assertEquals(0, $dbcourse->enddate);
-//
-//         $sections = $DB->count_records('course_sections', array('course' => $dbcourse->id));
-//         $sections -= 1; // Remove 1 to account for the general section.
-//         $this->assertEquals(get_config('moodlecourse', 'numsections'), $sections);
-//
-//         // Now turn on forcing and try again.
-//         settings_helper::set('forcetitle', 1);
-//         settings_helper::set('forceshorttitle', 1);
-//         settings_helper::set('forcecomputesections', 1);
-//
-//         data_test::set_value($section, 'enddate', 1514678400);
-//
-//         $moodlecourse->convert_to_moodle($section);
-//
-//         $dbcourse = $DB->get_record('course', array('idnumber' => '10001.201740'), '*', MUST_EXIST);
-//         $this->assertInstanceOf(\stdClass::class, $dbcourse);
-//
-//         $this->assertEquals('10001:201740', $dbcourse->fullname);
-//         $this->assertEquals('ENG101', $dbcourse->shortname);
-//
-//         $this->assertEquals(1504224000, $dbcourse->startdate);
-//         $this->assertEquals(1514678400, $dbcourse->enddate);
-//
-//         $sections = $DB->count_records('course_sections', array('course' => $dbcourse->id));
-//         $sections -= 1; // Remove 1 to account for the general section.
-//         $this->assertEquals(18, $sections);
     }
 
     /**
@@ -276,7 +197,6 @@ class moodle_user_testcase extends xml_helper {
         unset($person->email);
 
         $log = new logging_helper();
-        $log->set_logging_level(logging::ERROR_NOTICE);
 
         settings_helper::set('createnewusers', 1);
         settings_helper::set('usernamesource', settings::USER_NAME_EMAILNAME);
@@ -329,5 +249,38 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('logoniduserid', $dbuser->username);
         $this->assertEquals('testUser@eXample.com', $dbuser->email);
 
+    }
+
+    public function test_check_email_domain() {
+        $person = new data\person();
+        $moodleuser = new moodle\user();
+        $moodleuser->set_data($person);
+
+        settings_helper::set('createusersemaildomain', '');
+        settings_helper::set('ignoredomaincase', 0);
+
+        $result = $this->run_protected_method($moodleuser, 'check_email_domain');
+        $this->assertTrue($result);
+
+        settings_helper::set('createusersemaildomain', 'example.com');
+        $result = $this->run_protected_method($moodleuser, 'check_email_domain');
+        $this->assertFalse($result);
+
+        $person->email = 'test@example.com@eXample.com';
+        $result = $this->run_protected_method($moodleuser, 'check_email_domain');
+        $this->assertFalse($result);
+
+        $person->email = 'test@example.com';
+        $result = $this->run_protected_method($moodleuser, 'check_email_domain');
+        $this->assertTrue($result);
+
+        $person->email = 'test@eXample.com';
+        $result = $this->run_protected_method($moodleuser, 'check_email_domain');
+        $this->assertFalse($result);
+
+        settings_helper::set('ignoredomaincase', 1);
+
+        $result = $this->run_protected_method($moodleuser, 'check_email_domain');
+        $this->assertTrue($result);
     }
 }

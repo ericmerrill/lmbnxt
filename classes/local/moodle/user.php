@@ -71,6 +71,17 @@ class user extends base {
             $user = $this->create_new_user_object();
         }
 
+        // Check if this user's email address is allowed.
+        if ($new && !$this->check_email_domain()) {
+            // We allow different log levels based on a setting.
+            $loglevel = logging::ERROR_WARN;
+            if ((bool)$this->settings->get('donterroremail')) {
+                $loglevel = logging::ERROR_NONE;
+            }
+            logging::instance()->log_line('User email not allowed by email domain settings.', $loglevel);
+            return;
+        }
+
         $username = $this->get_username();
         if (!empty($username)) {
             $user->username = $username;
@@ -83,8 +94,6 @@ class user extends base {
                 logging::instance()->log_line($error, logging::ERROR_WARN);
             }
         }
-
-
 
         $user->idnumber = $this->data->sdid;
 
@@ -117,6 +126,45 @@ class user extends base {
             logging::instance()->log_line($error, logging::ERROR_MAJOR);
             throw $e;
         }
+    }
+
+    /**
+     * Checks if this is a allowed user based on createusersemaildomain and ignoredomaincase.
+     *
+     * @return bool True if the user is allowed, false if not.
+     */
+    protected function check_email_domain() {
+        $domain = $this->settings->get('createusersemaildomain');
+
+        // We allow this if the setting is empty.
+        if (empty($domain)) {
+            return true;
+        }
+
+        if (empty($this->data->email)) {
+            return false;
+        }
+
+        // Extract the domain from the email address.
+        $emaildomain = explode('@', $this->data->email);
+        if (count($emaildomain) !== 2) {
+            // Invalid email address.
+            return false;
+        }
+        $emaildomain = $emaildomain[1];
+
+        if ($this->settings->get('ignoredomaincase')) {
+            $matchappend = 'i';
+        } else {
+            $matchappend = '';
+        }
+
+        if (!preg_match('/^'.$domain.'$/'.$matchappend, $emaildomain)) {
+            // If the match failed, then we return false.
+            return false;
+        }
+
+        return true;
     }
 
     /**
