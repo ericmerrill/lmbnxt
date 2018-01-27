@@ -58,7 +58,7 @@ $string['exception_update_failure'] = 'Failure updating in database';
 $string['exception_xml_boolean'] = 'Could not convert data "{$a}" into boolean.';
 
 // Person Settings.
-$string['parseperson'] = 'TODO';
+$string['parseperson'] = 'Person Processing';
 $string['parsepersonxml'] = 'TODO';
 $string['parsepersonxml_help'] = 'TODO';
 $string['createnewusers'] = 'Create new user accounts';
@@ -69,8 +69,8 @@ $string['ignoredomaincase'] = 'Ignore email domain capitalization';
 $string['ignoredomaincase_help'] = 'Set the domain comparison for the previous setting to case insensitive.';
 $string['donterroremail'] = "Don't error for invalid email";
 $string['donterroremail_help'] = 'If selected, a user skipped because of an invalid email address will not produce a warning.';
-$string['lowercaseemails'] = 'TODO';
-$string['lowercaseemails_help'] = 'TODO';
+$string['lowercaseemails'] = 'Force lowercase emails';
+$string['lowercaseemails_help'] = 'Converts received emails to lowercase for Moodle users.';
 $string['usernamesource'] = 'Username source';
 $string['usernamesource_help'] = "This determines what will be the username of created users
 <ul>

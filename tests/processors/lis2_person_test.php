@@ -43,8 +43,6 @@ class lis2_person_test extends xml_helper {
 
         $person = $converter->process_xml_to_data($node);
 
-        //print "<pre>";var_export($person);print "</pre>";
-
         $this->assertInstanceOf(data\person::class, $person);
         $this->assertEquals('ILP', $person->referenceagent);
         $this->assertEquals('extensionSourcedID', $person->sdid);

@@ -85,7 +85,7 @@ class data_member_person_testcase extends xml_helper {
             $this->assertRegExp("|No database update needed|", $log->test_get_flush_buffer());
 
             // Modify the course and try and insert again.
-            $member->status = 0;
+            $member->status = (int)!$member->status;
             $member->save_to_db();
             $this->assertRegExp("|Updated database record|", $log->test_get_flush_buffer());
 

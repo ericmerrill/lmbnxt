@@ -95,7 +95,7 @@ class moodle_user_testcase extends xml_helper {
     }
 
     /**
-     * Data provider for test_convert_to_moodle.
+     * Data provider for test_convert_to_moodle and test_empty_email_and_username.
      *
      * @return array
      */
@@ -144,6 +144,7 @@ class moodle_user_testcase extends xml_helper {
 
         // Now try with creating of new users disabled.
         settings_helper::set('createnewusers', 0);
+        settings_helper::set('lowercaseemails', 0);
 
         $moodleuser->convert_to_moodle($person);
 
@@ -179,6 +180,15 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('testuser', $dbuser->username);
 
         $this->assertEquals('testUser@eXample.com', $dbuser->email);
+
+        // Now test that it made the email lowercase.
+        settings_helper::set('forceemail', 1);
+        settings_helper::set('lowercaseemails', 1);
+
+        $moodleuser->convert_to_moodle($person);
+        $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
+
+        $this->assertEquals('testuser@example.com', $dbuser->email);
     }
 
     /**

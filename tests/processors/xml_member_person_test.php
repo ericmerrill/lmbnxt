@@ -41,7 +41,7 @@ class xml_member_person_testcase extends xml_helper {
         $members = $converter->process_xml_to_data($node);
 
         $this->assertInternalType('array', $members);
-        $this->assertCount(2, $members);
+        $this->assertCount(3, $members);
 
         $member = $members[0];
         $this->assertInstanceOf(data\member_person::class, $member);
@@ -59,7 +59,7 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertFalse(isset($member->endrestrict));
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
-        $this->assertEquals('10001.201640', $member->groupsdid);
+        $this->assertEquals('10001.201740', $member->groupsdid);
         $this->assertEquals(1, $member->membertype);
 
         $member = $members[1];
@@ -71,17 +71,30 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertEquals(1, $member->status);
         $this->assertFalse(isset($member->subrole));
 
-        $this->assertEquals(1472515200, $member->begindate);
+        $this->assertEquals(1504051200, $member->begindate);
         $this->assertEquals(0, $member->beginrestrict);
-        $this->assertEquals(1481932800, $member->enddate);
+        $this->assertEquals(1513468800, $member->enddate);
         $this->assertEquals(1, $member->endrestrict);
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
-        $this->assertEquals('10001.201640', $member->groupsdid);
+        $this->assertEquals('10001.201740', $member->groupsdid);
         $this->assertEquals(1, $member->membertype);
 
         $this->assertEquals('Letter Grade', $member->midtermmode);
         $this->assertEquals('4-Point Grade', $member->finalmode);
         $this->assertEquals(1, $member->gradable);
+
+        $member = $members[2];
+        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertEquals('Test SCT Banner', $member->sdidsource);
+        $this->assertEquals('1000003', $member->sdid);
+
+        $this->assertEquals('02', $member->roletype);
+        $this->assertEquals(0, $member->status);
+
+        $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
+        $this->assertEquals('10001.201740', $member->groupsdid);
+        $this->assertEquals(1, $member->membertype);
+
     }
 }

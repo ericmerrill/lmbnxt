@@ -2,7 +2,7 @@
     <membership>
         <sourcedid>
             <source>Test SCT Banner</source>
-            <id>10001.201640</id>
+            <id>10001.201740</id>
         </sourcedid>
         <member>
             <sourcedid>
@@ -24,8 +24,8 @@
             <role recstatus="1" roletype="01">
                 <status>1</status>
                 <timeframe>
-                    <begin restrict="0">2016-08-30</begin>
-                    <end restrict="1">2016-12-17</end>
+                    <begin restrict="0">2017-08-30</begin>
+                    <end restrict="1">2017-12-17</end>
                 </timeframe>
                 <interimresult resulttype="MidTerm">
                     <mode>Letter Grade</mode>
@@ -38,6 +38,17 @@
                         <gradable>1</gradable>
                     </luminisrole>
                 </extension>
+            </role>
+        </member>
+        <member>
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>1000003</id>
+            </sourcedid>
+            <idtype>1</idtype>
+            <role recstatus="3" roletype="02">
+                <subrole>Primary</subrole>
+                <status>0</status>
             </role>
         </member>
     </membership>

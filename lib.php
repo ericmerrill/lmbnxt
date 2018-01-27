@@ -28,5 +28,27 @@ defined('MOODLE_INTERNAL') || die();
 require_once('enrollib.php');
 
 class enrol_lmb_plugin extends enrol_plugin {
+    // Base class overrides.
+    public function can_add_instance($courseid) {
+        return false;
+    }
 
+    public function can_edit_instance($instance) {
+        return false;
+    }
+
+    // TODO - what to do with this?
+    public function get_newinstance_link($courseid) {
+        return NULL;
+    }
+
+    public function can_hide_show_instance($instance) {
+        return false;
+    }
+
+    public function get_unenrolself_link($instance) {
+        return NULL;
+    }
+
+    // TODO - Need to do things to impliment expirations I think...
 }

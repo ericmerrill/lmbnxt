@@ -42,8 +42,6 @@ require_once($CFG->dirroot.'/user/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user extends base {
-    protected $record = null;
-
     /**
      * This function takes a data object and attempts to apply it to Moodle.
      *
@@ -99,7 +97,11 @@ class user extends base {
 
         if ($new || $this->settings->get('forceemail')) {
             if (!empty($this->data->email)) {
-                $user->email = $this->data->email;
+                if ((bool)$this->settings->get('lowercaseemails')) {
+                    $user->email = strtolower($this->data->email);
+                } else {
+                    $user->email = $this->data->email;
+                }
             } else {
                 $user->email = '';
             }
