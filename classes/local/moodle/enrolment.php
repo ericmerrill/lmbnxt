@@ -133,7 +133,7 @@ class enrolment extends base {
      * @param string $imsrole
      * @return false|int The role id, or false.
      */
-    public static function get_default_role_id(string $rolenumber) {
+    public static function get_default_role_id($rolenumber) {
         // Default mappings.
         $imsmappings = ['01' => 'student',
                         '02' => 'editingteacher',
