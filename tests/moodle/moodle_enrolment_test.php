@@ -44,16 +44,16 @@ class moodle_enrolment_testcase extends xml_helper {
     public function convert_to_moodle_testcases() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_person.xml');
-        $converter = new lis2\person();
-        $person1 = $converter->process_xml_to_data($node);
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_member_teacher.xml');
+        $converter = new lis2\member_person();
+        $member1 = $converter->process_xml_to_data($node);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/person.xml');
-        $converter = new xml\person();
-        $person2 = $converter->process_xml_to_data($node);
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_person.xml');
+        $converter = new xml\membership();
+        $member2 = $converter->process_xml_to_data($node);
 
-        $output = ['lis2' => [$person1],
-                   'xml'  => [$person2]];
+        $output = ['lis2' => [$member1],
+                   'xml'  => [$member2[0]]];
 
         return $output;
     }
@@ -62,9 +62,9 @@ class moodle_enrolment_testcase extends xml_helper {
      * Test that two identical courses are made from LIS1-XML and LIS2 content.
      *
      * @dataProvider convert_to_moodle_testcases
-     * @param data\person $section The input section
+     * @param data\member_person $section The input section
      */
-    public function test_convert_to_moodle($person) {
+    public function test_convert_to_moodle($member) {
         global $CFG, $DB;
 
         $this->resetAfterTest(true);
@@ -84,55 +84,86 @@ class moodle_enrolment_testcase extends xml_helper {
             $this->assertContains('Expected instance of data\member_person to be passed', $ex->getMessage());
         }
 
+        // First no user or course.
+        $moodleenrol->convert_to_moodle($member);
+        $error = 'WARNING: Moodle user could not be found.';
+        $this->assertContains($error, $log->test_get_flush_buffer());
 
-//
-//         // Now try with creating of new users disabled.
-//         settings_helper::set('createnewusers', 0);
-//         settings_helper::set('lowercaseemails', 0);
-//
-//         $moodleuser->convert_to_moodle($person);
-//
-//         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
-//         $this->assertFalse($dbuser);
-//
-//         // Now enabled.
-//         settings_helper::set('createnewusers', 1);
-//
-//         // Now try some bad email settings.
-//         settings_helper::set('createusersemaildomain', 'example.com');
-//         settings_helper::set('ignoredomaincase', 0);
-//         settings_helper::set('donterroremail', 0);
-//         $moodleuser->convert_to_moodle($person);
-//         $error = 'WARNING: User email not allowed by email domain settings.';
-//         $this->assertContains($error, $log->test_get_flush_buffer());
-//
-//         // Test no error setting.
-//         settings_helper::set('donterroremail', 1);
-//         $moodleuser->convert_to_moodle($person);
-//         $resulterror = $log->test_get_flush_buffer();
-//         $error = "User email not allowed by email domain settings.\n";
-//         $this->assertEquals($error, $resulterror);
-//
-//         // Now put the setting back.
-//         settings_helper::set('createusersemaildomain', '');
-//
-//         // Test a normally created user.
-//         $moodleuser->convert_to_moodle($person);
-//         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
-//         $this->assertInstanceOf(\stdClass::class, $dbuser);
-//
-//         $this->assertEquals('testuser', $dbuser->username);
-//
-//         $this->assertEquals('testUser@eXample.com', $dbuser->email);
-//
-//         // Now test that it made the email lowercase.
-//         settings_helper::set('forceemail', 1);
-//         settings_helper::set('lowercaseemails', 1);
-//
-//         $moodleuser->convert_to_moodle($person);
-//         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
-//
-//         $this->assertEquals('testuser@example.com', $dbuser->email);
+        $user = $this->getDataGenerator()->create_user(['idnumber' => '1000001']);
+
+        // Now no course.
+        $moodleenrol->convert_to_moodle($member);
+        $error = 'WARNING: Moodle course could not be found.';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        $course = $this->getDataGenerator()->create_course(['idnumber' => '10001.201740']);
+
+        // Now everything is made. Lets test an unknown roletype.
+        $roletype = $member->roletype;
+        $member->roletype = '10';
+        $moodleenrol->convert_to_moodle($member);
+        $error = 'NOTICE: No role mapping found for 10.';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        $member->roletype = $roletype;
     }
 
+    public function test_get_moodle_role_id() {
+        $moodleenrol = new moodle\enrolment();
+
+        $enrol = new data\member_person();
+        $moodleenrol->set_data($enrol);
+
+        // Unset the setting to make sure we get a default.
+        settings_helper::set('imsrolemap01', null);
+        $enrol->roletype = '01';
+        $result = $this->run_protected_method($moodleenrol, 'get_moodle_role_id');
+
+        $roles = get_archetype_roles('student');
+        $role = reset($roles);
+        $roleid = $role->id;
+        $this->assertEquals($roleid, $result);
+
+        // Now set an ID.
+        settings_helper::set('imsrolemap01', $roleid+1);
+        $result = $this->run_protected_method($moodleenrol, 'get_moodle_role_id');
+        $this->assertEquals($roleid+1, $result);
+
+        // Now an unknown roletype.
+        $enrol->roletype = '10';
+        $result = $this->run_protected_method($moodleenrol, 'get_moodle_role_id');
+        $this->assertFalse($result);
+    }
+
+    public function test_get_default_role_id() {
+        global $DB;
+
+        $this->resetAfterTest(true);
+
+        $this->assertFalse(moodle\enrolment::get_default_role_id('10'));
+
+        $roles = get_archetype_roles('editingteacher');
+        $role = reset($roles);
+        $roleid = $role->id;
+
+        $result = moodle\enrolment::get_default_role_id('02');
+        $this->assertEquals($roleid, $result);
+
+        $roles = get_archetype_roles('student');
+        $role = reset($roles);
+        $roleid = $role->id;
+
+        $result = moodle\enrolment::get_default_role_id('01');
+        $this->assertEquals($roleid, $result);
+        $result = moodle\enrolment::get_default_role_id('03');
+        $this->assertEquals($roleid, $result);
+        $result = moodle\enrolment::get_default_role_id('04');
+        $this->assertEquals($roleid, $result);
+        $result = moodle\enrolment::get_default_role_id('05');
+        $this->assertEquals($roleid, $result);
+
+        // Now for one that can't be found.
+        $DB->delete_records('role');
+        $this->assertFalse(moodle\enrolment::get_default_role_id('01'));
+    }
 }

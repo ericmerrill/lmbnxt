@@ -95,6 +95,5 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
         $this->assertEquals('10001.201740', $member->groupsdid);
         $this->assertEquals(1, $member->membertype);
-
     }
 }

@@ -175,11 +175,21 @@ class user extends base {
      * @return false|\stdClass User object or false if not found.
      */
     protected function find_existing_user() {
-        global $DB;
-
         // TODO - finding an existing user can be much more complicated than this... Search usernames and whatnot.
 
-        return $DB->get_record('user', array('idnumber' => $this->data->sdid));
+        return self::get_user_for_sdid($this->data->sdid);
+    }
+
+    /**
+     * Returns a user record for the passed sdid.
+     *
+     * @param string $sdid
+     * @return false|\stdClass
+     */
+    public static function get_user_for_sdid($sdid) {
+        global $DB;
+
+        return $DB->get_record('user', array('idnumber' => $sdid));
     }
 
     /**

@@ -28,7 +28,56 @@ defined('MOODLE_INTERNAL') || die();
 require_once('enrollib.php');
 
 class enrol_lmb_plugin extends enrol_plugin {
+
+    /**
+     * Get or make the enrol instance record for the passed course id.
+     *
+     * @param int|stdClass $courseorid The course id or the DB record for the course.
+     * @return false|stdClass The instance record, or false if none.
+     */
+    public function get_instance($courseorid) {
+        global $DB;
+
+        if (is_numeric($courseorid)) {
+            $courseid = $courseorid;
+            $course = false;
+        } else if (($courseorid instanceof stdClass) && isset($courseorid->id)) {
+            $course = $courseorid;
+            $courseid = $courseorid->id;
+        } else {
+            debugging("Expected stdClass or int passed to enrol_lmb_plugin->get_instance().", DEBUG_DEVELOPER);
+            return false;
+        }
+
+        // Try to find an existing instance.
+        $instance = $DB->get_record('enrol', ['courseid' => $courseid, 'enrol' => 'lmb']);
+
+        // If not found, we need to make one.
+        if (!$instance) {
+            if (!$course) {
+                // Try to load the course record.
+                $course = $DB->get_record('course', ['id' => $courseid]);
+            }
+            if (!$course) {
+                // If we still don't have one, then we need to give up.
+                return false;
+            }
+
+            $instanceid = $this->add_instance($course);
+            if (empty($instanceid)) {
+                // If it wasn't created, then give up.
+                return false;
+            }
+
+            // Now we need to get the record.
+            $instance = $DB->get_record('enrol', ['id' => $instanceid]);
+        }
+
+        return $instance;
+    }
+
     // Base class overrides.
+
     public function can_add_instance($courseid) {
         return false;
     }

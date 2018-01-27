@@ -24,6 +24,8 @@
  */
 
 $string['pluginname'] = 'LMB NXT';
+// Misc.
+$string['ignore'] = 'Ignore';
 
 // Settings.
 $string['logginglevel'] = 'Error logging';
@@ -159,3 +161,13 @@ $string['termdeptcat'] = 'Terms then Departments - TODO';
 $string['deptcodecat'] = 'Department Codes - TODO';
 $string['termdeptcodecat'] = 'Terms then Department Codes - TODO';
 $string['selectedcat'] = 'Selected - TODO';
+
+// Enrolment Settings.
+$string['parseenrol'] = 'Enrolment Processing';
+$string['parseenrolxml'] = 'TODO';
+$string['parseenrolxml_help'] = 'TODO';
+$string['imsrolename01'] = 'Learner (01)';
+$string['imsrolename02'] = 'Instructor (02)';
+$string['imsrolename03'] = 'Extra 1 (03)';
+$string['imsrolename04'] = 'Extra 2 (04)';
+$string['imsrolename05'] = 'Extra 3 (05)';

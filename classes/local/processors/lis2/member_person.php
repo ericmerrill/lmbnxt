@@ -69,6 +69,7 @@ class member_person extends base {
         $this->dataobj->lis_roletype = $role;
 
         // TODO - should be based on settings.
+        // TODO - Offical vocab is in roletypevocabularyv1p0.xml.
         if (strcasecmp("editingteacher", $role) === 0) {
             $this->dataobj->roletype = "02";
         } else if (strcasecmp("student", $role) === 0) {

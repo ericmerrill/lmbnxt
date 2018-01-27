@@ -44,7 +44,7 @@ use enrol_lmb\local\data;
  */
 class category extends base {
     public function convert_to_moodle(data\base $data) {
-        debugging("The categories object doesn't respond to convert_tot_moodle.", DEBUG_DEVELOPER);
+        debugging("The categories object doesn't respond to convert_to_moodle.", DEBUG_DEVELOPER);
     }
 
     /**

@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\settings;
+use enrol_lmb\local\moodle;
 
 $settings = new admin_category('enrolsettingscat', get_string('pluginname', 'enrol_lmb'), $settings->hidden);
 $settingslmb = new admin_settingpage('enrolsettingslmb', get_string('settings'), 'moodle/site:config');
@@ -232,7 +233,48 @@ if ($ADMIN->fulltree) {
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcecomputesections',
             get_string('forcecomputesections', 'enrol_lmb'), get_string('forcecomputesections_help', 'enrol_lmb'), 0));
 
+    // Parse Enrollments ---------------------------------------------------------------------------.
+    $settingslmb->add(new admin_setting_heading('enrol_lmb_parseenrol', get_string('parseenrol', 'enrol_lmb'), ''));
 
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/parseenrolxml', get_string('parseenrolxml', 'enrol_lmb'),
+            get_string('parseenrolxml_help', 'enrol_lmb'), 1));
+
+    // During initial install we can't reliably get the assignable roles.
+    if (!during_initial_install()) {
+        $coursecontext = context_course::instance(SITEID);
+        $assignableroles = get_assignable_roles($coursecontext);
+        $assignableroles = [0 => get_string('ignore', 'enrol_lmb')] + $assignableroles;
+
+        $imsroles = array(
+            '01' => get_string('imsrolename01', 'enrol_lmb'),
+            '02' => get_string('imsrolename02', 'enrol_lmb'),
+            '03' => get_string('imsrolename03', 'enrol_lmb'),
+            '04' => get_string('imsrolename04', 'enrol_lmb'),
+            '05' => get_string('imsrolename05', 'enrol_lmb')
+        );
+
+        foreach ($imsroles as $imsrolenum => $imsrolename) {
+            $default = moodle\enrolment::get_default_role_id($imsrolenum);
+            if (empty($default)) {
+                $default = 0;
+            }
+
+            $settingslmb->add(new admin_setting_configselect('enrol_lmb/imsrolemap'.$imsrolenum,
+                    $imsrolename, '', $default, $assignableroles));
+        }
+    }
+
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/userestrictdates', get_string('userestrictdates', 'enrol_lmb'),
+//             get_string('userestrictdateshelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/unenrolmember', get_string('unenrolmember', 'enrol_lmb'),
+//             get_string('unenrolmemberhelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/disableenrol', get_string('disableenrol', 'enrol_lmb'),
+//             get_string('disableenrolhelp', 'enrol_lmb'), 0));
+//
+//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/recovergrades', get_string('recovergrades', 'enrol_lmb'),
+//             get_string('recovergradeshelp', 'enrol_lmb'), 1));
 }
 
 $settings->add('enrolsettingscat', $settingslmb);

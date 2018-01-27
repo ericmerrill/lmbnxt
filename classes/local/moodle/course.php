@@ -145,9 +145,20 @@ class course extends base {
      * @return false|\stdClass
      */
     protected function find_existing_course() {
+
+        return self::get_course_for_sdid($this->data->sdid);
+    }
+
+    /**
+     * Returns a course record for the passed sdid.
+     *
+     * @param string $sdid
+     * @return false|\stdClass
+     */
+    public static function get_course_for_sdid($sdid) {
         global $DB;
 
-        return $DB->get_record('course', array('idnumber' => $this->data->sdid));
+        return $DB->get_record('course', array('idnumber' => $sdid));
     }
 
     /**

@@ -106,7 +106,7 @@ class message_test extends xml_helper {
     public function test_get_response() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_member_teacher.xml');
         $message = new message(null, $node);
         $this->run_protected_method($message, 'load_processor');
 
@@ -121,7 +121,7 @@ class message_test extends xml_helper {
         $message = new message(null, null);
         $this->assertNull($message->get_status());
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_member_teacher.xml');
         $message = new message(null, $node);
         $this->run_protected_method($message, 'load_processor');
         $status = $message->get_status();
@@ -135,7 +135,7 @@ class message_test extends xml_helper {
         $message = new message(null, null);
         $this->assertFalse($message->get_root_tag());
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_member_teacher.xml');
         $message = new message(null, $node);
         $this->assertEquals('REPLACEMEMBERSHIPREQUEST', $message->get_root_tag());
     }

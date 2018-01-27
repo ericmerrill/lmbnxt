@@ -18,7 +18,7 @@
           <collectionSourcedId>10001.201740</collectionSourcedId>
           <membershipIdType>courseSection</membershipIdType>
           <member>
-            <personSourcedId>G00000001</personSourcedId>
+            <personSourcedId>1000001</personSourcedId>
             <role>
               <roleType>editingteacher</roleType>
               <status>Active</status>
