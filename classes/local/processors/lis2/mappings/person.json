@@ -5,6 +5,7 @@
         "SOURCEDID": "sdid"
     },
     "PERSON": {
+      "DATASOURCE": "sdidsource",
       "FORMNAME": {
         "lmbinternal": true,
         "function": "process_formname_node"

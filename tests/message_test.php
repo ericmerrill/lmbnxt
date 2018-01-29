@@ -66,14 +66,14 @@ class message_test extends xml_helper {
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/person.xml');
         $message = new message($controller, $node);
 
-        $message->process_to_data();
+        $this->run_protected_method($message, 'process_to_data');
 
         // Make sure we still didn't save to DB.
         $this->assertEquals(0, $DB->count_records(\enrol_lmb\local\data\person::TABLE));
 
         // Now save to the DB.
         $controller->set_option('nodb', false);
-        $message->process_to_data();
+        $this->run_protected_method($message, 'process_to_data');
         $this->assertEquals(1, $DB->count_records(\enrol_lmb\local\data\person::TABLE));
 
         // Reset a little.
@@ -82,7 +82,7 @@ class message_test extends xml_helper {
 
         // Now try with a null controller.
         $message = new message(null, $node);
-        $message->process_to_data();
+        $this->run_protected_method($message, 'process_to_data');
         $this->assertEquals(1, $DB->count_records(\enrol_lmb\local\data\person::TABLE));
 
         // Now we are going to inspect what the result was.
@@ -97,10 +97,10 @@ class message_test extends xml_helper {
         $message = new message(null, $node);
 
         $log = logging::instance();
-        $message->process_to_data();
+        $this->run_protected_method($message, 'process_to_data');
 
         // See that we got the expected message.
-        $this->assertEquals("FATAL: Membership type could not be found\n", $log->test_get_flush_buffer());
+        $this->assertContains("FATAL: Membership type could not be found\n", $log->test_get_flush_buffer());
     }
 
     public function test_get_response() {

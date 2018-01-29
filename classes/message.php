@@ -124,21 +124,31 @@ class message {
             }
 
             $this->dataobjs = $objs;
-        } catch (exception\message_exception $e) {
+        } catch (\Exception $e) {
             // There as a fatal exeption for this node.
             $status = $this->processor->get_failure_status();
-            $status->set_description('Exception while processing');
+            $status->set_description('Exception while loading and saving input.');
             $this->set_status($status);
             logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
+            logging::instance()->log_line($e->getTraceAsString(), logging::ERROR_MAJOR);
         }
     }
 
     public function process_to_moodle() {
-        foreach ($this->dataobjs as $dataobj) {
-            $converter = $dataobj->get_moodle_converter();
-            if (!empty($converter)) {
-                $converter->convert_to_moodle($dataobj);
+        try {
+            foreach ($this->dataobjs as $dataobj) {
+                $converter = $dataobj->get_moodle_converter();
+                if (!empty($converter)) {
+                    $converter->convert_to_moodle($dataobj);
+                }
             }
+        } catch (\Exception $e) {
+            // There as a fatal exeption for this node.
+            $status = $this->processor->get_failure_status();
+            $status->set_description('Exception while converting data to Moodle objects.');
+            $this->set_status($status);
+            logging::instance()->log_line($e->getMessage(), logging::ERROR_MAJOR);
+            logging::instance()->log_line($e->getTraceAsString(), logging::ERROR_MAJOR);
         }
     }
 

@@ -25,6 +25,7 @@
 
 namespace enrol_lmb\local\data;
 use enrol_lmb\local\types;
+use enrol_lmb\local\moodle;
 use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
@@ -78,5 +79,9 @@ class person extends base {
         } else {
             logging::instance()->log_line("Person ID \"{$id}\" from \"{$source}\"");
         }
+    }
+
+    public function get_moodle_converter() {
+        return new moodle\user();
     }
 }

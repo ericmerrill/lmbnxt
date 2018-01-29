@@ -290,10 +290,10 @@ abstract class base {
     /**
      * Get the moodle converter for this data object.
      *
-     * @return moodle\base
+     * @return false|moodle\base
      */
     public function get_moodle_converter() {
-        return new moodle\base();
+        return false;
     }
 
     /**
