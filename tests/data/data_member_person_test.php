@@ -92,10 +92,10 @@ class data_member_person_testcase extends xml_helper {
         foreach ($members as $member) {
             $member->log_id();
 
-            $this->assertRegExp("|{$member->sdid}.*{$member->sdidsource}.*{$member->groupsdid}.*{$member->groupsdidsource}|",
-                    $log->test_get_flush_buffer());
+            $regex = "|{$member->membersdid}.*{$member->membersdidsource}.*{$member->groupsdid}.*{$member->groupsdidsource}|";
+            $this->assertRegExp($regex, $log->test_get_flush_buffer());
 
-            unset($member->sdid);
+            unset($member->membersdid);
 
             try {
                 $member->log_id();
@@ -135,7 +135,7 @@ class data_member_person_testcase extends xml_helper {
             $this->assertRegExp("|Updated database record|", $log->test_get_flush_buffer());
 
             // Now lets get it from the DB and check it.
-            $params = array('sdid' => $member->sdid, 'sdidsource' => $member->sdidsource,
+            $params = array('membersdid' => $member->membersdid, 'membersdidsource' => $member->membersdidsource,
                     'groupsdid' => $member->groupsdid, 'groupsdidsource' => $member->groupsdidsource);
             $dbrecord = $DB->get_record(data\member_person::TABLE, $params);
 

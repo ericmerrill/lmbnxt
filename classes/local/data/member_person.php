@@ -51,7 +51,7 @@ class member_person extends base {
     const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\member_person';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'referenceagent', 'messagereference', 'roletype', 'status',
+    protected $dbkeys = array('id', 'membersdidsource', 'membersdid', 'referenceagent', 'messagereference', 'roletype', 'status',
                               'groupsdidsource', 'groupsdid', 'begindate', 'enddate', 'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
@@ -78,8 +78,8 @@ class member_person extends base {
             $extramsg = " (LIS \"{$msgref}\")";
         }
 
-        $id = $this->__get('sdid');
-        $source = $this->__get('sdidsource');
+        $id = $this->__get('membersdid');
+        $source = $this->__get('membersdidsource');
         $source = (empty($source) ? "(empty)" : $source);
         $gid = $this->__get('groupsdid');
         $gsource = $this->__get('groupsdidsource');
@@ -109,7 +109,7 @@ class member_person extends base {
             }
         }
 
-        $params = ['sdid' => $this->__get('sdid'),
+        $params = ['membersdid' => $this->__get('membersdid'),
                    'groupsdid' => $this->__get('groupsdid')];
 
         return $DB->get_record(static::TABLE, $params);

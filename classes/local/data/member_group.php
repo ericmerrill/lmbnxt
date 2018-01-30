@@ -49,7 +49,8 @@ class member_group extends base {
     const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\member_group';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'status', 'groupsdid', 'groupsdidsource', 'additional', 'timemodified');
+    protected $dbkeys = array('id', 'membersdidsource', 'membersdid', 'status', 'groupsdid', 'groupsdidsource',
+                              'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
@@ -61,8 +62,8 @@ class member_group extends base {
      * Log a unique line to id this object.
      */
     public function log_id() {
-        $id = $this->__get('sdid');
-        $source = $this->__get('sdidsource');
+        $id = $this->__get('membersdid');
+        $source = $this->__get('membersdidsource');
         $gid = $this->__get('groupsdid');
         $gsource = $this->__get('groupsdidsource');
         // TODO.
@@ -81,10 +82,8 @@ class member_group extends base {
     protected function get_record() {
         global $DB;
 
-        $params = array('sdid' => $this->__get('sdid'),
-                        'sdidsource' => $this->__get('sdidsource'),
-                        'groupsdid' => $this->__get('groupsdid'),
-                        'groupsdidsource' => $this->__get('groupsdidsource'));
+        $params = array('membersdid' => $this->__get('membersdid'),
+                        'groupsdid' => $this->__get('groupsdid'));
 
         return $DB->get_record(static::TABLE, $params);
     }

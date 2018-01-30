@@ -93,7 +93,7 @@ class member_person_delete extends base {
             $groupsdid = $matches[2];
             $usersdid = $matches[3];
 
-            $params = ['sdid' => $usersdid, 'groupsdid' => $groupsdid, 'roletype' => $imsrole];
+            $params = ['membersdid' => $usersdid, 'groupsdid' => $groupsdid, 'roletype' => $imsrole];
             $record = $DB->get_record(data\member_person::TABLE, $params);
 
             if ($record) {
@@ -104,7 +104,7 @@ class member_person_delete extends base {
                 // Now just fill the data in from what we know.
                 $this->dataobj->lis_roletype = $rolename;
                 $this->dataobj->roletype = $imsrole;
-                $this->dataobj->sdid = $usersdid;
+                $this->dataobj->membersdid = $usersdid;
                 $this->dataobj->groupsdid = $groupsdid;
             }
         }

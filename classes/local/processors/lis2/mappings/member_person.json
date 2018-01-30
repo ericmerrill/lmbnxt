@@ -5,11 +5,11 @@
         "SOURCEDID": "messagereference"
     },
     "MEMBERSHIP": {
-      "DATASOURCE": "sdidsource",
+      "DATASOURCE": "membersdidsource",
       "COLLECTIONSOURCEDID": "groupsdid",
       "MEMBERSHIPIDTYPE": "membershiptype",
       "MEMBER": {
-        "PERSONSOURCEDID": "sdid",
+        "PERSONSOURCEDID": "membersdid",
         "ROLE": {
           "ROLETYPE": {
             "lmbinternal": true,

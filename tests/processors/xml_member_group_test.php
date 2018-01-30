@@ -46,8 +46,8 @@ class xml_member_group_testcase extends xml_helper {
         $member = $members[0];
         $this->assertInstanceOf(data\member_group::class, $member);
 
-        $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('10001.201640', $member->sdid);
+        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
+        $this->assertEquals('10001.201640', $member->membersdid);
 
         $this->assertEquals(1, $member->status);
 
@@ -58,8 +58,8 @@ class xml_member_group_testcase extends xml_helper {
         $member = $members[1];
         $this->assertInstanceOf(data\member_group::class, $member);
 
-        $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('10002.201640', $member->sdid);
+        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
+        $this->assertEquals('10002.201640', $member->membersdid);
 
         $this->assertEquals(1, $member->status);
 

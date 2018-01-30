@@ -46,8 +46,8 @@ class xml_member_person_testcase extends xml_helper {
         $member = $members[0];
         $this->assertInstanceOf(data\member_person::class, $member);
 
-        $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('1000002', $member->sdid);
+        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
+        $this->assertEquals('1000002', $member->membersdid);
 
         $this->assertEquals('02', $member->roletype);
         $this->assertEquals(1, $member->status);
@@ -64,8 +64,8 @@ class xml_member_person_testcase extends xml_helper {
 
         $member = $members[1];
         $this->assertInstanceOf(data\member_person::class, $member);
-        $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('1000001', $member->sdid);
+        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
+        $this->assertEquals('1000001', $member->membersdid);
 
         $this->assertEquals('01', $member->roletype);
         $this->assertEquals(1, $member->status);
@@ -87,8 +87,8 @@ class xml_member_person_testcase extends xml_helper {
 
         $member = $members[2];
         $this->assertInstanceOf(data\member_person::class, $member);
-        $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('1000003', $member->sdid);
+        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
+        $this->assertEquals('1000003', $member->membersdid);
 
         $this->assertEquals('02', $member->roletype);
         $this->assertEquals(0, $member->status);

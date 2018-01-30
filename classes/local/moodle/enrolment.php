@@ -59,7 +59,7 @@ class enrolment extends base {
         $this->data = $data;
 
         // Check that user exsits.
-        $user = moodle\user::get_user_for_sdid($this->data->sdid);
+        $user = moodle\user::get_user_for_sdid($this->data->membersdid);
         if (empty($user)) {
             // TODO - respond with error?
             logging::instance()->log_line("Moodle user could not be found.", logging::ERROR_WARN);

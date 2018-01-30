@@ -15,7 +15,7 @@
     <TABLE NAME="enrol_lmb_person" COMMENT="People from the SIS">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="sctid" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="logonid" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
@@ -109,8 +109,8 @@
     <TABLE NAME="enrol_lmb_member_person" COMMENT="Person enrolments from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="membersdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="membersdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="referenceagent" TYPE="char" LENGTH="64" NOTNULL="false" SEQUENCE="false" COMMENT="Message agent ID for the LIS message that most recently touched it."/>
         <FIELD NAME="messagereference" TYPE="char" LENGTH="128" NOTNULL="false" SEQUENCE="false" COMMENT="Message reference ID for the LIS message that most recently touched it."/>
         <FIELD NAME="groupsdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
@@ -127,14 +127,14 @@
       </KEYS>
       <INDEXES>
         <INDEX NAME="messagereference-referenceagent" UNIQUE="false" FIELDS="messagereference, referenceagent" COMMENT="Index for LIS message IDs. Possibly make unique?"/>
-        <INDEX NAME="sdid-groupsdid" UNIQUE="false" FIELDS="sdid, groupsdid" COMMENT="Index of user and group."/>
+        <INDEX NAME="membersdid-groupsdid-roletype" UNIQUE="true" FIELDS="membersdid, groupsdid, roletype"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="enrol_lmb_member_group" COMMENT="Group enrolments (crosslists) from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="membersdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="membersdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="groupsdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="groupsdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
@@ -144,6 +144,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="membersdid-groupsdid" UNIQUE="true" FIELDS="membersdid, groupsdid"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>

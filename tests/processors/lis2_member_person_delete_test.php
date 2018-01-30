@@ -48,7 +48,7 @@ class lis2_member_person_delete_test extends xml_helper {
         $this->assertEquals('CM-editingteacher-CS10001.201740-1000001', $member->messagereference);
         $this->assertEquals('editingteacher', $member->lis_roletype);
         $this->assertEquals('10001.201740', $member->groupsdid);
-        $this->assertEquals('1000001', $member->sdid);
+        $this->assertEquals('1000001', $member->membersdid);
         $this->assertEquals(0, $member->status);
         $this->assertEquals('Inactive', $member->lis_status);
 
@@ -59,7 +59,7 @@ class lis2_member_person_delete_test extends xml_helper {
 
         // Process again to make sure that we get the record back again, found by message ref.
         // Change the sdid, so we know it can't be found that way.
-        $member->sdid = '101';
+        $member->membersdid = '101';
         $member->save_to_db();
 
         $member = $converter->process_xml_to_data($node);
@@ -67,7 +67,7 @@ class lis2_member_person_delete_test extends xml_helper {
 
         // Now clear the messageref and set usersdid in the DB to make sure we find it without it, and it gets reset.
         unset($member->messagereference);
-        $member->sdid = '1000001';
+        $member->membersdid = '1000001';
         $member->save_to_db();
 
         $member = $converter->process_xml_to_data($node);

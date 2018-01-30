@@ -43,8 +43,8 @@ class lis2_member_person_test extends xml_helper {
 
         $this->assertInstanceOf(data\member_person::class, $member);
 
-        $this->assertEmpty($member->sdidsource);
-        $this->assertEquals('1000001', $member->sdid);
+        $this->assertEmpty($member->membersdidsource);
+        $this->assertEquals('1000001', $member->membersdid);
         $this->assertEquals('10001.201740', $member->groupsdid);
 
         $this->assertEquals('ILP', $member->referenceagent);

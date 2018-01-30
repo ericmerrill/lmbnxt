@@ -392,6 +392,103 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2018012900, 'enrol', 'lmb');
     }
 
+    if ($oldversion < 2018012901) {
+
+        // Define index sdid-sdidsource (unique) to be dropped form enrol_lmb_person.
+        $table = new xmldb_table('enrol_lmb_person');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Changing nullability of field sdidsource on table enrol_lmb_person to null.
+        $table = new xmldb_table('enrol_lmb_person');
+        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
+
+        // Launch change of nullability for field sdidsource.
+        $dbman->change_field_notnull($table, $field);
+
+        // Define index sdid-sdidsource (unique) to be added to enrol_lmb_person.
+        $table = new xmldb_table('enrol_lmb_person');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch add index sdid-sdidsource.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Now work on member_person.
+
+        // Define index sdid-groupsdid (not unique) to be dropped form enrol_lmb_member_person.
+        $table = new xmldb_table('enrol_lmb_member_person');
+        $index = new xmldb_index('sdid-groupsdid', XMLDB_INDEX_NOTUNIQUE, array('sdid', 'groupsdid'));
+
+        // Conditionally launch drop index sdid-groupsdid.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Rename field sdidsource on table enrol_lmb_member_person to membersdidsource.
+        $table = new xmldb_table('enrol_lmb_member_person');
+        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
+
+        // Launch rename field membersdidsource.
+        $dbman->rename_field($table, $field, 'membersdidsource');
+
+        // Rename field sdid on table enrol_lmb_member_person to membersdid.
+        $table = new xmldb_table('enrol_lmb_member_person');
+        $field = new xmldb_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null, 'membersdidsource');
+
+        // Launch rename field membersdid.
+        $dbman->rename_field($table, $field, 'membersdid');
+
+        // Define index membersdid-groupsdid-roletype (unique) to be added to enrol_lmb_member_person.
+        $table = new xmldb_table('enrol_lmb_member_person');
+        $index = new xmldb_index('membersdid-groupsdid-roletype', XMLDB_INDEX_UNIQUE, array('membersdid', 'groupsdid', 'roletype'));
+
+        // Conditionally launch add index membersdid-groupsdid-roletype.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Now onto member_group.
+        // Rename field sdidsource on table enrol_lmb_member_group to membersdidsource.
+        $table = new xmldb_table('enrol_lmb_member_group');
+        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null, 'id');
+
+        // Launch rename field sdidsource.
+        $dbman->rename_field($table, $field, 'membersdidsource');
+
+        // Rename field sdid on table enrol_lmb_member_group to membersdid.
+        $table = new xmldb_table('enrol_lmb_member_group');
+        $field = new xmldb_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null, 'sdidsource');
+
+        // Launch rename field sdid.
+        $dbman->rename_field($table, $field, 'membersdid');
+
+        // Changing nullability of field membersdidsource on table enrol_lmb_member_group to null.
+        $table = new xmldb_table('enrol_lmb_member_group');
+        $field = new xmldb_field('membersdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
+
+        // Launch change of nullability for field membersdidsource.
+        $dbman->change_field_notnull($table, $field);
+
+                // Define index membersdid-groupsdid (unique) to be added to enrol_lmb_member_group.
+        $table = new xmldb_table('enrol_lmb_member_group');
+        $index = new xmldb_index('membersdid-groupsdid', XMLDB_INDEX_UNIQUE, array('membersdid', 'groupsdid'));
+
+        // Conditionally launch add index membersdid-groupsdid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018012901, 'enrol', 'lmb');
+    }
+
+
     // TODO - when releasing, migrate setting (see trello).
 
 
