@@ -110,7 +110,8 @@ class member_person extends base {
         }
 
         $params = ['membersdid' => $this->__get('membersdid'),
-                   'groupsdid' => $this->__get('groupsdid')];
+                   'groupsdid' => $this->__get('groupsdid'),
+                   'roletype' => $this->__get('roletype')];
 
         return $DB->get_record(static::TABLE, $params);
     }

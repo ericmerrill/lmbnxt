@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tests for the xml parser.
+ * Tests for the message object.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2016 Oakland University
+ * @copyright  2018 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

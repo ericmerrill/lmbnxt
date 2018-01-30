@@ -36,10 +36,12 @@ class lis2 extends xml {
     protected $responsetags = array('REPLACECOURSESECTIONREQUEST' => 'replaceCourseSectionResponse',
                                     'REPLACEGROUPREQUEST' => 'replaceGroupResponse',
                                     'REPLACEPERSONREQUEST' => 'replacePersonResponse',
+                                    'REPLACEMEMBERSHIPREQUEST' => 'replaceMembershipResponse',
                                     'DELETEMEMBERSHIPREQUEST' => 'deleteMembershipResponse');
 
     public function get_response_body() {
-        $response = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">';
+        $response = '<?xml version="1.0" encoding="utf-8"?>'."\n";
+        $response .= '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">';
 
         // First do the header if we can get it.
         if ($this->controller && $this->message) {
