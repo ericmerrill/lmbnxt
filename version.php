@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * An enrollment plugin for interfacing with Banner.
+ * An enrolment plugin for interfacing with Banner.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>

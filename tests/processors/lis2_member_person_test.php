@@ -35,27 +35,27 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class lis2_member_person_test extends xml_helper {
     public function test_member_person_teacher() {
         global $CFG;
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/replace_member.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/member_replace_teacher.xml');
 
-        $converter = new \enrol_lmb\local\processors\lis2\membership();
+        $converter = new lis2\membership();
 
         $member = $converter->process_xml_to_data($node);
 
         $this->assertInstanceOf(data\member_person::class, $member);
 
         $this->assertEmpty($member->sdidsource);
-        $this->assertEquals('G00000001', $member->sdid);
+        $this->assertEquals('1000001', $member->sdid);
         $this->assertEquals('10001.201740', $member->groupsdid);
 
         $this->assertEquals('ILP', $member->referenceagent);
-        $this->assertEquals('CM-editingteacher-CS10001.201740-G00000001', $member->messagereference);
+        $this->assertEquals('CM-editingteacher-CS10001.201740-1000001', $member->messagereference);
 
         $this->assertEquals('02', $member->roletype);
         $this->assertEquals(1, $member->status);
 
         $this->assertEquals('courseSection', $member->membershiptype);
         $this->assertEquals('editingteacher', $member->lis_roletype);
-        $this->assertEquals('Active', $member->lis_active);
+        $this->assertEquals('Active', $member->lis_status);
 
     }
 
@@ -84,7 +84,7 @@ class lis2_member_person_test extends xml_helper {
      * @param int|false $expected The expected return value. False for exception.
      */
     public function test_member_person_status($data, $expected) {
-        $converter = new \enrol_lmb\local\processors\lis2\member_person();
+        $converter = new lis2\member_person();
 
         $node = $this->get_node_for_xml('<replaceMembershipRequest><membershipRecord><membership><member><role><status>'.
                                         $data.
@@ -102,7 +102,7 @@ class lis2_member_person_test extends xml_helper {
         } else {
             $member = $converter->process_xml_to_data($node);
             $this->assertEquals($expected, $member->status);
-            $this->assertEquals($data, $member->lis_active);
+            $this->assertEquals($data, $member->lis_status);
         }
 
     }
@@ -128,7 +128,7 @@ class lis2_member_person_test extends xml_helper {
      * @param int|false $expected The expected return value. False for exception.
      */
     public function test_member_person_roletype($data, $expected) {
-        $converter = new \enrol_lmb\local\processors\lis2\member_person();
+        $converter = new lis2\member_person();
 
         $node = $this->get_node_for_xml('<replaceMembershipRequest><membershipRecord><membership><member><role><roleType>'.
                                         $data.
@@ -155,7 +155,7 @@ class lis2_member_person_test extends xml_helper {
         $node = $this->get_node_for_xml('<replaceMembershipRequest><membershipRecord><membership>'.
                                         '</membership></membershipRecord></replaceMembershipRequest>');
 
-        $converter = new \enrol_lmb\local\processors\lis2\membership();
+        $converter = new lis2\membership();
 
         try {
             $membership = $converter->process_xml_to_data($node);

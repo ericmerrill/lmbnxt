@@ -85,7 +85,7 @@ class message {
     }
 
     /**
-     * Run the full process.
+     * Run the data processing on this message.
      */
     public function process() {
         $this->process_to_data();
@@ -95,7 +95,7 @@ class message {
     /**
      * Process the xml node into data objects.
      */
-    public function process_to_data() {
+    protected function process_to_data() {
         $this->load_processor();
 
         // TODO - check setting to skip certain message types.
@@ -117,13 +117,16 @@ class message {
 
             // Some nodes (like membership) may return many children.
             foreach ($objs as $obj) {
+                if (empty($obj)) {
+                    continue;
+                }
+
                 $obj->log_id();
                 if (!$nodb) {
                     $obj->save_to_db();
                 }
+                $this->dataobjs[] = $obj;
             }
-
-            $this->dataobjs = $objs;
         } catch (\Exception $e) {
             // There as a fatal exeption for this node.
             $status = $this->processor->get_failure_status();
@@ -134,7 +137,10 @@ class message {
         }
     }
 
-    public function process_to_moodle() {
+    /**
+     * Process this messages data objects into Moodle object.
+     */
+    protected function process_to_moodle() {
         try {
             foreach ($this->dataobjs as $dataobj) {
                 $converter = $dataobj->get_moodle_converter();

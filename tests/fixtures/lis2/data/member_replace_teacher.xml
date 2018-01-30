@@ -8,11 +8,11 @@
   </soapenv:Header>
   <soapenv:Body>
     <replaceMembershipRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/mms2p0/wsdl11/sync/imsmms_v2p0">
-      <sourcedId>CM-editingteacher-CS10001.201740-G00000001</sourcedId>
+      <sourcedId>CM-editingteacher-CS10001.201740-1000001</sourcedId>
       <membershipRecord>
         <sourcedGUID>
           <refAgentInstanceID>ILP</refAgentInstanceID>
-          <sourcedId>CM-editingteacher-CS10001.201740-G00000001</sourcedId>
+          <sourcedId>CM-editingteacher-CS10001.201740-1000001</sourcedId>
         </sourcedGUID>
         <membership>
           <collectionSourcedId>10001.201740</collectionSourcedId>

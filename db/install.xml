@@ -105,7 +105,7 @@
         <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_member_person" COMMENT="Person enrollments from the SIS.">
+    <TABLE NAME="enrol_lmb_member_person" COMMENT="Person enrolments from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
@@ -129,7 +129,7 @@
         <INDEX NAME="sdid-groupsdid" UNIQUE="false" FIELDS="sdid, groupsdid" COMMENT="Index of user and group."/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_member_group" COMMENT="Group enrollments (crosslists) from the SIS.">
+    <TABLE NAME="enrol_lmb_member_group" COMMENT="Group enrolments (crosslists) from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>

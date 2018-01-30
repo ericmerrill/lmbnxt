@@ -92,10 +92,20 @@ class base extends xml\base {
         return true;
     }
 
+    /**
+     * Get a basic success status object.
+     *
+     * @return status\lis2
+     */
     public function get_success_status() {
         return new status\lis2(true, 'Success', 'Status', 'fullsuccess');
     }
 
+    /**
+     * Get a basic failure status object.
+     *
+     * @return status\lis2
+     */
     public function get_failure_status() {
         return new status\lis2(false, 'Failure');
     }

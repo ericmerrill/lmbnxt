@@ -282,7 +282,7 @@ abstract class base {
     protected function get_record() {
         global $DB;
 
-        $params = array('sdid' => $this->__get('sdid'), 'sdidsource' => $this->__get('sdidsource'));
+        $params = array('sdid' => $this->__get('sdid'));
 
         return $DB->get_record(static::TABLE, $params);
     }

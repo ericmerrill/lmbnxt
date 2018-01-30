@@ -5,6 +5,7 @@
         "SOURCEDID": "messagereference"
     },
     "MEMBERSHIP": {
+      "DATASOURCE": "sdidsource",
       "COLLECTIONSOURCEDID": "groupsdid",
       "MEMBERSHIPIDTYPE": "membershiptype",
       "MEMBER": {

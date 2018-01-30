@@ -98,11 +98,11 @@ class enrolment extends base {
             // TODO - Restricted times.
             // TODO - Recover grades.
             logging::instance()->log_line("Enrolling user");
-            $this->enrol_user($enrolinstance, $user->id, $roleid, 0, 0, ENROL_USER_ACTIVE, true);
+            $enrol->enrol_user($enrolinstance, $user->id, $roleid, 0, 0, ENROL_USER_ACTIVE, true);
         } else {
             // TODO - We need to handle multiple overlapping role assign/unassign. Unenroll and unassign are different...
-            logging::instance()->log_line("Unrolling user");
-            $this->unenrol_user($enrolinstance, $user->id);
+            logging::instance()->log_line("Unenrolling user");
+            $enrol->unenrol_user($enrolinstance, $user->id);
         }
     }
 

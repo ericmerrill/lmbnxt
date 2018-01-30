@@ -24,10 +24,12 @@
  */
 
 namespace enrol_lmb\local\data;
-use enrol_lmb\local\types;
-use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\types;
+use enrol_lmb\logging;
+use enrol_lmb\local\moodle;
 
 /**
  * Object that represents the internal data structure of a term object.
@@ -124,8 +126,7 @@ class term extends base {
     }
 
     public function get_moodle_converter() {
-        // A term doesn't become a moodle item directly.
-        return false;
+        return new moodle\category();
     }
 
 }

@@ -44,7 +44,7 @@ class moodle_enrolment_testcase extends xml_helper {
     public function convert_to_moodle_testcases() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_member_teacher.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
         $converter = new lis2\member_person();
         $member1 = $converter->process_xml_to_data($node);
 
@@ -97,6 +97,7 @@ class moodle_enrolment_testcase extends xml_helper {
         $this->assertContains($error, $log->test_get_flush_buffer());
 
         $course = $this->getDataGenerator()->create_course(['idnumber' => '10001.201740']);
+        $context = context_course::instance($course->id);
 
         // Now everything is made. Lets test an unknown roletype.
         $roletype = $member->roletype;
@@ -106,6 +107,28 @@ class moodle_enrolment_testcase extends xml_helper {
         $this->assertContains($error, $log->test_get_flush_buffer());
 
         $member->roletype = $roletype;
+
+        // Make sure there aren't any enrolments for the user.
+        $this->assertFalse(is_enrolled($context, $user));
+        $this->assertCount(0, get_user_roles($context, $user->id));
+
+        // Now trying to enrol for real.
+        $moodleenrol->convert_to_moodle($member);
+        $error = 'Enrolling user';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        $this->assertTrue(is_enrolled($context, $user));
+        $this->assertCount(1, get_user_roles($context, $user->id));
+
+        // And now unenrol.
+        $member->status = 0;
+
+        $moodleenrol->convert_to_moodle($member);
+        $error = 'Unenrolling user';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        $this->assertFalse(is_enrolled($context, $user));
+        $this->assertCount(0, get_user_roles($context, $user->id));
     }
 
     public function test_get_moodle_role_id() {

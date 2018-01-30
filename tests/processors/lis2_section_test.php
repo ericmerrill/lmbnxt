@@ -37,7 +37,7 @@ class lis2_section_test extends xml_helper {
         global $CFG;
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/replace_course.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/section_replace.xml');
 
         $converter = new lis2\section();
 

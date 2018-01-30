@@ -12,6 +12,7 @@
       }
     },
     "GROUP": {
+      "DATASOURCE": "sdidsource",
       "TIMEFRAME": {
         "BEGIN": {
           "lmbinternal": true,

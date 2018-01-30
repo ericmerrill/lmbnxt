@@ -24,10 +24,12 @@
  */
 
 namespace enrol_lmb\local\data;
-use enrol_lmb\local\types;
-use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\types;
+use enrol_lmb\logging;
+use enrol_lmb\local\moodle;
 
 /**
  * Object that represents the internal data structure of a course object.
@@ -97,12 +99,27 @@ class member_person extends base {
     protected function get_record() {
         global $DB;
 
-        $params = array('sdid' => $this->__get('sdid'),
-                        'sdidsource' => $this->__get('sdidsource'),
-                        'groupsdid' => $this->__get('groupsdid'),
-                        'groupsdidsource' => $this->__get('groupsdidsource'));
+        if ($this->__isset('messagereference')) {
+            $record = $DB->get_record(static::TABLE, ['messagereference' => $this->__get('messagereference')]);
+
+            if ($record) {
+                return $record;
+            }
+        }
+
+        $params = ['sdid' => $this->__get('sdid'),
+                   'groupsdid' => $this->__get('groupsdid')];
 
         return $DB->get_record(static::TABLE, $params);
+    }
+
+    /**
+     * Get the moodle converter for this data object.
+     *
+     * @return false|moodle\base
+     */
+    public function get_moodle_converter() {
+        return new moodle\enrolment();
     }
 
 }

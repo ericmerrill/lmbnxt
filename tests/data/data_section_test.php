@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\exception;
 use enrol_lmb\local\processors\xml;
+use enrol_lmb\local\processors\lis2;
 use enrol_lmb\local\data;
 use enrol_lmb\logging;
 
@@ -37,7 +38,7 @@ class data_section_testcase extends xml_helper {
     public function test_log_id() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/section.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/section.xml');
         $converter = new xml\group();
         $section = $converter->process_xml_to_data($node);
 
@@ -65,7 +66,7 @@ class data_section_testcase extends xml_helper {
 
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/section.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/section.xml');
         $converter = new xml\group();
         $section = $converter->process_xml_to_data($node);
 
@@ -98,5 +99,25 @@ class data_section_testcase extends xml_helper {
             }
             $this->assertEquals($section->$key, $value, "Key {$key} did not match");
         }
+    }
+
+    public function test_two_sources() {
+        global $CFG, $DB;
+
+        $this->resetAfterTest(true);
+
+        $xmlnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/section.xml');
+        $xmlconverter = new xml\group();
+
+        $lisnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/section_replace.xml');
+        $lisconverter = new lis2\section();
+
+        $xmlsection = $xmlconverter->process_xml_to_data($xmlnode);
+        $xmlsection->save_to_db();
+
+        $lissection = $lisconverter->process_xml_to_data($lisnode);
+        $lissection->save_to_db();
+
+        $this->assertEquals($xmlsection->id, $lissection->id);
     }
 }

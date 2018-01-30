@@ -41,7 +41,7 @@ class moodle_course_testcase extends xml_helper {
         $this->resetAfterTest(true);
 
         // First a LIS 2 based node.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_course.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/section_replace.xml');
         $converter = new lis2\section();
         $section = $converter->process_xml_to_data($node);
 
@@ -194,7 +194,7 @@ class moodle_course_testcase extends xml_helper {
     public function convert_to_moodle_testcases() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_course.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/section_replace.xml');
         $converter = new lis2\section();
         $section1 = $converter->process_xml_to_data($node);
 

@@ -267,12 +267,12 @@
             <extensionField>
               <fieldName>BannerID</fieldName>
               <fieldType>String</fieldType>
-              <fieldValue>BannerIDExtension</fieldValue>
+              <fieldValue>A00000000</fieldValue>
             </extensionField>
             <extensionField>
               <fieldName>SourcedId</fieldName>
               <fieldType>String</fieldType>
-              <fieldValue>SourcedIDExtension</fieldValue>
+              <fieldValue>1000001</fieldValue>
             </extensionField>
           </extension>
         </person>
