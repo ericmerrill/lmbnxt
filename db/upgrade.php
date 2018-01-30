@@ -27,8 +27,7 @@ use enrol_lmb\settings;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 function xmldb_enrol_lmb_upgrade($oldversion=0) {
-
-    global $DB;
+    global $CFG, $DB;
 
     $dbman = $DB->get_manager();
 
@@ -373,6 +372,24 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
 
         // Lmb savepoint reached.
         upgrade_plugin_savepoint(true, 2017052502, 'enrol', 'lmb');
+    }
+
+    if ($oldversion < 2018012900) {
+        require_once($CFG->dirroot.'/enrol/lmb/upgradelib.php');
+
+        // Define field primaryrole to be added to enrol_lmb_person.
+        $table = new xmldb_table('enrol_lmb_person');
+        $field = new xmldb_field('primaryrole', XMLDB_TYPE_CHAR, '100', null, null, null, null, 'roleprospectivestudent');
+
+        // Conditionally launch add field primaryrole.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        enrol_lmb_upgrade_promote_column('enrol_lmb_person', 'primaryrole');
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018012900, 'enrol', 'lmb');
     }
 
     // TODO - when releasing, migrate setting (see trello).

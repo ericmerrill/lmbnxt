@@ -52,7 +52,7 @@ class person extends base {
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('id', 'sdidsource', 'sdid', 'sctid', 'logonid', 'emailid', 'fullname', 'nickname',
                               'familyname', 'givenname', 'email', 'rolestudent', 'rolestaff', 'rolefaculty',
-                              'rolealumni', 'roleprospectivestudent', 'additional', 'timemodified');
+                              'rolealumni', 'roleprospectivestudent', 'primaryrole', 'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array('rolestudent' => 0,
