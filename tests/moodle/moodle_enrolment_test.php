@@ -59,7 +59,7 @@ class moodle_enrolment_testcase extends xml_helper {
     }
 
     /**
-     * Test that two identical courses are made from LIS1-XML and LIS2 content.
+     * Test that two identical enrolments are made from LIS1-XML and LIS2 content.
      *
      * @dataProvider convert_to_moodle_testcases
      * @param data\member_person $section The input section

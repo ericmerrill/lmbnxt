@@ -48,6 +48,9 @@ abstract class base {
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
 
+    /** @var array An array of keys that should not be blanked out on update if missing */
+    protected $donotempty = array();
+
     /** @var object Object that contains additional data about the object. This will be JSON encoded. */
     protected $additionaldata;
 
@@ -227,6 +230,12 @@ abstract class base {
             foreach ($this->dbkeys as $key) {
                 if ($key === 'timemodified') {
                     // We ignore the timemodified column.
+                    continue;
+                }
+
+                if (!$this->__isset($key) && in_array($key, $this->donotempty)) {
+                    // These are keys that we don't want to overwrite with blanks.
+                    unset($new->$key);
                     continue;
                 }
 

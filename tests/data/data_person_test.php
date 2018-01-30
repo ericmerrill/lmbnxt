@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\exception;
 use enrol_lmb\local\processors\xml;
+use enrol_lmb\local\processors\lis2;
 use enrol_lmb\local\data;
 use enrol_lmb\logging;
 
@@ -97,5 +98,47 @@ class data_person_testcase extends xml_helper {
             }
             $this->assertEquals($person->$key, $value, "Key {$key} did not match");
         }
+    }
+
+    public function test_remove_field() {
+        global $CFG, $DB;
+
+        $this->resetAfterTest(true);
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_person.xml');
+        $converter = new lis2\person();
+        $person = $converter->process_xml_to_data($node);
+        $person->save_to_db();
+
+        $this->assertFalse(empty($person->id));
+        $this->assertEquals('Nick', $person->nickname);
+
+        $record = $DB->get_record(data\person::TABLE, ['sdid' => '1000001']);
+        $this->assertEquals('Nick', $record->nickname);
+
+        $keytoremove = false;
+
+        $parts = $node->PERSONRECORD->PERSON->NAME->PARTNAME;
+        foreach ($parts as $key => $partname) {
+            if (strcmp('Nickname', $partname->INSTANCENAME->TEXTSTRING->get_value()) === 0) {
+                $keytoremove = $key;
+                break;
+            }
+        }
+
+        if (empty($keytoremove)) {
+            // We couldn't find the key, so we need to fail.
+            $this->fail("Couldn't find nickname node.");
+        }
+
+        unset($parts[$keytoremove]);
+        $node->PERSONRECORD->PERSON->NAME->PARTNAME = $parts;
+
+        $person = $converter->process_xml_to_data($node);
+        $person->save_to_db();
+
+        $record = $DB->get_record(data\person::TABLE, ['sdid' => '1000001']);
+        $this->assertEquals('', $record->nickname);
+
     }
 }

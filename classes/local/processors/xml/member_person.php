@@ -62,6 +62,7 @@ class member_person extends base {
      */
     public function process_role_node($node, $mapping) {
         $this->dataobj->roletype = $node->get_attribute('ROLETYPE');
+        $this->dataobj->recstatus = (int)$node->get_attribute('RECSTATUS');
 
         $this->apply_mappings($node, $mapping['mappings']);
     }

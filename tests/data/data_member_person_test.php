@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\exception;
 use enrol_lmb\local\processors\xml;
+use enrol_lmb\local\processors\lis2;
 use enrol_lmb\local\data;
 use enrol_lmb\logging;
 
@@ -34,6 +35,50 @@ global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
 class data_member_person_testcase extends xml_helper {
+    public function test_message_ref_overwrite() {
+        global $CFG, $DB;
+
+        $this->resetAfterTest(true);
+
+        $lisnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
+        $lisconverter = new lis2\member_person_delete();
+
+        $xmlnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_person.xml');
+        $xmlconverter = new xml\membership();
+
+        // First, save it without a message reference.
+        $member = $xmlconverter->process_xml_to_data($xmlnode);
+        $member = reset($member);
+        $member->save_to_db();
+        $recordid = $member->id;
+
+        $record = $DB->get_record(data\member_person::TABLE, ['id' => $recordid]);
+        $this->assertInstanceOf(\stdClass::class, $record);
+        $this->assertEquals('', $record->messagereference);
+        $this->assertEquals('1', $record->status);
+
+        // Now make sure it gets updated when we process from LIS (with a message reference).
+        // Going to set the lis node as inactive to help to verify what is happening.
+        $lisnode->MEMBERSHIPRECORD->MEMBERSHIP->MEMBER->ROLE->STATUS->set_data('Inactive');
+        $member = $lisconverter->process_xml_to_data($lisnode);
+        $member->save_to_db();
+
+        $record = $DB->get_record(data\member_person::TABLE, ['id' => $recordid]);
+        $this->assertInstanceOf(\stdClass::class, $record);
+        $this->assertEquals('CM-editingteacher-CS10001.201740-1000001', $record->messagereference);
+        $this->assertEquals('0', $record->status);
+
+        // Now, make sure it doesn't go back to empty.
+        $member = $xmlconverter->process_xml_to_data($xmlnode);
+        $member = reset($member);
+        $member->save_to_db();
+
+        $record = $DB->get_record(data\member_person::TABLE, ['id' => $recordid]);
+        $this->assertInstanceOf(\stdClass::class, $record);
+        $this->assertEquals('CM-editingteacher-CS10001.201740-1000001', $record->messagereference);
+        $this->assertEquals('1', $record->status);
+    }
+
     public function test_log_id() {
         global $CFG;
 

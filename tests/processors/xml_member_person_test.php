@@ -69,6 +69,7 @@ class xml_member_person_testcase extends xml_helper {
 
         $this->assertEquals('01', $member->roletype);
         $this->assertEquals(1, $member->status);
+        $this->assertEquals(1, $member->recstatus);
         $this->assertFalse(isset($member->subrole));
 
         $this->assertEquals(1504051200, $member->begindate);
@@ -91,6 +92,7 @@ class xml_member_person_testcase extends xml_helper {
 
         $this->assertEquals('02', $member->roletype);
         $this->assertEquals(0, $member->status);
+        $this->assertEquals(3, $member->recstatus);
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
         $this->assertEquals('10001.201740', $member->groupsdid);
