@@ -28,12 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-// use enrol_lmb\message;
 use enrol_lmb\controller;
-// use enrol_lmb\local\processors;
-// use enrol_lmb\local\response;
 use enrol_lmb\logging;
-// use enrol_lmb\local\status;
 
 class response_lis2_test extends xml_helper {
 
