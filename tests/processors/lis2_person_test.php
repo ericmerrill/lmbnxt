@@ -37,7 +37,7 @@ class lis2_person_test extends xml_helper {
         global $CFG;
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/replace_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/person_replace.xml');
 
         $converter = new lis2\person();
 

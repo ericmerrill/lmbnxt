@@ -105,7 +105,7 @@ class data_person_testcase extends xml_helper {
 
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/person_replace.xml');
         $converter = new lis2\person();
         $person = $converter->process_xml_to_data($node);
         $person->save_to_db();

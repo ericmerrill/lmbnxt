@@ -40,7 +40,7 @@ class moodle_user_testcase extends xml_helper {
     public function test_get_username() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/person_replace.xml');
         $converter = new lis2\person();
         $person = $converter->process_xml_to_data($node);
 
@@ -80,7 +80,7 @@ class moodle_user_testcase extends xml_helper {
     public function test_create_new_user_object() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/person_replace.xml');
         $converter = new lis2\person();
         $person = $converter->process_xml_to_data($node);
 
@@ -102,7 +102,7 @@ class moodle_user_testcase extends xml_helper {
     public function convert_to_moodle_testcases() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/replace_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/person_replace.xml');
         $converter = new lis2\person();
         $person1 = $converter->process_xml_to_data($node);
 

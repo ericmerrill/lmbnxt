@@ -44,7 +44,7 @@ class xml_member_group_testcase extends xml_helper {
 
         $this->assertInstanceOf(data\crosslist::class, $crosslist);
         $this->assertEquals('Test SCT Banner', $crosslist->sdidsource);
-        $this->assertEquals('XLSAA201640', $crosslist->sdid);
+        $this->assertEquals('XLSAA201740', $crosslist->sdid);
         $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
 
         $members = $crosslist->get_members();
@@ -56,7 +56,7 @@ class xml_member_group_testcase extends xml_helper {
         $this->assertInstanceOf(data\crosslist_member::class, $member);
 
         $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('10001.201640', $member->sdid);
+        $this->assertEquals('10001.201740', $member->sdid);
         $this->assertEquals(1, $member->status);
         $this->assertEquals(2, $member->membertype);
 
@@ -64,7 +64,7 @@ class xml_member_group_testcase extends xml_helper {
         $this->assertInstanceOf(data\crosslist_member::class, $member);
 
         $this->assertEquals('Test SCT Banner', $member->sdidsource);
-        $this->assertEquals('10002.201640', $member->sdid);
+        $this->assertEquals('10002.201740', $member->sdid);
         $this->assertEquals(1, $member->status);
         $this->assertEquals(2, $member->membertype);
 

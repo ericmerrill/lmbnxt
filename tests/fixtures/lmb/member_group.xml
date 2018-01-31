@@ -2,13 +2,13 @@
     <membership>
         <sourcedid>
             <source>Test SCT Banner</source>
-            <id>XLSAA201640</id>
+            <id>XLSAA201740</id>
         </sourcedid>
         <type>meta</type>
         <member>
             <sourcedid>
                 <source>Test SCT Banner</source>
-                <id>10001.201640</id>
+                <id>10001.201740</id>
             </sourcedid>
             <idtype>2</idtype>
             <role recstatus="1">
@@ -18,7 +18,7 @@
         <member>
             <sourcedid>
                 <source>Test SCT Banner</source>
-                <id>10002.201640</id>
+                <id>10002.201740</id>
             </sourcedid>
             <idtype>2</idtype>
             <role recstatus="1">
