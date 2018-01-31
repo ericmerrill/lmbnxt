@@ -130,25 +130,6 @@
         <INDEX NAME="membersdid-groupsdid-roletype" UNIQUE="true" FIELDS="membersdid, groupsdid, roletype"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_member_group" COMMENT="Group enrolments (crosslists) from the SIS.">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="membersdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="membersdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="groupsdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="groupsdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="additional" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-      </KEYS>
-      <INDEXES>
-        <INDEX NAME="membersdid-groupsdid" UNIQUE="true" FIELDS="membersdid, groupsdid"/>
-      </INDEXES>
-    </TABLE>
     <TABLE NAME="enrol_lmb_crosslist" COMMENT="Holds information about the crosslist group.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
@@ -177,6 +158,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="crosslistid" TYPE="foreign" FIELDS="crosslistid" REFTABLE="enrol_lmb_crosslist" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
         <INDEX NAME="sdid-crosslistid-sdidsource" UNIQUE="true" FIELDS="sdid, crosslistid, sdidsource"/>

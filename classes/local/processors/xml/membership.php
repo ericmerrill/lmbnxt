@@ -27,6 +27,8 @@ namespace enrol_lmb\local\processors\xml;
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\local\data;
+
 /**
  * Class for working with message types.
  *
@@ -57,7 +59,7 @@ class membership extends base {
      * Processes the passed xml_node into a data object of the current type.
      *
      * @param xml_node $node The node to work on
-     * @return array[enrol_lmb\local\data\member_group|enrol_lmb\local\data\member_user]
+     * @return data\member_user[]|data\crosslist
      */
     public function process_xml_to_data($node) {
         if (!isset($node->MEMBER)) {
@@ -71,9 +73,13 @@ class membership extends base {
         $groupsource = $node->SOURCEDID->SOURCE->get_value();
         $groupid = $node->SOURCEDID->ID->get_value();
 
-        $type = false;
+        // We make a temporary crosslist object in case this is a crosslist message.
+        $crosslist = new data\crosslist();
+        $crosslist->sdid = $groupid;
+        $crosslist->sdidsource = $groupsource;
+
         if (isset($node->TYPE)) {
-            $type = $node->TYPE->get_value();
+            $crosslist->type = $node->TYPE->get_value();
         }
 
         if (is_array($node->MEMBER)) {
@@ -84,6 +90,7 @@ class membership extends base {
 
         $results = array();
 
+        $iscrosslist = false;
         foreach ($members as $member) {
             if (!isset($member->IDTYPE)) {
                 // We don't throw an exception so that other members can process.
@@ -102,20 +109,20 @@ class membership extends base {
                     break;
                 case '2':
                     // A group member (crosslist).
-                    $crosslist = new member_group();
-                    $result = $crosslist->process_xml_to_data($member);
-                    $result->groupsdidsource = $groupsource;
-                    $result->groupsdid = $groupid;
-                    if ($type) {
-                        $result->type = $type;
-                    }
-                    $results[] = $result;
+                    $groupmember = new member_group();
+                    $result = $groupmember->process_xml_to_data($member);
+                    $crosslist->add_member($result);
+                    $iscrosslist = true;
                     break;
                 default:
                     // We don't throw an exception so that other members can process.
                     // TODO unknown type error log.
                     break;
             }
+        }
+
+        if ($iscrosslist) {
+            return $crosslist;
         }
 
         return $results;

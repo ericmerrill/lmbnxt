@@ -39,7 +39,7 @@ class member_group extends base {
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_group';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\crosslist_member';
 
     /**
      * Path to this objects mappings.

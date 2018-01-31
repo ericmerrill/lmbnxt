@@ -303,10 +303,10 @@ if ($ADMIN->fulltree) {
             get_string('xlsshorttitledivider', 'enrol_lmb'), get_string('xlsshorttitledivider_help', 'enrol_lmb'), ''));
 
     unset($options);
-    $options = [data\member_group::GROUP_TYPE_MERGE => get_string('xlsmergecourse', 'enrol_lmb'),
-                data\member_group::GROUP_TYPE_META => get_string('xlsmetacourse', 'enrol_lmb')];
+    $options = [data\crosslist::GROUP_TYPE_MERGE => get_string('xlsmergecourse', 'enrol_lmb'),
+                data\crosslist::GROUP_TYPE_META => get_string('xlsmetacourse', 'enrol_lmb')];
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/xlstype', get_string('xlstype', 'enrol_lmb'),
-            get_string('xlstype_help', 'enrol_lmb'), data\member_group::GROUP_TYPE_MERGE, $options));
+            get_string('xlstype_help', 'enrol_lmb'), data\crosslist::GROUP_TYPE_MERGE, $options));
 
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/xlsmergegroups', get_string('xlsmergegroups', 'enrol_lmb'),
             get_string('xlsmergegroups_help', 'enrol_lmb'), 1));

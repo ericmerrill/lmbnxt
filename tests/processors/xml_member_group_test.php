@@ -38,66 +38,58 @@ class xml_member_group_testcase extends xml_helper {
 
         $converter = new xml\membership();
 
-        settings_helper::set('xlstype', data\member_group::GROUP_TYPE_MERGE);
+        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
 
-        $members = $converter->process_xml_to_data($node);
+        $crosslist = $converter->process_xml_to_data($node);
+
+        $this->assertInstanceOf(data\crosslist::class, $crosslist);
+        $this->assertEquals('Test SCT Banner', $crosslist->sdidsource);
+        $this->assertEquals('XLSAA201640', $crosslist->sdid);
+        $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
+
+        $members = $crosslist->get_members();
 
         $this->assertInternalType('array', $members);
         $this->assertCount(2, $members);
 
         $member = $members[0];
-        $this->assertInstanceOf(data\member_group::class, $member);
+        $this->assertInstanceOf(data\crosslist_member::class, $member);
 
-        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
-        $this->assertEquals('10001.201640', $member->membersdid);
-        $this->assertEquals(data\member_group::GROUP_TYPE_META, $member->type);
-
+        $this->assertEquals('Test SCT Banner', $member->sdidsource);
+        $this->assertEquals('10001.201640', $member->sdid);
         $this->assertEquals(1, $member->status);
-
-        $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
-        $this->assertEquals('XLSAA201640', $member->groupsdid);
         $this->assertEquals(2, $member->membertype);
 
         $member = $members[1];
-        $this->assertInstanceOf(data\member_group::class, $member);
+        $this->assertInstanceOf(data\crosslist_member::class, $member);
 
-        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
-        $this->assertEquals('10002.201640', $member->membersdid);
-        $this->assertEquals(data\member_group::GROUP_TYPE_META, $member->type);
-
+        $this->assertEquals('Test SCT Banner', $member->sdidsource);
+        $this->assertEquals('10002.201640', $member->sdid);
         $this->assertEquals(1, $member->status);
-
-        $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
-        $this->assertEquals('XLSAA201640', $member->groupsdid);
         $this->assertEquals(2, $member->membertype);
 
         // Now make sure we get the right default type.
-        settings_helper::set('xlstype', data\member_group::GROUP_TYPE_META);
+        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_META);
         $node->TYPE->set_data('MeRgE');
-        $members = $converter->process_xml_to_data($node);
-        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[0]->type);
-        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[1]->type);
+        $crosslist = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
 
         // For unknown, return the current default;
         $node->TYPE->set_data('Unknown');
-        $members = $converter->process_xml_to_data($node);
-        $this->assertEquals(data\member_group::GROUP_TYPE_META, $members[0]->type);
-        $this->assertEquals(data\member_group::GROUP_TYPE_META, $members[1]->type);
+        $crosslist = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
 
-        settings_helper::set('xlstype', data\member_group::GROUP_TYPE_MERGE);
-        $members = $converter->process_xml_to_data($node);
-        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[0]->type);
-        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[1]->type);
+        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
+        $crosslist = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
 
         // Now check that a missing node is correct.
         unset($node->TYPE);
-        $members = $converter->process_xml_to_data($node);
-        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[0]->type);
-        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[1]->type);
+        $crosslist = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
 
-        settings_helper::set('xlstype', data\member_group::GROUP_TYPE_META);
-        $members = $converter->process_xml_to_data($node);
-        $this->assertEquals(data\member_group::GROUP_TYPE_META, $members[0]->type);
-        $this->assertEquals(data\member_group::GROUP_TYPE_META, $members[1]->type);
+        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_META);
+        $crosslist = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
     }
 }

@@ -19,7 +19,7 @@
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2016 Oakland University
+ * @copyright  2018 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,30 +32,29 @@ use enrol_lmb\logging;
 use enrol_lmb\settings;
 
 /**
- * Object that represents the internal data structure of a course object.
+ * Object that represents the internal data structure of a crosslist object.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
- * @copyright  2016 Oakland University
+ * @copyright  2018 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_group extends base {
+class crosslist extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_member_group';
+    const TABLE = 'enrol_lmb_crosslist';
 
     /**
      * The class of the Moodle converter for this data object.
      */
-    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\member_group';
+    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\crosslist';
 
     const GROUP_TYPE_META = 1;
     const GROUP_TYPE_MERGE = 2;
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'membersdidsource', 'membersdid', 'status', 'groupsdid', 'groupsdidsource', 'type',
-                              'additional', 'timemodified');
+    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'type', 'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
@@ -65,6 +64,8 @@ class member_group extends base {
 
     /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array('type' => 'handler_group_type');
+
+    protected $members = [];
 
     public function __construct() {
         parent::__construct();
@@ -76,15 +77,44 @@ class member_group extends base {
      * Log a unique line to id this object.
      */
     public function log_id() {
-        $id = $this->__get('membersdid');
-        $source = $this->__get('membersdidsource');
-        $gid = $this->__get('groupsdid');
-        $gsource = $this->__get('groupsdidsource');
-        // TODO.
-        if (empty($id) || empty($source) || empty($gid) || empty($gsource)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_bad_member_group');
+        $id = $this->__get('sdid');
+        $source = $this->__get('sdidsource');
+        $source = (empty($source) ? "(empty)" : $source);
+
+        if (empty($id)) {
+            throw new \enrol_lmb\local\exception\message_exception('exception_bad_crosslist_id');
         } else {
-            logging::instance()->log_line("Group \"{$id}\" from \"{$source}\" membership into \"{$gid}\" from \"{$gsource}\"");
+            logging::instance()->log_line("Crosslist group \"{$id}\" from \"{$source}\"");
+            foreach ($this->members as $member) {
+                $member->log_id();
+            }
+        }
+    }
+
+    /**
+     * Add a member to this crosslist.
+     *
+     * @param crosslist_member $child
+     */
+    public function add_member(crosslist_member $child) {
+        $this->members[] = $child;
+    }
+
+    /**
+     * Return the array of members for this crosslist.
+     *
+     * @return crosslist_member[]
+     */
+    public function get_members() {
+        return $this->members;
+    }
+
+    protected function update_if_needed() {
+        parent::update_if_needed();
+
+        foreach ($this->members as $member) {
+            $member->crosslistid = $this->__get('id');
+            $member->update_if_needed();
         }
     }
 
@@ -96,8 +126,7 @@ class member_group extends base {
     protected function get_record() {
         global $DB;
 
-        $params = array('membersdid' => $this->__get('membersdid'),
-                        'groupsdid' => $this->__get('groupsdid'));
+        $params = array('sdid' => $this->__get('sdid'));
 
         return $DB->get_record(static::TABLE, $params);
     }

@@ -1,7 +1,7 @@
 {
   "SOURCEDID": {
-    "SOURCE": "membersdidsource",
-    "ID": "membersdid"
+    "SOURCE": "sdidsource",
+    "ID": "sdid"
   },
   "IDTYPE": "membertype",
   "ROLE": {

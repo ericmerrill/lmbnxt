@@ -554,6 +554,27 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2018013001, 'enrol', 'lmb');
     }
 
+    if ($oldversion < 2018013100) {
+
+        // Define table enrol_lmb_member_group to be dropped.
+        $table = new xmldb_table('enrol_lmb_member_group');
+
+        // Conditionally launch drop table for enrol_lmb_member_group.
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+
+        // Define key crosslistid (foreign) to be added to enrol_lmb_crosslist_member.
+        $table = new xmldb_table('enrol_lmb_crosslist_member');
+        $key = new xmldb_key('crosslistid', XMLDB_KEY_FOREIGN, array('crosslistid'), 'enrol_lmb_crosslist', array('id'));
+
+        // Launch add key crosslistid.
+        $dbman->add_key($table, $key);
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018013100, 'enrol', 'lmb');
+    }
+
 
 
     // TODO - when releasing, migrate setting (see trello).
