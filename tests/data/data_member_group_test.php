@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\exception;
 use enrol_lmb\local\processors\xml;
-use enrol_lmb\local\data;
+use enrol_lmb\local\data\member_group;
 use enrol_lmb\logging;
 
 global $CFG;
@@ -92,7 +92,7 @@ class data_member_group_testcase extends xml_helper {
             // Now lets get it from the DB and check it.
             $params = array('membersdid' => $member->membersdid, 'membersdidsource' => $member->membersdidsource,
                     'groupsdid' => $member->groupsdid, 'groupsdidsource' => $member->groupsdidsource);
-            $dbrecord = $DB->get_record(data\member_group::TABLE, $params);
+            $dbrecord = $DB->get_record(member_group::TABLE, $params);
 
             $this->assertNotEmpty($dbrecord);
 
@@ -104,5 +104,73 @@ class data_member_group_testcase extends xml_helper {
                 $this->assertEquals($member->$key, $value, "Key {$key} did not match");
             }
         }
+    }
+
+    public function test_handler_group_type() {
+        $this->resetAfterTest(true);
+
+        settings_helper::set('xlstype', member_group::GROUP_TYPE_MERGE);
+        $member = new member_group();
+
+        $result = $this->run_protected_method($member, 'handler_group_type', array('', member_group::GROUP_TYPE_META));
+        $this->assertEquals(member_group::GROUP_TYPE_META, $result);
+
+        $result = $this->run_protected_method($member, 'handler_group_type', array('', 'mEtA'));
+        $this->assertEquals(member_group::GROUP_TYPE_META, $result);
+
+        $result = $this->run_protected_method($member, 'handler_group_type', array('', 'Unknown'));
+        $this->assertEquals(member_group::GROUP_TYPE_MERGE, $result);
+
+        settings_helper::set('xlstype', member_group::GROUP_TYPE_META);
+
+        $result = $this->run_protected_method($member, 'handler_group_type', array('', member_group::GROUP_TYPE_MERGE));
+        $this->assertEquals(member_group::GROUP_TYPE_MERGE, $result);
+
+        $result = $this->run_protected_method($member, 'handler_group_type', array('', 'MeRgE'));
+        $this->assertEquals(member_group::GROUP_TYPE_MERGE, $result);
+
+        $result = $this->run_protected_method($member, 'handler_group_type', array('', 'Unknown'));
+        $this->assertEquals(member_group::GROUP_TYPE_META, $result);
+    }
+
+    public function test_default_overwrite() {
+        global $DB;
+
+        $this->resetAfterTest(true);
+        settings_helper::set('xlstype', member_group::GROUP_TYPE_MERGE);
+
+        // Start with the default value.
+        $member = new member_group();
+        $member->membersdid = '10001.201710';
+        $member->groupsdid = 'XLSAB201740';
+        $member->groupsdidsource = 'Banner';
+        $member->status = 1;
+        $member->save_to_db();
+
+        $record = $DB->get_record(member_group::TABLE, ['id' => $member->id]);
+        $this->assertEquals(member_group::GROUP_TYPE_MERGE, (int)$record->type);
+
+        // Now try to update that with a new value.
+        $member = new member_group();
+        $member->membersdid = '10001.201710';
+        $member->groupsdid = 'XLSAB201740';
+        $member->groupsdidsource = 'Banner';
+        $member->status = 1;
+        $member->type = 'meta';
+        $member->save_to_db();
+
+        $record = $DB->get_record(member_group::TABLE, ['id' => $member->id]);
+        $this->assertEquals(member_group::GROUP_TYPE_META, (int)$record->type);
+
+        // Now make sure it doesn't get overwritten by a blank new data.
+        $member = new member_group();
+        $member->membersdid = '10001.201710';
+        $member->groupsdid = 'XLSAB201740';
+        $member->groupsdidsource = 'Banner';
+        $member->status = 1;
+        $member->save_to_db();
+
+        $record = $DB->get_record(member_group::TABLE, ['id' => $member->id]);
+        $this->assertEquals(member_group::GROUP_TYPE_META, (int)$record->type);
     }
 }

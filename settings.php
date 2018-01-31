@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\settings;
 use enrol_lmb\local\moodle;
+use enrol_lmb\local\data;
+use enrol_lmb\logging;
 
 $settings = new admin_category('enrolsettingscat', get_string('pluginname', 'enrol_lmb'), $settings->hidden);
 $settingslmb = new admin_settingpage('enrolsettingslmb', get_string('settings'), 'moodle/site:config');
@@ -41,13 +43,13 @@ if ($ADMIN->fulltree) {
     $settingslmb->add(new admin_setting_configdirectory('enrol_lmb/extractpath', get_string('extractpath', 'enrol_lmb'),
         get_string('extractpath_help', 'enrol_lmb'), ''));
 
-    $loggingoptions = array(\enrol_lmb\logging::ERROR_NONE => get_string('error_all', 'enrol_lmb'),
-                            \enrol_lmb\logging::ERROR_NOTICE => get_string('error_notice', 'enrol_lmb'),
-                            \enrol_lmb\logging::ERROR_WARN => get_string('error_warn', 'enrol_lmb'),
-                            \enrol_lmb\logging::ERROR_MAJOR => get_string('error_major', 'enrol_lmb'));
+    $loggingoptions = array(logging::ERROR_NONE => get_string('error_all', 'enrol_lmb'),
+                            logging::ERROR_NOTICE => get_string('error_notice', 'enrol_lmb'),
+                            logging::ERROR_WARN => get_string('error_warn', 'enrol_lmb'),
+                            logging::ERROR_MAJOR => get_string('error_major', 'enrol_lmb'));
 
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/logginglevel', get_string('logginglevel', 'enrol_lmb'),
-            get_string('logginglevel_help', 'enrol_lmb'), \enrol_lmb\logging::ERROR_NOTICE, $loggingoptions));
+            get_string('logginglevel_help', 'enrol_lmb'), logging::ERROR_NOTICE, $loggingoptions));
 
     // Parse Person --------------------------------------------------------------------------------.
     $settingslmb->add(new admin_setting_heading('enrol_lmb_parseperson', get_string('parseperson', 'enrol_lmb'), ''));
@@ -275,6 +277,39 @@ if ($ADMIN->fulltree) {
 //
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/recovergrades', get_string('recovergrades', 'enrol_lmb'),
 //             get_string('recovergradeshelp', 'enrol_lmb'), 1));
+
+    // Parse XLS -----------------------------------------------------------------------------------.
+    $settingslmb->add(new admin_setting_heading('enrol_lmb_parsexls', get_string('parsexls', 'enrol_lmb'), ''));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/parsexlsxml', get_string('parsexlsxml', 'enrol_lmb'),
+            get_string('parsexlsxml_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/xlstitle', get_string('xlstitle', 'enrol_lmb'),
+            get_string('xlstitle_help', 'enrol_lmb'), '[XLSID] - [REPEAT]'));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/xlstitlerepeat', get_string('xlstitlerepeat', 'enrol_lmb'),
+            get_string('xlstitlerepeat_help', 'enrol_lmb'), '[CRN]'));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/xlstitledivider', get_string('xlstitledivider', 'enrol_lmb'),
+            get_string('xlstitledivider_help', 'enrol_lmb'), ' / '));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/xlsshorttitle', get_string('xlsshorttitle', 'enrol_lmb'),
+            get_string('xlsshorttitle_help', 'enrol_lmb'), '[XLSID]'));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/xlsshorttitlerepeat', get_string('xlsshorttitlerepeat', 'enrol_lmb'),
+            get_string('xlsshorttitlerepeat_help', 'enrol_lmb'), ''));
+
+    $settingslmb->add(new admin_setting_configtext('enrol_lmb/xlsshorttitledivider',
+            get_string('xlsshorttitledivider', 'enrol_lmb'), get_string('xlsshorttitledivider_help', 'enrol_lmb'), ''));
+
+    unset($options);
+    $options = [data\member_group::GROUP_TYPE_MERGE => get_string('xlsmergecourse', 'enrol_lmb'),
+                data\member_group::GROUP_TYPE_META => get_string('xlsmetacourse', 'enrol_lmb')];
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/xlstype', get_string('xlstype', 'enrol_lmb'),
+            get_string('xlstype_help', 'enrol_lmb'), data\member_group::GROUP_TYPE_MERGE, $options));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/xlsmergegroups', get_string('xlsmergegroups', 'enrol_lmb'),
+            get_string('xlsmergegroups_help', 'enrol_lmb'), 1));
 }
 
 $settings->add('enrolsettingscat', $settingslmb);

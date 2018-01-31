@@ -488,6 +488,73 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2018012901, 'enrol', 'lmb');
     }
 
+    if ($oldversion < 2018013000) {
+
+        // Define field type to be added to enrol_lmb_member_group.
+        $table = new xmldb_table('enrol_lmb_member_group');
+        $field = new xmldb_field('type', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null, 'groupsdid');
+
+        // Conditionally launch add field type.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018013000, 'enrol', 'lmb');
+    }
+
+    if ($oldversion < 2018013001) {
+
+        // Define table enrol_lmb_crosslist to be created.
+        $table = new xmldb_table('enrol_lmb_crosslist');
+
+        // Adding fields to table enrol_lmb_crosslist.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('type', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('additional', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table enrol_lmb_crosslist.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Adding indexes to table enrol_lmb_crosslist.
+        $table->add_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch create table for enrol_lmb_crosslist.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Define table enrol_lmb_crosslist_member to be created.
+        $table = new xmldb_table('enrol_lmb_crosslist_member');
+
+        // Adding fields to table enrol_lmb_crosslist_member.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('crosslistid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('status', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('additional', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table enrol_lmb_crosslist_member.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Adding indexes to table enrol_lmb_crosslist_member.
+        $table->add_index('sdid-crosslistid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'crosslistid', 'sdidsource'));
+
+        // Conditionally launch create table for enrol_lmb_crosslist_member.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018013001, 'enrol', 'lmb');
+    }
+
+
 
     // TODO - when releasing, migrate setting (see trello).
 

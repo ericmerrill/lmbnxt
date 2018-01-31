@@ -71,6 +71,11 @@ class membership extends base {
         $groupsource = $node->SOURCEDID->SOURCE->get_value();
         $groupid = $node->SOURCEDID->ID->get_value();
 
+        $type = false;
+        if (isset($node->TYPE)) {
+            $type = $node->TYPE->get_value();
+        }
+
         if (is_array($node->MEMBER)) {
             $members = $node->MEMBER;
         } else {
@@ -101,6 +106,9 @@ class membership extends base {
                     $result = $crosslist->process_xml_to_data($member);
                     $result->groupsdidsource = $groupsource;
                     $result->groupsdid = $groupid;
+                    if ($type) {
+                        $result->type = $type;
+                    }
                     $results[] = $result;
                     break;
                 default:

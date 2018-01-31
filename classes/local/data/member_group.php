@@ -24,10 +24,12 @@
  */
 
 namespace enrol_lmb\local\data;
-use enrol_lmb\local\types;
-use enrol_lmb\logging;
 
 defined('MOODLE_INTERNAL') || die();
+
+use enrol_lmb\local\types;
+use enrol_lmb\logging;
+use enrol_lmb\settings;
 
 /**
  * Object that represents the internal data structure of a course object.
@@ -48,15 +50,27 @@ class member_group extends base {
      */
     const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\member_group';
 
+    const GROUP_TYPE_META = 1;
+    const GROUP_TYPE_MERGE = 2;
+
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'membersdidsource', 'membersdid', 'status', 'groupsdid', 'groupsdidsource',
+    protected $dbkeys = array('id', 'membersdidsource', 'membersdid', 'status', 'groupsdid', 'groupsdidsource', 'type',
                               'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
 
+    /** @var array An array of keys that should not be blanked out on update if missing */
+    protected $donotempty = array('type');
+
     /** @var array An array of property->function pairs for converting incoming values */
-    protected $handlers = array();
+    protected $handlers = array('type' => 'handler_group_type');
+
+    public function __construct() {
+        parent::__construct();
+        // We want to set the default based on a setting.
+        $this->defaults['type'] = settings::get_settings()->get('xlstype');
+    }
 
     /**
      * Log a unique line to id this object.
@@ -86,6 +100,27 @@ class member_group extends base {
                         'groupsdid' => $this->__get('groupsdid'));
 
         return $DB->get_record(static::TABLE, $params);
+    }
+
+    /**
+     * Handles the couple different ways that the type field could be represented.
+     *
+     * @param string $name Not used
+     * @param string $value The value
+     * @return int The new property value
+     */
+    protected function handler_group_type($name, $value) {
+        if (is_numeric($value) && ($value == static::GROUP_TYPE_MERGE || $value == static::GROUP_TYPE_META)) {
+            return (int)$value;
+        }
+
+        if (strcasecmp('merge', $value) === 0) {
+            return static::GROUP_TYPE_MERGE;
+        } else if (strcasecmp('meta', $value) === 0) {
+            return static::GROUP_TYPE_META;
+        }
+
+        return settings::get_settings()->get('xlstype');
     }
 
 }

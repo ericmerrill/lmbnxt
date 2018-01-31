@@ -171,3 +171,30 @@ $string['imsrolename02'] = 'Instructor (02)';
 $string['imsrolename03'] = 'Extra 1 (03)';
 $string['imsrolename04'] = 'Extra 2 (04)';
 $string['imsrolename05'] = 'Extra 3 (05)';
+
+// XLS Settings.
+$string['parsexls'] = 'Crosslist Processing';
+$string['parsexlsxml'] = 'TODO';
+$string['parsexlsxml_help'] = 'TODO';
+$string['xlstitle'] = 'TODO';
+$string['xlstitle_help'] = 'TODO';
+$string['xlstitlerepeat'] = 'TODO';
+$string['xlstitlerepeat_help'] = 'TODO';
+$string['xlstitledivider'] = 'TODO';
+$string['xlstitledivider_help'] = 'TODO';
+$string['xlsshorttitle'] = 'TODO';
+$string['xlsshorttitle_help'] = 'TODO';
+$string['xlsshorttitlerepeat'] = 'TODO';
+$string['xlsshorttitlerepeat_help'] = 'TODO';
+$string['xlsshorttitledivider'] = 'TODO';
+$string['xlsshorttitledivider_help'] = 'TODO';
+$string['xlstype'] = 'Crosslisted course type';
+$string['xlstype_help'] = 'This determines how crosslisted courses will be handled in Moodle. Options:
+<ul>
+<li>Merged course: This setting will cause the separate courses of the crosslist to be left empty, with no enrollments. All members will be enrolled directly into the crosslisted course.
+<li>Meta course: This setting will cause members to be enrolled in the individual courses, while the crosslsted course is formed by making a meta-course containing all the individual courses.
+</ul>';
+$string['xlsmergegroups'] = 'TODO';
+$string['xlsmergegroups_help'] = 'TODO';
+$string['xlsmergecourse'] = 'TODOmerge';
+$string['xlsmetacourse'] = 'TODOmeta';

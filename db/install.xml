@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="enrol/lmb/db" VERSION="20180130" COMMENT="XMLDB file for Moodle enrol/lmb"
+<XMLDB PATH="enrol/lmb/db" VERSION="20180131" COMMENT="XMLDB file for Moodle enrol/lmb"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -137,6 +137,7 @@
         <FIELD NAME="membersdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="groupsdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="groupsdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="additional" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -146,6 +147,39 @@
       </KEYS>
       <INDEXES>
         <INDEX NAME="membersdid-groupsdid" UNIQUE="true" FIELDS="membersdid, groupsdid"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="enrol_lmb_crosslist" COMMENT="Holds information about the crosslist group.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="type" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="additional" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="enrol_lmb_crosslist_member" COMMENT="A table that holds members of crosslists.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="crosslistid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="additional" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="sdid-crosslistid-sdidsource" UNIQUE="true" FIELDS="sdid, crosslistid, sdidsource"/>
       </INDEXES>
     </TABLE>
   </TABLES>

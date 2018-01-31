@@ -38,6 +38,8 @@ class xml_member_group_testcase extends xml_helper {
 
         $converter = new xml\membership();
 
+        settings_helper::set('xlstype', data\member_group::GROUP_TYPE_MERGE);
+
         $members = $converter->process_xml_to_data($node);
 
         $this->assertInternalType('array', $members);
@@ -48,6 +50,7 @@ class xml_member_group_testcase extends xml_helper {
 
         $this->assertEquals('Test SCT Banner', $member->membersdidsource);
         $this->assertEquals('10001.201640', $member->membersdid);
+        $this->assertEquals(data\member_group::GROUP_TYPE_META, $member->type);
 
         $this->assertEquals(1, $member->status);
 
@@ -60,11 +63,41 @@ class xml_member_group_testcase extends xml_helper {
 
         $this->assertEquals('Test SCT Banner', $member->membersdidsource);
         $this->assertEquals('10002.201640', $member->membersdid);
+        $this->assertEquals(data\member_group::GROUP_TYPE_META, $member->type);
 
         $this->assertEquals(1, $member->status);
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
         $this->assertEquals('XLSAA201640', $member->groupsdid);
         $this->assertEquals(2, $member->membertype);
+
+        // Now make sure we get the right default type.
+        settings_helper::set('xlstype', data\member_group::GROUP_TYPE_META);
+        $node->TYPE->set_data('MeRgE');
+        $members = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[0]->type);
+        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[1]->type);
+
+        // For unknown, return the current default;
+        $node->TYPE->set_data('Unknown');
+        $members = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\member_group::GROUP_TYPE_META, $members[0]->type);
+        $this->assertEquals(data\member_group::GROUP_TYPE_META, $members[1]->type);
+
+        settings_helper::set('xlstype', data\member_group::GROUP_TYPE_MERGE);
+        $members = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[0]->type);
+        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[1]->type);
+
+        // Now check that a missing node is correct.
+        unset($node->TYPE);
+        $members = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[0]->type);
+        $this->assertEquals(data\member_group::GROUP_TYPE_MERGE, $members[1]->type);
+
+        settings_helper::set('xlstype', data\member_group::GROUP_TYPE_META);
+        $members = $converter->process_xml_to_data($node);
+        $this->assertEquals(data\member_group::GROUP_TYPE_META, $members[0]->type);
+        $this->assertEquals(data\member_group::GROUP_TYPE_META, $members[1]->type);
     }
 }
