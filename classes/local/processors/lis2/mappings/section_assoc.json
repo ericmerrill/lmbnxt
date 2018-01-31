@@ -1,0 +1,25 @@
+{
+  "SOURCEDID": "messagereference",
+  "SECTIONASSOCIATIONRECORD": {
+    "TYPE": "type",
+    "SOURCEDGUID": {
+      "REFAGENTINSTANCEID": "sdidsource",
+      "SOURCEDID": "sdid"
+    },
+    "SECTIONASSOCIATION": {
+      "LABEL": {
+        "TEXTSTRING": "label"
+      },
+      "TITLE": {
+        "TEXTSTRING": "title"
+      },
+      "STATUS": "status",
+      "COURSESECTIONIDLIST": {
+        "COURSESECTIONID": {
+          "lmbinternal": true,
+          "function": "process_section_node"
+        }
+      }
+    }
+  }
+}
