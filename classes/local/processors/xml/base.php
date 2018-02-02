@@ -77,7 +77,9 @@ abstract class base {
         $this->apply_mappings($node);
 
         // Do any post mapping work that we might want to.
+        $this->dataobj->load_existing();
         $this->post_mappings();
+
 
         return $this->dataobj;
     }

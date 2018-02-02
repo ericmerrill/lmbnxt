@@ -64,7 +64,8 @@ class member_person extends base {
                                 'enddate' => 'handler_date',
                                 'gradable' => 'handler_boolean');
 
-    protected $donotempty = array('messagereference');
+    protected $donotempty = array('membersdidsource', 'membersdid', 'referenceagent', 'messagereference', 'roletype', 'status',
+                                  'groupsdidsource', 'groupsdid', 'begindate', 'enddate');
 
     /**
      * Log a unique line to id this object.

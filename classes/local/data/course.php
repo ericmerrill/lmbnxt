@@ -60,6 +60,8 @@ class course extends base {
     /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array();
 
+    protected $donotempty = array('sdidsource', 'sdid');
+
     /**
      * Log a unique line to id this object.
      */

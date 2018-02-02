@@ -63,6 +63,12 @@ class section_assoc extends base {
         $this->load_mappings();
     }
 
+    public function process_xml_to_data($node) {
+        $this->newmembers = [];
+
+        return parent::process_xml_to_data($node);
+    }
+
     /**
      * Process the section nodes.
      *
@@ -73,6 +79,7 @@ class section_assoc extends base {
         // We need to add a member for each time this node is called.
         $member = new data\crosslist_member();
         $member->sdid = $node->get_value();
+
         if (isset($this->dataobj->sdidsource)) {
             $member->sdidsource = $this->dataobj->sdidsource;
         }
@@ -80,18 +87,21 @@ class section_assoc extends base {
         $member->status = 1;
 
         $this->newmembers[$member->sdid] = $member;
+
     }
 
     protected function post_mappings() {
-        $existing = $this->dataobj->load_existing_members();
+        // LIS crosslists have the property that if a member is missing, it is considered dropped,
+        // so we need to take care of that.
+        $existing = $this->dataobj->get_existing_members();
 
         $results = $this->newmembers;
-        if (!empty($existing)) {
-            foreach($existing as $id => $member) {
-                if (!isset($results[$id])) {
-                    $member->status = 0;
-                    $results[$member->sdid] = $member;
-                }
+
+        // Merge them together.
+        foreach ($existing as $id => $member) {
+            if (!isset($results[$id])) {
+                $member->status = 0;
+                $results[$id] = $member;
             }
         }
 

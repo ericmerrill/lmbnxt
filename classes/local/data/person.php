@@ -68,6 +68,8 @@ class person extends base {
                                 'rolealumni' => 'handler_boolean',
                                 'roleprospectivestudent' => 'handler_boolean');
 
+    protected $donotempty = array('sdidsource', 'sdid');
+
     /**
      * Log a unique line to id this object.
      */

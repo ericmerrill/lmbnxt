@@ -66,6 +66,8 @@ class section extends base {
                                 'begindate' => 'handler_date',
                                 'enddate' => 'handler_date');
 
+    protected $donotempty = array('sdidsource', 'sdid');
+
     /**
      * Log a unique line to id this object.
      */

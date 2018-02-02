@@ -68,6 +68,8 @@ class term extends base {
     /** @var An array of preexisting term object to use. */
     protected static $terms = array();
 
+    protected $donotempty = array('sdidsource', 'sdid', 'referenceagent', 'messagereference', 'sortorder');
+
     /**
      * Log a unique line to id this object.
      */

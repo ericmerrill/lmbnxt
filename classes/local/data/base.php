@@ -75,6 +75,7 @@ abstract class base {
     public function __construct() {
         $this->record = new \stdClass();
         $this->additionaldata = new \stdClass();
+        $this->donotempty[] = 'id';
     }
 
     /**
@@ -208,7 +209,11 @@ abstract class base {
     protected function update_if_needed() {
         global $DB;
 
-        $existing = $this->get_record();
+        if (is_null($this->existing)) {
+            $this->existing = $this->get_record();
+        }
+
+        $existing = $this->existing;
         try {
             if ($existing) {
                 // If this is existing, set the id.
@@ -221,6 +226,8 @@ abstract class base {
                     throw new \enrol_lmb\local\exception\message_exception('exception_insert_failure');
                 }
                 $this->__set('id', $id);
+                $new->id = $id;
+                $this->existing = $new;
                 logging::instance()->log_line('Inserting into database');
                 return;
             }
@@ -235,11 +242,11 @@ abstract class base {
                     continue;
                 }
 
-                if (!$this->__isset($key) && in_array($key, $this->donotempty)) {
-                    // These are keys that we don't want to overwrite with blanks.
-                    unset($new->$key);
-                    continue;
-                }
+//                 if (!$this->__isset($key) && in_array($key, $this->donotempty)) {
+//                     // These are keys that we don't want to overwrite with blanks.
+//                     unset($new->$key);
+//                     continue;
+//                 }
 
                 if ($new->$key != $existing->$key) {
                     // If the values don't match, skip the rest.
@@ -285,11 +292,23 @@ abstract class base {
         return $obj;
     }
 
-    protected function load_existing() {
+    /**
+     * Get the existing record for this object and merge it as needed with the internal record.
+     */
+    public function load_existing() {
         $this->existing = $this->get_record();
 
         if (empty($this->existing)) {
             return;
+        }
+
+        $existingobj = new static();
+        $existingobj->load_from_record($this->existing);
+
+        foreach ($this->donotempty as $key) {
+            if (!$this->__isset($key) && $existingobj->__isset($key)) {
+                $this->__set($key, $existingobj->__get($key));
+            }
         }
     }
 

@@ -60,7 +60,7 @@ class crosslist extends base {
     protected $defaults = array();
 
     /** @var array An array of keys that should not be blanked out on update if missing */
-    protected $donotempty = array('type');
+    protected $donotempty = array('type', 'sdidsource', 'sdid');
 
     /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array('type' => 'handler_group_type');
@@ -91,7 +91,7 @@ class crosslist extends base {
         }
     }
 
-    public function load_existing_members() {
+    public function get_existing_members() {
         global $DB;
 
         if (!$this->__isset('id')) {
@@ -107,7 +107,7 @@ class crosslist extends base {
         $members = [];
         foreach ($records as $record) {
             $member = new crosslist_member();
-            $member->load_from_record($member);
+            $member->load_from_record($record);
             $members[$member->sdid] = $member;
         }
 

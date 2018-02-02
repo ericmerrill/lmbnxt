@@ -52,7 +52,7 @@ class crosslist_member extends base {
     protected $defaults = array();
 
     /** @var array An array of keys that should not be blanked out on update if missing */
-    protected $donotempty = array();
+    protected $donotempty = array('sdidsource', 'sdid');
 
     /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array();
