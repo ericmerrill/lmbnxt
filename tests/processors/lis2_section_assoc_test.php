@@ -55,14 +55,16 @@ class lis2_section_assoc_test extends xml_helper {
         $this->assertInternalType('array', $members);
         $this->assertCount(2, $members);
 
-        $member = $members[0];
+        $this->assertTrue(isset($members['10001.201740']));
+        $member = $members['10001.201740'];
         $this->assertInstanceOf(data\crosslist_member::class, $member);
 
         $this->assertEquals('ILP', $member->sdidsource);
         $this->assertEquals('10001.201740', $member->sdid);
         $this->assertEquals(1, $member->status);
 
-        $member = $members[1];
+        $this->assertTrue(isset($members['10002.201740']));
+        $member = $members['10002.201740'];
         $this->assertInstanceOf(data\crosslist_member::class, $member);
 
         $this->assertEquals('ILP', $member->sdidsource);
@@ -92,6 +94,37 @@ class lis2_section_assoc_test extends xml_helper {
         settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_META);
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
+
+
+        // Now we want to test a removed member. This requires saving.
+//         $crosslist->save_to_db();
+//         print "<pre>";var_export($crosslist);print "</pre>\n";
+//
+//         $courses = $node->SECTIONASSOCIATIONRECORD->SECTIONASSOCIATION->COURSESECTIONIDLIST->COURSESECTIONID;
+//         unset($courses[0]);
+//         $node->SECTIONASSOCIATIONRECORD->SECTIONASSOCIATION->COURSESECTIONIDLIST->COURSESECTIONID = $courses;
+//
+//         $crosslist = $converter->process_xml_to_data($node);
+//         $members = $crosslist->get_members();
+//
+//         $this->assertInternalType('array', $members);
+//         $this->assertCount(2, $members);
+//
+//         $this->assertTrue(isset($members['10001.201740']));
+//         $member = $members['10001.201740'];
+//         $this->assertInstanceOf(data\crosslist_member::class, $member);
+//
+//         $this->assertEquals('ILP', $member->sdidsource);
+//         $this->assertEquals('10001.201740', $member->sdid);
+//         $this->assertEquals(0, $member->status);
+//
+//         $this->assertTrue(isset($members['10002.201740']));
+//         $member = $members['10002.201740'];
+//         $this->assertInstanceOf(data\crosslist_member::class, $member);
+//
+//         $this->assertEquals('ILP', $member->sdidsource);
+//         $this->assertEquals('10002.201740', $member->sdid);
+//         $this->assertEquals(1, $member->status);
 
     }
 

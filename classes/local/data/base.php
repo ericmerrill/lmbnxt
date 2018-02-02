@@ -57,6 +57,8 @@ abstract class base {
     /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array();
 
+    protected $existing = false;
+
     /**
      * The table name of this object.
      */
@@ -281,6 +283,14 @@ abstract class base {
         }
 
         return $obj;
+    }
+
+    protected function load_existing() {
+        $this->existing = $this->get_record();
+
+        if (empty($this->existing)) {
+            return;
+        }
     }
 
     /**

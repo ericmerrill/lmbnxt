@@ -54,6 +54,8 @@ class section_assoc extends base {
      */
     const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/section_assoc.json';
 
+    protected $newmembers = [];
+
     /**
      * Basic constructor.
      */
@@ -77,6 +79,22 @@ class section_assoc extends base {
         // By definition, it is active by being here.
         $member->status = 1;
 
-        $this->dataobj->add_member($member);
+        $this->newmembers[$member->sdid] = $member;
+    }
+
+    protected function post_mappings() {
+        $existing = $this->dataobj->load_existing_members();
+
+        $results = $this->newmembers;
+        if (!empty($existing)) {
+            foreach($existing as $id => $member) {
+                if (!isset($results[$id])) {
+                    $member->status = 0;
+                    $results[$member->sdid] = $member;
+                }
+            }
+        }
+
+        $this->dataobj->set_members($results);
     }
 }

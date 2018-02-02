@@ -52,7 +52,8 @@ class xml_member_group_testcase extends xml_helper {
         $this->assertInternalType('array', $members);
         $this->assertCount(2, $members);
 
-        $member = $members[0];
+        $this->assertTrue(isset($members['10001.201740']));
+        $member = $members['10001.201740'];
         $this->assertInstanceOf(data\crosslist_member::class, $member);
 
         $this->assertEquals('Test SCT Banner', $member->sdidsource);
@@ -60,7 +61,8 @@ class xml_member_group_testcase extends xml_helper {
         $this->assertEquals(1, $member->status);
         $this->assertEquals(2, $member->membertype);
 
-        $member = $members[1];
+        $this->assertTrue(isset($members['10002.201740']));
+        $member = $members['10002.201740'];
         $this->assertInstanceOf(data\crosslist_member::class, $member);
 
         $this->assertEquals('Test SCT Banner', $member->sdidsource);

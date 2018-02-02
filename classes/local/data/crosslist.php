@@ -91,13 +91,40 @@ class crosslist extends base {
         }
     }
 
+    public function load_existing_members() {
+        global $DB;
+
+        if (!$this->__isset('id')) {
+            return [];
+        }
+
+        $records = $DB->get_records(crosslist_member::TABLE, ['crosslistid' => $this->__get('id')]);
+
+        if (empty($records)) {
+            return [];
+        }
+
+        $members = [];
+        foreach ($records as $record) {
+            $member = new crosslist_member();
+            $member->load_from_record($member);
+            $members[$member->sdid] = $member;
+        }
+
+        return $members;
+    }
+
     /**
      * Add a member to this crosslist.
      *
      * @param crosslist_member $child
      */
     public function add_member(crosslist_member $child) {
-        $this->members[] = $child;
+        $this->members[$child->sdid] = $child;
+    }
+
+    public function set_members($members) {
+        $this->members = $members;
     }
 
     /**
