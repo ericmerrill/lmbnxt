@@ -55,6 +55,10 @@ class settings {
     const USER_NAME_EMAILID = 5;
     const USER_NAME_OTHER = 6;
 
+    const USER_NICK_DISABLED = 0;
+    const USER_NICK_FIRST = 1;
+    const USER_NICK_ALT = 2;
+
     protected static $settingobj = null;
 
     protected $settings = null;

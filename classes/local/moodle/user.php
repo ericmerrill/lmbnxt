@@ -54,13 +54,15 @@ class user extends base {
             throw new \coding_exception('Expected instance of data\person to be passed.');
         }
 
+        $settings = $this->settings;
+
         $this->data = $data;
 
         // First see if we are going to be working with an existing or new user.
         $new = false;
         $user = $this->find_existing_user();
         if (empty($user)) {
-            if (!(bool)$this->settings->get('createnewusers')) {
+            if (!(bool)$settings->get('createnewusers')) {
                 // Don't create a new user if not enabled.
                 logging::instance()->log_line('Not creating new users');
                 return;
@@ -73,7 +75,7 @@ class user extends base {
         if ($new && !$this->check_email_domain()) {
             // We allow different log levels based on a setting.
             $loglevel = logging::ERROR_WARN;
-            if ((bool)$this->settings->get('donterroremail')) {
+            if ((bool)$settings->get('donterroremail')) {
                 $loglevel = logging::ERROR_NONE;
             }
             logging::instance()->log_line('User email not allowed by email domain settings.', $loglevel);
@@ -81,6 +83,12 @@ class user extends base {
         }
 
         $username = $this->get_username();
+
+        if (empty($username) && $settings->get('sourcedidfallback')) {
+            // Fallback to the sourcedid if we can't find a username.
+            $username = (string)$this->data->sdid;
+        }
+
         if (!empty($username)) {
             $user->username = $username;
         } else {
@@ -93,11 +101,18 @@ class user extends base {
             }
         }
 
+        if ($new) {
+            $auth = $settings->get('manual');
+            if (!empty($auth)) {
+                $user->auth = $auth;
+            }
+        }
+
         $user->idnumber = $this->data->sdid;
 
-        if ($new || $this->settings->get('forceemail')) {
+        if ($new || $settings->get('forceemail')) {
             if (!empty($this->data->email)) {
-                if ((bool)$this->settings->get('lowercaseemails')) {
+                if ((bool)$settings->get('lowercaseemails')) {
                     $user->email = strtolower($this->data->email);
                 } else {
                     $user->email = $this->data->email;
@@ -105,6 +120,29 @@ class user extends base {
             } else {
                 $user->email = '';
             }
+        }
+
+        $nickname = false;
+        if (isset($this->data->nickname)) {
+            $nickname = $this->data->nickname;
+        }
+
+        if ($new || $settings->get('forcefirstname')) {
+            if ($nickname && $settings->get('nickname') == settings::USER_NICK_FIRST) {
+                $user->firstname = $nickname;
+            } else {
+                $user->firstname = $this->data->givenname;
+            }
+        }
+
+        if ($new || $settings->get('forcealtname')) {
+            if ($nickname && $settings->get('nickname') == settings::USER_NICK_ALT) {
+                $user->alternatename = $nickname;
+            }
+        }
+
+        if ($new || $settings->get('forcelastname')) {
+            $user->lastname = $this->data->familyname;
         }
 
 

@@ -8,6 +8,7 @@ Settings
 - usernamesource (moved to constants)
 - cattype (moved to constants) (Note that selected is 'other' in old settings)
 - xlstype (moved to constants)
+- forcename split to forcefirstname and forcelastname
 
 
 

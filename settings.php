@@ -96,10 +96,10 @@ if ($ADMIN->fulltree) {
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/lowercaseemails', get_string('lowercaseemails', 'enrol_lmb'),
             get_string('lowercaseemails_help', 'enrol_lmb'), 0));
 
-//
-//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/sourcedidfallback', get_string('sourdidfallback', 'enrol_lmb'),
-//             get_string('sourdidfallbackhelp', 'enrol_lmb'), 1));
-//
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/sourcedidfallback', get_string('sourcedidfallback', 'enrol_lmb'),
+            get_string('sourcedidfallback_help', 'enrol_lmb'), 1));
+
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/consolidateusernames',
 //             get_string('consolidateusers', 'enrol_lmb'), get_string('consolidateusershelp', 'enrol_lmb'), 1));
 //
@@ -109,14 +109,14 @@ if ($ADMIN->fulltree) {
 //     $settingslmb->add(new admin_setting_configselect('enrol_lmb/customfield1source', get_string('customfield1source', 'enrol_lmb'),
 //             get_string('customfield1sourcehelp', 'enrol_lmb'), 'email', $options));
 //
-//     unset($options);
-//     $modules = \core\plugininfo\auth::get_enabled_plugins();
-//     $options = array();
-//     foreach ($modules as $module => $path) {
-//         $options[$module] = get_string("pluginname", "auth_".$module);
-//     }
-//     $settingslmb->add(new admin_setting_configselect('enrol_lmb/auth', get_string('authmethod', 'enrol_lmb'),
-//             get_string('authmethodhelp', 'enrol_lmb'), 'manual', $options));
+    unset($options);
+    $modules = \core\plugininfo\auth::get_enabled_plugins();
+    $options = array();
+    foreach ($modules as $module => $path) {
+        $options[$module] = get_string("pluginname", "auth_".$module);
+    }
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/auth', get_string('authmethod', 'enrol_lmb'),
+            get_string('authmethod_help', 'enrol_lmb'), 'manual', $options));
 //
 //     unset($options);
 //     $options = array();
@@ -133,15 +133,25 @@ if ($ADMIN->fulltree) {
 //
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcepassword', get_string('forcepassword', 'enrol_lmb'),
 //             get_string('forcepasswordhelp', 'enrol_lmb'), 1));
-//
-//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/nickname', get_string('nickname', 'enrol_lmb'),
-//             get_string('nicknamehelp', 'enrol_lmb'), 0));
-//
-//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcename', get_string('forcename', 'enrol_lmb'),
-//             get_string('forcenamehelp', 'enrol_lmb'), 1));
-//
-//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forceemail', get_string('forceemail', 'enrol_lmb'),
-//             get_string('forceemailhelp', 'enrol_lmb'), 1));
+
+    $options = array();
+    $options[settings::USER_NICK_DISABLED] = get_string('nickdisabled', 'enrol_lmb');
+    $options[settings::USER_NICK_FIRST] = get_string('firstname', 'enrol_lmb');
+    $options[settings::USER_NICK_ALT] = get_string('altname', 'enrol_lmb');
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/nickname', get_string('nickname', 'enrol_lmb'),
+            get_string('nickname_help', 'enrol_lmb'), settings::USER_NICK_DISABLED, $options));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcealtname', get_string('forcealtname', 'enrol_lmb'),
+            get_string('forcealtname_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcefirstname', get_string('forcefirstname', 'enrol_lmb'),
+            get_string('forcefirstname_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcelastname', get_string('forcelastname', 'enrol_lmb'),
+            get_string('forcelastname_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forceemail', get_string('forceemail', 'enrol_lmb'),
+            get_string('forceemail_help', 'enrol_lmb'), 1));
 //
 //     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/includetelephone', get_string('includetele', 'enrol_lmb'),
 //             get_string('includetelehelp', 'enrol_lmb'), 0));

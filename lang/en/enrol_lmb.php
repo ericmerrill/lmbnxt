@@ -92,6 +92,21 @@ $string['useridtypeemail'] = 'useridtype - Email ID';
 $string['useridtypeother'] = 'useridtype - Other';
 $string['otheruserid'] = 'Other User ID Source';
 $string['otheruserid_help'] = '';
+$string['authmethod'] = 'Authentication method';
+$string['authmethod_help'] = 'TODO';
+$string['nickdisabled'] = 'None';
+$string['firstname'] = 'First name';
+$string['altname'] = 'Alternative name';
+$string['nickname'] = 'Nickname use';
+$string['nickname_help'] = 'TODO';
+$string['forcealtname'] = 'Force alternate nickname';
+$string['forcealtname_help'] = 'TODO';
+$string['forcefirstname'] = 'Force first name';
+$string['forcefirstname_help'] = 'TODO';
+$string['forcelastname'] = 'Force last name';
+$string['forcelastname_help'] = 'TODO';
+$string['forceemail'] = 'Force email address';
+$string['forceemail_help'] = 'TODO';
 
 // Course Settings.
 $string['parsecourse'] = 'Course Processing';
