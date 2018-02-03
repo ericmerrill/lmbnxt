@@ -100,8 +100,8 @@ if ($ADMIN->fulltree) {
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/sourcedidfallback', get_string('sourcedidfallback', 'enrol_lmb'),
             get_string('sourcedidfallback_help', 'enrol_lmb'), 1));
 
-//     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/consolidateusernames',
-//             get_string('consolidateusers', 'enrol_lmb'), get_string('consolidateusershelp', 'enrol_lmb'), 1));
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/consolidateusernames',
+            get_string('consolidateusernames', 'enrol_lmb'), get_string('consolidateusernames_help', 'enrol_lmb'), 1));
 //
 //     $settingslmb->add(new admin_setting_configtext('enrol_lmb/customfield1mapping', get_string('customfield1mapping', 'enrol_lmb'),
 //             get_string('customfield1help', 'enrol_lmb'), ''));

@@ -102,7 +102,7 @@ class user extends base {
         }
 
         if ($new) {
-            $auth = $settings->get('manual');
+            $auth = $settings->get('auth');
             if (!empty($auth)) {
                 $user->auth = $auth;
             }
@@ -213,9 +213,40 @@ class user extends base {
      * @return false|\stdClass User object or false if not found.
      */
     protected function find_existing_user() {
-        // TODO - finding an existing user can be much more complicated than this... Search usernames and whatnot.
+        global $DB;
 
-        return self::get_user_for_sdid($this->data->sdid);
+        // First try to find based on the idnumber/sdid.
+        $existing = self::get_user_for_sdid($this->data->sdid);
+
+        if ($existing) {
+            return $existing;
+        }
+
+        // If we get here, and colsolidate usernames isn't set, then we didn't find it.
+        if (!$this->settings->get('consolidateusernames')) {
+            return false;
+        }
+
+        // See if we can find a user with the same username, and now ID number.
+        $username = $this->get_username();
+
+        if (empty($username)) {
+            return false;
+        }
+
+        $existing = $DB->get_record('user', array('username' => $username));
+
+        if (!$existing) {
+            return false;
+        }
+
+        if (!empty($existing->idnumber)) {
+            $error = "Existing user with username {$username} found, but has non-matching ID Number.";
+            logging::instance()->log_line($error, logging::ERROR_NOTICE);
+            return false;
+        }
+
+        return $existing;
     }
 
     /**

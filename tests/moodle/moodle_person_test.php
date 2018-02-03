@@ -347,4 +347,55 @@ class moodle_user_testcase extends xml_helper {
         $result = $this->run_protected_method($moodleuser, 'check_email_domain');
         $this->assertTrue($result);
     }
+
+    public function test_find_existing_user() {
+        global $CFG, $DB;
+
+        $this->resetAfterTest(true);
+
+        $log = new logging_helper();
+        $log->set_logging_level(logging::ERROR_NOTICE);
+
+        $moodleuser = new moodle\user();
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/person_replace.xml');
+        $converter = new lis2\person();
+        $person = $converter->process_xml_to_data($node);
+
+        settings_helper::set('usernamesource', settings::USER_NAME_EMAILNAME);
+
+        $moodleuser->convert_to_moodle($person);
+
+        // Get the user record first.
+        $dbuser1 = $this->run_protected_method($moodleuser, 'find_existing_user');
+
+        $this->assertFalse(empty($dbuser1->id));
+        $this->assertEquals($dbuser1->idnumber, $person->sdid);
+        $this->assertEquals('testuser', $dbuser1->username);
+
+        // Now we are going to clear the idnumber of that record.
+        $DB->set_field('user', 'idnumber', '', ['id' => $dbuser1->id]);
+        settings_helper::set('consolidateusernames', 0);
+
+        // With consolidate off, we shouldn't be able to find it.
+        $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
+        $this->assertFalse($dbuser2);
+
+        // Now find it by username.
+        settings_helper::set('consolidateusernames', 1);
+        $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
+        $this->assertEquals($dbuser1->id, $dbuser2->id);
+
+        // Now we want to set the ID number to something else, so we get an error.
+        $DB->set_field('user', 'idnumber', 'Something', ['id' => $dbuser1->id]);
+
+        $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
+        $error = "NOTICE: Existing user with username testuser found, but has non-matching ID Number.";
+        $this->assertContains($error, $log->test_get_flush_buffer());
+        $this->assertFalse($dbuser2);
+
+        // Now double check empty username.
+        unset($person->email);
+        $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
+        $this->assertFalse($dbuser2);
+    }
 }
