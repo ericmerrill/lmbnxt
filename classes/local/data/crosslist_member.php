@@ -49,10 +49,10 @@ class crosslist_member extends base {
     protected $dbkeys = array('id', 'crosslistid', 'sdidsource', 'sdid', 'status', 'additional', 'timemodified');
 
     /** @var array An array of default property->value pairs */
-    protected $defaults = array();
+    protected $defaults = array('moodlestatus' => 0);
 
     /** @var array An array of keys that should not be blanked out on update if missing */
-    protected $donotempty = array('sdidsource', 'sdid');
+    protected $donotempty = array('sdidsource', 'sdid', 'moodlestatus');
 
     /** @var array An array of property->function pairs for converting incoming values */
     protected $handlers = array();

@@ -47,11 +47,24 @@ class member_person extends base {
      */
     const MAPPING_PATH = '/enrol/lmb/classes/local/processors/xml/mappings/member_person.json';
 
+    protected $groupsdid = null;
+    protected $groupsdidsource = null;
+
     /**
      * Basic constructor.
      */
     public function __construct() {
         $this->load_mappings();
+    }
+
+    protected function pre_mappings() {
+        $this->dataobj->groupsdid = $this->groupsdid;
+        $this->dataobj->groupsdidsource = $this->groupsdidsource;
+    }
+
+    public function set_group_info($gsdid, $gsource) {
+        $this->groupsdid = $gsdid;
+        $this->groupsdidsource = $gsource;
     }
 
     /**

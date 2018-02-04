@@ -102,9 +102,8 @@ class membership extends base {
                 case '1':
                     // A person member.
                     $enrol = new member_person();
+                    $enrol->set_group_info($groupid, $groupsource);
                     $result = $enrol->process_xml_to_data($member);
-                    $result->groupsdidsource = $groupsource;
-                    $result->groupsdid = $groupid;
                     $results[] = $result;
                     break;
                 case '2':

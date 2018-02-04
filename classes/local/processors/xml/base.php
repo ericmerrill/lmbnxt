@@ -73,11 +73,13 @@ abstract class base {
         $class = static::DATA_CLASS;
         $this->dataobj = new $class();
 
+        $this->pre_mappings();
+
         // First we are going to use the simple static mappings.
         $this->apply_mappings($node);
+        $this->dataobj->load_existing();
 
         // Do any post mapping work that we might want to.
-        $this->dataobj->load_existing();
         $this->post_mappings();
 
 
@@ -167,6 +169,13 @@ abstract class base {
      * Do any work that we might want to after loading all the data from mappings.
      */
     protected function post_mappings() {
+        return;
+    }
+
+    /**
+     * Do any work that we might want to before loading all the data from mappings.
+     */
+    protected function pre_mappings() {
         return;
     }
 

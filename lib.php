@@ -87,9 +87,9 @@ class enrol_lmb_plugin extends enrol_plugin {
     }
 
     // TODO - what to do with this?
-    public function get_newinstance_link($courseid) {
-        return NULL;
-    }
+//     public function get_newinstance_link($courseid) {
+//         return NULL;
+//     }
 
     public function can_hide_show_instance($instance) {
         return false;
