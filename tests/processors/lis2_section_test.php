@@ -39,6 +39,9 @@ class lis2_section_test extends xml_helper {
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/section_replace.xml');
 
+        // Clear a term cache.
+        $this->set_protected_property(data\term::class, 'terms', []);
+
         $converter = new lis2\section();
 
         $section = $converter->process_xml_to_data($node);
@@ -71,6 +74,7 @@ class lis2_section_test extends xml_helper {
         $termconverter = new lis2\group_term();
         $term = $termconverter->process_xml_to_data($termnode);
         $term->save_to_db();
+        $this->set_protected_property(data\term::class, 'terms', []);
 
         $section = $converter->process_xml_to_data($node);
         $this->assertInstanceOf(data\section::class, $section);

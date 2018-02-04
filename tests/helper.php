@@ -88,6 +88,16 @@ abstract class xml_helper extends advanced_testcase {
         return $property->getValue($obj);
     }
 
+    /**
+     * Update a protected property. If you pass a classname, will update static, if object, will update instance.
+     */
+    protected function set_protected_property($obj, $name, $value) {
+        $class = new ReflectionClass($obj);
+        $property = $class->getProperty($name);
+        $property->setAccessible(true);
+        $property->setValue($obj, $value);
+    }
+
 }
 
 /**

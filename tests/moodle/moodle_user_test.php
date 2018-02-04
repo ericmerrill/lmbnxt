@@ -47,6 +47,8 @@ class moodle_user_testcase extends xml_helper {
         $moodleuser = new moodle\user();
         $moodleuser->set_data($person);
 
+        settings_helper::set('sourcedidfallback', 0);
+
         settings_helper::set('usernamesource', settings::USER_NAME_EMAIL);
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertEquals('testuser@example.com', $result);
@@ -71,6 +73,11 @@ class moodle_user_testcase extends xml_helper {
         // Setting usernamesource isn't set, so expect false.
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertFalse($result);
+
+        // With sourcedid fallback, we get that.
+        settings_helper::set('sourcedidfallback', 1);
+        $result = $this->run_protected_method($moodleuser, 'get_username');
+        $this->assertEquals('1000001', $result);
 
         settings_helper::set('otheruserid', 'Other ID');
         $result = $this->run_protected_method($moodleuser, 'get_username');
@@ -126,6 +133,11 @@ class moodle_user_testcase extends xml_helper {
         global $CFG, $DB;
 
         $this->resetAfterTest(true);
+
+        // Make a profile field to use.
+        $this->set_protected_property(moodle\user::class, 'customfields', []);
+        $fieldid = $DB->insert_record('user_info_field', ['shortname' => 'text1', 'name' => 'Text 1', 'categoryid' => 1,
+                'datatype' => 'text']);
 
         $moodleuser = new moodle\user();
 
@@ -184,6 +196,7 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('User', $dbuser->lastname);
         $this->assertEquals('', $dbuser->alternatename);
         $this->assertEquals('manual', $dbuser->auth);
+        $this->assertFalse($DB->get_record('user_info_data', ['userid' => $dbuser->id, 'fieldid' => $fieldid]));
 
         // Lets clear some things so that we can test the forces.
         $clearuser = new stdClass();
@@ -217,6 +230,8 @@ class moodle_user_testcase extends xml_helper {
         settings_helper::set('lowercaseemails', 1);
         // Testing alt nickname.
         settings_helper::set('nickname', settings::USER_NICK_ALT);
+        settings_helper::set('customfield1mapping', 'text1');
+        settings_helper::set('customfield1source', settings::USER_NAME_EMAILNAME);
 
         $moodleuser->convert_to_moodle($person);
         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
@@ -225,6 +240,10 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('Test', $dbuser->firstname);
         $this->assertEquals('User', $dbuser->lastname);
         $this->assertEquals('Nick', $dbuser->alternatename);
+
+        $custom = $DB->get_record('user_info_data', ['userid' => $dbuser->id, 'fieldid' => $fieldid]);
+        $this->assertInstanceOf(\stdClass::class, $custom);
+        $this->assertEquals('testUser', $custom->data);
 
         // Now check the first name alt-name.
         settings_helper::set('nickname', settings::USER_NICK_FIRST);
@@ -397,5 +416,87 @@ class moodle_user_testcase extends xml_helper {
         unset($person->email);
         $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
         $this->assertFalse($dbuser2);
+    }
+
+    public function test_get_custom_profile_field() {
+        global $DB;
+
+        $this->resetAfterTest(true);
+        // Make sure the static field has been cleared.
+        $this->set_protected_property(moodle\user::class, 'customfields', []);
+
+        $fieldid = $DB->insert_record('user_info_field', ['shortname' => 'text1', 'name' => 'Text 1', 'categoryid' => 1,
+                'datatype' => 'text']);
+
+        $moodleuser = new moodle\user();
+
+        $startreads = $DB->perf_get_reads();
+
+        $field = $this->run_protected_method($moodleuser, 'get_custom_profile_field', ['unknown']);
+        $this->assertFalse($field);
+        $this->assertEquals($startreads + 1, $DB->perf_get_reads());
+
+        $field = $this->run_protected_method($moodleuser, 'get_custom_profile_field', ['text1']);
+        $this->assertInstanceOf(\stdClass::class, $field);
+        $this->assertEquals($fieldid, $field->id);
+        $this->assertEquals('Text 1', $field->name);
+        $this->assertEquals('text1', $field->shortname);
+        $this->assertEquals($startreads + 2, $DB->perf_get_reads());
+
+        // Now make sure that there aren't extra DB hits.
+        $field = $this->run_protected_method($moodleuser, 'get_custom_profile_field', ['unknown']);
+        $field = $this->run_protected_method($moodleuser, 'get_custom_profile_field', ['text1']);
+        $this->assertEquals($startreads + 2, $DB->perf_get_reads());
+
+        // Double check that clearing the static and then re-calling is working right.
+        $this->set_protected_property(moodle\user::class, 'customfields', []);
+        $field = $this->run_protected_method($moodleuser, 'get_custom_profile_field', ['unknown']);
+        $field = $this->run_protected_method($moodleuser, 'get_custom_profile_field', ['text1']);
+        $this->assertEquals($startreads + 4, $DB->perf_get_reads());
+    }
+
+    public function test_save_custom_profile_value() {
+        global $DB;
+
+        $this->resetAfterTest(true);
+
+        $this->set_protected_property(moodle\user::class, 'customfields', []);
+        $moodleuser = new moodle\user();
+
+        $user = $this->getDataGenerator()->create_user();
+        $fieldid = $DB->insert_record('user_info_field', ['shortname' => 'text1', 'name' => 'Text 1', 'categoryid' => 1,
+                'datatype' => 'text']);
+
+        // First, no userid is set, so it just fails.
+        $result = $this->run_protected_method($moodleuser, 'save_custom_profile_value', ['text1', 'Value1']);
+        $this->assertFalse($result);
+
+        $this->set_protected_property($moodleuser, 'userid', $user->id);
+
+        // Next, a field that doesn't exist.
+        $result = $this->run_protected_method($moodleuser, 'save_custom_profile_value', ['unknown', 'Value1']);
+        $this->assertFalse($result);
+
+        // Now see if it works.
+        $result = $this->run_protected_method($moodleuser, 'save_custom_profile_value', ['text1', 'Value1']);
+        $this->assertTrue($result);
+
+        $result = $DB->get_record('user_info_data', ['userid' => $user->id, 'fieldid' => $fieldid]);
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals('Value1', $result->data);
+
+        // Now try updating.
+        $result = $this->run_protected_method($moodleuser, 'save_custom_profile_value', ['text1', 'Value2']);
+        $this->assertTrue($result);
+        $result = $DB->get_record('user_info_data', ['userid' => $user->id, 'fieldid' => $fieldid]);
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals('Value2', $result->data);
+
+        // And try setting it to an empty value.
+        $result = $this->run_protected_method($moodleuser, 'save_custom_profile_value', ['text1', null]);
+        $this->assertTrue($result);
+        $result = $DB->get_record('user_info_data', ['userid' => $user->id, 'fieldid' => $fieldid]);
+        $this->assertInstanceOf(\stdClass::class, $result);
+        $this->assertEquals('', $result->data);
     }
 }

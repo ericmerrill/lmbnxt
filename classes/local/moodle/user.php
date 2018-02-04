@@ -42,6 +42,10 @@ require_once($CFG->dirroot.'/user/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user extends base {
+    protected static $customfields = [];
+
+    protected $userid = false;
+
     /**
      * This function takes a data object and attempts to apply it to Moodle.
      *
@@ -69,6 +73,8 @@ class user extends base {
             }
             $new = true;
             $user = $this->create_new_user_object();
+        } else {
+            $userid = $user->id;
         }
 
         // Check if this user's email address is allowed.
@@ -84,11 +90,6 @@ class user extends base {
 
         $username = $this->get_username();
 
-        if (empty($username) && $settings->get('sourcedidfallback')) {
-            // Fallback to the sourcedid if we can't find a username.
-            $username = (string)$this->data->sdid;
-        }
-
         if (!empty($username)) {
             $user->username = $username;
         } else {
@@ -101,6 +102,7 @@ class user extends base {
             }
         }
 
+        // Set the user's auth plugin.
         if ($new) {
             $auth = $settings->get('auth');
             if (!empty($auth)) {
@@ -155,7 +157,7 @@ class user extends base {
         try {
             if ($new) {
                 logging::instance()->log_line('Creating new Moodle user');
-                $userid = user_create_user($user, false, true);
+                $this->userid = user_create_user($user, false, true);
             }  else {
                 logging::instance()->log_line('Updating Moodle user');
                 user_update_user($user, false, true);
@@ -165,6 +167,13 @@ class user extends base {
             $error = 'Fatal exception while inserting/updating user. '.$e->getMessage();
             logging::instance()->log_line($error, logging::ERROR_MAJOR);
             throw $e;
+        }
+
+        // This has to happen after saving, because the user record ID is needed first.
+        $mapping = $settings->get('customfield1mapping');
+        if (!empty($mapping)) {
+            $value = $this->get_field_for_setting($settings->get('customfield1source'));
+            $this->save_custom_profile_value($mapping, $value);
         }
     }
 
@@ -279,39 +288,11 @@ class user extends base {
      */
     protected function get_username() {
 
-        $username = false;
-        switch ($this->settings->get('usernamesource')) {
-            case (settings::USER_NAME_EMAIL):
-                if (isset($this->data->email)) {
-                    $username = $this->data->email;
-                }
-                break;
-            case (settings::USER_NAME_EMAILNAME):
-                if (isset($this->data->email) && preg_match('{(.+?)@.*?}is', $this->data->email, $matches)) {
-                    $username = trim($matches[1]);
-                }
-                break;
-            case (settings::USER_NAME_LOGONID):
-                if (isset($this->data->logonid)) {
-                    $username = $this->data->logonid;
-                }
-                break;
-            case (settings::USER_NAME_SCTID):
-                if (isset($this->data->sctid)) {
-                    $username = $this->data->sctid;
-                }
-                break;
-            case (settings::USER_NAME_EMAILID):
-                if (isset($this->data->emailid)) {
-                    $username = $this->data->emailid;
-                }
-                break;
-            case (settings::USER_NAME_OTHER):
-                $otherid = $this->settings->get('otheruserid');
-                if (!empty($otherid) && isset($this->data->userid[$otherid]->userid)) {
-                    $username = $this->data->userid[$otherid]->userid;
-                }
-                break;
+        $username = $this->get_field_for_setting($this->settings->get('usernamesource'));
+
+        if (empty($username) && $this->settings->get('sourcedidfallback')) {
+            // Fallback to the sourcedid if we can't find a username.
+            $username = (string)$this->data->sdid;
         }
 
         if (empty($username)) {
@@ -322,5 +303,109 @@ class user extends base {
         $username = strtolower($username);
 
         return $username;
+    }
+
+    /**
+     * Calculates the field value to return based on a setting.
+     *
+     * @param int $setting
+     * @return false|string
+     */
+    protected function get_field_for_setting($setting) {
+        $result = false;
+        switch ($setting) {
+            case (settings::USER_NAME_EMAIL):
+                if (isset($this->data->email)) {
+                    $result = $this->data->email;
+                }
+                break;
+            case (settings::USER_NAME_EMAILNAME):
+                if (isset($this->data->email) && preg_match('{(.+?)@.*?}is', $this->data->email, $matches)) {
+                    $result = trim($matches[1]);
+                }
+                break;
+            case (settings::USER_NAME_LOGONID):
+                if (isset($this->data->logonid)) {
+                    $result = $this->data->logonid;
+                }
+                break;
+            case (settings::USER_NAME_SCTID):
+                if (isset($this->data->sctid)) {
+                    $result = $this->data->sctid;
+                }
+                break;
+            case (settings::USER_NAME_EMAILID):
+                if (isset($this->data->emailid)) {
+                    $result = $this->data->emailid;
+                }
+                break;
+            case (settings::USER_NAME_OTHER):
+                $otherid = $this->settings->get('otheruserid');
+                if (!empty($otherid) && isset($this->data->userid[$otherid]->userid)) {
+                    $result = $this->data->userid[$otherid]->userid;
+                }
+                break;
+        }
+
+        if (empty($result)) {
+            return false;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Save a custom profile field value.
+     *
+     * @param string $shortname The field shortname
+     * @param string $value The value to save
+     * @return true|false True on success
+     */
+    protected function save_custom_profile_value($shortname, $value) {
+        global $DB;
+
+        if (empty($this->userid)) {
+            return false;
+        }
+
+        $field = $this->get_custom_profile_field($shortname);
+        if (empty($field)) {
+            return false;
+        }
+
+        $data = new \stdClass();
+        $data->userid  = $this->userid;
+        $data->fieldid = $field->id;
+        if (!empty($value)) {
+            $data->data = $value;
+        } else {
+            $data->data = '';
+        }
+
+        if ($dataid = $DB->get_field('user_info_data', 'id', array('userid' => $data->userid, 'fieldid' => $data->fieldid))) {
+            $data->id = $dataid;
+            $DB->update_record('user_info_data', $data);
+        } else {
+            $DB->insert_record('user_info_data', $data);
+        }
+
+        return true;
+    }
+
+    /**
+     * Get a profile field record for the given shortname.
+     *
+     * @param string $shortname
+     * @return false|\stdClass
+     */
+    protected function get_custom_profile_field($shortname) {
+        global $DB;
+
+        // See if it is in the cache already.
+        if (!isset(self::$customfields[$shortname])) {
+            self::$customfields[$shortname] = $DB->get_record('user_info_field', array('shortname' => $shortname));
+        }
+
+        return self::$customfields[$shortname];
     }
 }

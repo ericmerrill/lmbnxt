@@ -69,6 +69,9 @@ class moodle_course_testcase extends xml_helper {
         $term = $termconverter->process_xml_to_data($termnode);
         $term->save_to_db();
 
+        // Clear a term cache, now that we loaded a new one.
+        $this->set_protected_property(data\term::class, 'terms', []);
+
         // Now try the term name again.
         $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[TERMNAME]']);
         $this->assertEquals('Fall Semester 2017', $result);

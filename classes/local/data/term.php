@@ -102,16 +102,23 @@ class term extends base {
     public static function get_term($sdid) {
         global $DB;
 
+        if (isset(self::$terms[$sdid])) {
+            return self::$terms[$sdid];
+        }
+
         $params = array('sdid' => $sdid);
 
         $record = $DB->get_record(static::TABLE, $params);
 
         if (empty($record)) {
+            self::$terms[$sdid] = false;
             return false;
         }
 
         $term = new self();
         $term->load_from_record($record);
+
+        self::$terms[$sdid] = $term;
 
         return $term;
 
