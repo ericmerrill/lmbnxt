@@ -31,7 +31,7 @@ use enrol_lmb\local\exception;
 use enrol_lmb\local\response;
 use enrol_lmb\local\moodle;
 use enrol_lmb\message;
-use enrol_lmb\status;
+use enrol_lmb\local\status;
 
 /**
  * Class for working with messages from XML.
