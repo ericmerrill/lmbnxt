@@ -98,7 +98,11 @@ class moodle_user_testcase extends xml_helper {
         $this->assertInstanceOf(\stdClass::class, $result);
 
         // Right now this has no items, so adding this as a reminder if we add stuff.
-        $this->assertCount(0, (array)$result);
+        $this->assertCount(3, (array)$result);
+
+        $this->assertEquals($CFG->lang, $result->lang);
+        $this->assertEquals(1, $result->confirmed);
+        $this->assertEquals($CFG->mnet_localhost_id, $result->mnethostid);
     }
 
     /**

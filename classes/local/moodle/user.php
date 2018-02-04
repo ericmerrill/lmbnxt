@@ -62,7 +62,18 @@ class user extends base {
 
         $this->data = $data;
 
-        // First see if we are going to be working with an existing or new user.
+        // Check if this user's email address is allowed.
+        if (!$this->check_email_domain()) {
+            // We allow different log levels based on a setting.
+            $loglevel = logging::ERROR_WARN;
+            if ((bool)$settings->get('donterroremail')) {
+                $loglevel = logging::ERROR_NONE;
+            }
+            logging::instance()->log_line('User email not allowed by email domain settings.', $loglevel);
+            return;
+        }
+
+        // See if we are going to be working with an existing or new user.
         $new = false;
         $user = $this->find_existing_user();
         if (empty($user)) {
@@ -75,17 +86,6 @@ class user extends base {
             $user = $this->create_new_user_object();
         } else {
             $userid = $user->id;
-        }
-
-        // Check if this user's email address is allowed.
-        if ($new && !$this->check_email_domain()) {
-            // We allow different log levels based on a setting.
-            $loglevel = logging::ERROR_WARN;
-            if ((bool)$settings->get('donterroremail')) {
-                $loglevel = logging::ERROR_NONE;
-            }
-            logging::instance()->log_line('User email not allowed by email domain settings.', $loglevel);
-            return;
         }
 
         $username = $this->get_username();
@@ -103,6 +103,7 @@ class user extends base {
         }
 
         // Set the user's auth plugin.
+        // TODO - Option to force this.
         if ($new) {
             $auth = $settings->get('auth');
             if (!empty($auth)) {
@@ -276,7 +277,20 @@ class user extends base {
      * @return \stdClass A basic new user object to work with.
      */
     protected function create_new_user_object() {
+        global $CFG;
+
         $user = new \stdClass();
+
+        if (isset($CFG->mnet_localhost_id)) {
+            $user->mnethostid = $CFG->mnet_localhost_id;
+        } else {
+            $user->mnethostid = 1;
+        }
+
+        $user->confirmed = 1;
+
+        // Add default site language.
+        $user->lang = $CFG->lang;
 
         return $user;
     }
