@@ -27,6 +27,7 @@ Settings
 * Option to reprocess from DB when settings change
 * Settings controller/change settings based on input
 * Use internal ID instead of SDID or G# in ID Number
+* Quickly check if enrolments match expected?
 
 # LIS 2 improvements
 * LIS group term allows restrict flag, even though ILP doesn't seem to use
@@ -45,4 +46,6 @@ Settings
 * Deal with SourceDID vs SpridenID (sdid vs G#)
 * Drop sourcedidsource requirements.
 * Add caching in key places? Like term lookups
+* When receiving a new message, like a person, check to see if we need to processes any missed enrollments
+* Possibly track if enrolment was successful in DB like old LMB
 

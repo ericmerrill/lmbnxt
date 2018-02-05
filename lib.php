@@ -33,9 +33,11 @@ class enrol_lmb_plugin extends enrol_plugin {
      * Get or make the enrol instance record for the passed course id.
      *
      * @param int|stdClass $courseorid The course id or the DB record for the course.
+     * @param false|string $customid A custom ID, so we can have multiple records.
+     * @param bool $create If true, create the missing instance.
      * @return false|stdClass The instance record, or false if none.
      */
-    public function get_instance($courseorid) {
+    public function get_instance($courseorid, $customid = false, $create = true) {
         global $DB;
 
         if (is_numeric($courseorid)) {
@@ -49,8 +51,13 @@ class enrol_lmb_plugin extends enrol_plugin {
             return false;
         }
 
+        $params = ['courseid' => $courseid, 'enrol' => 'lmb'];
+        if ($customid) {
+            $params['customchar1'] = $customid;
+        }
+
         // Try to find an existing instance.
-        $instance = $DB->get_record('enrol', ['courseid' => $courseid, 'enrol' => 'lmb']);
+        $instance = $DB->get_record('enrol', $params);
 
         // If not found, we need to make one.
         if (!$instance) {
@@ -58,22 +65,52 @@ class enrol_lmb_plugin extends enrol_plugin {
                 // Try to load the course record.
                 $course = $DB->get_record('course', ['id' => $courseid]);
             }
-            if (!$course) {
-                // If we still don't have one, then we need to give up.
-                return false;
-            }
 
-            $instanceid = $this->add_instance($course);
-            if (empty($instanceid)) {
-                // If it wasn't created, then give up.
-                return false;
-            }
-
-            // Now we need to get the record.
-            $instance = $DB->get_record('enrol', ['id' => $instanceid]);
+            $instance = $this->create_instance($course, $customid);
         }
 
         return $instance;
+    }
+
+    public function create_instance($course, $customid = false) {
+        global $DB;
+
+        if (!$course) {
+            // If we still don't have one, then we need to give up.
+            return false;
+        }
+
+        $fields = [];
+        if ($customid) {
+            $fields['name'] = get_string('enrolcustomname', 'enrol_lmb', $customid);
+            $fields['customchar1'] = $customid;
+        }
+
+        $instanceid = $this->add_instance($course, $fields);
+        if (empty($instanceid)) {
+            // If it wasn't created, then give up.
+            return false;
+        }
+
+        // Now we need to get the record.
+        $instance = $DB->get_record('enrol', ['id' => $instanceid]);
+
+        return $instance;
+    }
+
+    public function unenrol_all_users($instance, $keepteachers = false) {
+        global $DB;
+        if (!$keepteachers) {
+            $enrols = $DB->get_recordset('user_enrolments', ['enrolid' => $instance->id]);
+
+            foreach ($enrols as $enrol) {
+                $this->unenrol_user($instance, $enrol->userid);
+            }
+
+            $enrols->close();
+        } else {
+            debugging("TODO");
+        }
     }
 
     // Base class overrides.

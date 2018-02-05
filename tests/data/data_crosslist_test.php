@@ -86,6 +86,15 @@ class data_crosslist_testcase extends xml_helper {
 
         $members = $DB->get_records(crosslist_member::TABLE, ['crosslistid' => $crosslist->id]);
         $this->assertCount(2, $members);
+
+        // Now lets do it again and make sure there is no error.
+        $converter = new xml\membership();
+        $crosslist = $converter->process_xml_to_data($node);
+
+        $crosslist->save_to_db();
+
+        $members = $DB->get_records(crosslist_member::TABLE, ['crosslistid' => $crosslist->id]);
+        $this->assertCount(2, $members);
     }
 //
 //     public function test_db_save() {

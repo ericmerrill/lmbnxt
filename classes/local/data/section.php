@@ -78,7 +78,7 @@ class section extends base {
         if (empty($id) || empty($source)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_bad_section');
         } else {
-            logging::instance()->log_line("Section \"{$desc}\", ID \"{$id}\" from \"{$source}\"");
+            logging::instance()->log_line("Section ID \"{$id}\", \"{$desc}\", from \"{$source}\"");
         }
     }
 

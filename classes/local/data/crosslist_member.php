@@ -92,6 +92,45 @@ class crosslist_member extends base {
         return $DB->get_record(static::TABLE, $params);
     }
 
+    public function get_section() {
+        $section = new section();
+        $section->sdid = $this->__get('sdid');
+        $section->sdidsource = $this->__get('sdidsource');
+        $section->load_existing();
 
+        if (isset($section->id)) {
+            return $section;
+        }
+
+        return false;
+    }
+
+    public static function get_members_for_section_sdid($sdid, $status = 1, $type = crosslist::GROUP_TYPE_MERGE) {
+        global $DB;
+
+        $params = ['coursesdid' => $sdid, 'status' => $status, 'type' => $type];
+        $sql = "SELECT cm.*
+                  FROM {".static::TABLE."} cm
+                  JOIN {".crosslist::TABLE."} cl
+                    ON cm.crosslistid = cl.id
+                 WHERE cm.sdid = :coursesdid
+                   AND cm.status = :status
+                   AND cl.type = :type";
+
+        $records = $DB->get_records_sql($sql, $params);
+
+        $results = [];
+        if (empty($records)) {
+            return $results;
+        }
+
+        foreach ($records as $record) {
+            $member = new self();
+            $member->load_from_record($record);
+            $results[] = $member;
+        }
+
+        return $results;
+    }
 
 }

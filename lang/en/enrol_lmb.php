@@ -26,6 +26,7 @@
 $string['pluginname'] = 'LMB NXT';
 // Misc.
 $string['ignore'] = 'Ignore';
+$string['enrolcustomname'] = 'LMB NXT from {$a}';
 
 // Settings.
 $string['logginglevel'] = 'Error logging';

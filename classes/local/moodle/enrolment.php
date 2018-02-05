@@ -44,6 +44,8 @@ require_once($CFG->dirroot.'/enrol/lmb/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class enrolment extends base {
+    protected $course = null;
+
     /**
      * This function takes a data object and attempts to apply it to Moodle.
      *
@@ -75,15 +77,7 @@ class enrolment extends base {
             return;
         }
 
-        // Now we need to get the enrol instance. This will make one if it doesn't exist.
-        $enrol = new enrol_lmb_plugin();
-        $enrolinstance = $enrol->get_instance($course);
-
-        if (empty($enrolinstance)) {
-            // Nope, couldn't get or make an enrol instance.
-            logging::instance()->log_line("Could not find or create the enrol instance for the course.", logging::ERROR_WARN);
-            return;
-        }
+        $this->course = $course;
 
         // Now get the role id.
         $roleid = $this->get_moodle_role_id();
@@ -92,17 +86,32 @@ class enrolment extends base {
             return;
         }
 
+
+        $instances = $this->find_enrol_instances();
+
+        if (empty($instances)) {
+            // Nope, couldn't get or make an enrol instance.
+            logging::instance()->log_line("Could not find or create the enrol instance for the course.", logging::ERROR_WARN);
+            return;
+        }
+
+
         // TODO - group memberships.
 
-        if ($data->status) {
-            // TODO - Restricted times.
-            // TODO - Recover grades.
-            logging::instance()->log_line("Enrolling user");
-            $enrol->enrol_user($enrolinstance, $user->id, $roleid, 0, 0, ENROL_USER_ACTIVE, true);
-        } else {
-            // TODO - We need to handle multiple overlapping role assign/unassign. Unenroll and unassign are different...
-            logging::instance()->log_line("Unenrolling user");
-            $enrol->unenrol_user($enrolinstance, $user->id);
+
+        $enrol = new enrol_lmb_plugin();
+        foreach ($instances as $instance) {
+
+            if ($data->status) {
+                // TODO - Restricted times.
+                // TODO - Recover grades.
+                logging::instance()->log_line("Enrolling user");
+                $enrol->enrol_user($instance, $user->id, $roleid, 0, 0, ENROL_USER_ACTIVE, true);
+            } else {
+                // TODO - We need to handle multiple overlapping role assign/unassign. Unenroll and unassign are different...
+                logging::instance()->log_line("Unenrolling user");
+                $enrol->unenrol_user($instance, $user->id);
+            }
         }
     }
 
@@ -154,5 +163,41 @@ class enrolment extends base {
         }
 
         return false;
+    }
+
+
+    protected function get_base_enrol_instance() {
+        $enrol = new enrol_lmb_plugin();
+        $enrolinstance = $enrol->get_instance($this->course);
+
+        return $enrolinstance;
+    }
+
+    protected function find_enrol_instances() {
+        global $DB;
+        $crosslists = data\crosslist_member::get_members_for_section_sdid($this->data->groupsdid);
+
+        $instances = [];
+
+        if (empty($crosslists)) {
+            $instance = $this->get_base_enrol_instance();
+            if ($instance) {
+                $instances[] = $instance;
+            }
+        } else {
+            $enrol = new enrol_lmb_plugin();
+            foreach ($crosslists as $member) {
+                $course = $DB->get_record('course', ['idnumber' => $member->groupsdid]);
+                if (empty($course)) {
+                    continue;
+                }
+                $instance = $enrol->get_instance($course, $member->sdid);
+                if ($instance) {
+                    $instances[] = $instance;
+                }
+            }
+        }
+
+        return $instances;
     }
 }

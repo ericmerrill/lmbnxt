@@ -28,6 +28,7 @@ namespace enrol_lmb\local\data;
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\types;
+use enrol_lmb\local\moodle;
 use enrol_lmb\logging;
 use enrol_lmb\settings;
 
@@ -141,7 +142,21 @@ class crosslist extends base {
 
         foreach ($this->members as $member) {
             $member->crosslistid = $this->__get('id');
+            $member->groupsdid = $this->__get('sdid');
             $member->update_if_needed();
+        }
+    }
+
+    public function load_existing() {
+        parent::load_existing();
+
+        if (!$this->__isset('id')) {
+            return;
+        }
+
+        foreach ($this->get_members() as $member) {
+            $member->crosslistid = $this->__get('id');
+            $member->load_existing();
         }
     }
 
@@ -178,5 +193,36 @@ class crosslist extends base {
 
         return settings::get_settings()->get('xlstype');
     }
+
+    public function get_moodle_converter() {
+        return new moodle\crosslist();
+    }
+
+//     public static function get_crosslists_for_section_sdid($sdid, $status = 1, $type = static::GROUP_TYPE_MERGE) {
+//         global $DB;
+//
+//         $params = ['coursesdid' => $sdid, 'status' => $status, 'type' => $type];
+//
+//         $sql = "SELECT * FROM {".static::TABLE."} cl
+//                  WHERE cl.type = :type
+//                    AND cl.id IN (SELECT cm.id FROM {".crosslist_member::TABLE."} cm
+//                                   WHERE cm.sdid = :coursesdid
+//                                     AND cm.status = :status)";
+//
+//         $records = $DB->get_records_sql($sql, $params);
+//
+//         $results = [];
+//         if (empty($records)) {
+//             return $results;
+//         }
+//
+//         foreach ($records as $record) {
+//             $crosslist = new self();
+//             $crosslist->load_from_record($record);
+//             $results[] = $crosslist;
+//         }
+//
+//         return $results;
+//     }
 
 }
