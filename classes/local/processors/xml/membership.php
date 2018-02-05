@@ -121,7 +121,7 @@ class membership extends base {
         }
 
         if ($iscrosslist) {
-            $crosslist->load_existing();
+            $crosslist->merge_existing();
 
             return $crosslist;
         }

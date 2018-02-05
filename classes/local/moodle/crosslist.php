@@ -64,6 +64,8 @@ class crosslist extends course {
         $this->data = $data;
         $this->sections = $this->get_member_sections();
 
+        $settings = $this->settings;
+
         // First see if we are going to be working with an existing or new course.
         $new = false;
         $course = $this->find_existing_course();
@@ -72,8 +74,10 @@ class crosslist extends course {
             $course = $this->create_new_course_object();
         }
 
-        $course->fullname = 'TMP XLS';
-        $course->shortname = $this->data->sdid;
+        $course->fullname = $this->create_crosslist_title($settings->get('xlstitle'),
+                $settings->get('xlstitlerepeat'), $settings->get('xlstitledivider'));
+        $course->shortname = $this->create_crosslist_title($settings->get('xlsshorttitle'),
+                $settings->get('xlsshorttitlerepeat'), $settings->get('xlsshorttitledivider'));
 
         // Set the titles if new or forcing.
 //         if ($new || (bool)$this->settings->get('forcetitle')) {
@@ -204,7 +208,7 @@ class crosslist extends course {
      */
     protected function get_member_sections($status = 1) {
         $results = [];
-        $members = $this->data->get_members();
+        $members = $this->data->get_existing_members();
         foreach ($members as $member) {
             if (empty($member->status)) {
                 continue;
@@ -310,46 +314,23 @@ class crosslist extends course {
 //         return category::get_category_id($this->data);
 //     }
 
-    /**
-     * Does subsitution to create a course title based on the passed spec.
-     *
-     * Substitutions are:
-     *   [SOURCEDID] - Same as [CRN].[TERM]
-     *   [CRN] - The course/section number
-     *   [TERM] - The term code
-     *   [TERMNAME] - The full name of the term
-     *   [LONG] - The same as [DEPT]-[NUM]-[SECTION]
-     *   [FULL] - The full title of the course
-     *   [RUBRIC] - The same as [DEPT]-[NUM]
-     *   [DEPT] - The short department code
-     *   [NUM] - The department code for the course
-     *   [SECTION] - The section number of the course
-     *
-     * @param string $spec
-     * @return string
-     */
-//     protected function create_course_title($spec) {
-//         $title = str_replace('[SOURCEDID]', $this->data->sdid, $spec);
-//         $title = str_replace('[CRN]', $this->data->crn, $title);
-//         $title = str_replace('[TERM]', $this->data->termsdid, $title);
-//         $title = str_replace('[LONG]', $this->data->rubric, $title);
-//         $title = str_replace('[FULL]', $this->data->title, $title);
-//         $title = str_replace('[RUBRIC]', '[DEPT]-[NUM]', $title);
-//         $title = str_replace('[DEPT]', $this->data->deptsdid, $title);
-//         $title = str_replace('[NUM]', $this->data->coursenumber, $title);
-//         $title = str_replace('[SECTION]', $this->data->sectionnumber, $title);
-//
-//         // Only do the heavy lifting if we really need it.
-//         if (strpos($title, '[TERMNAME]') !== false) {
-//             if ($term = data\term::get_term($this->data->termsdid)) {
-//                 $termname = $term->description;
-//             } else {
-//                 // Fall back just onto the term short code.
-//                 $termname = $this->data->termsdid;
-//             }
-//             $title = str_replace('[TERMNAME]', $termname, $title);
-//         }
-//
-//         return $title;
-//     }
+    public function create_crosslist_title($titlespec, $repeattitle, $divider) {
+        $section = reset($this->sections);
+        $title = $this->create_course_title($titlespec, $section);
+
+        if (strpos($titlespec, '[REPEAT]') !== false) {
+            $titles = [];
+
+            foreach ($this->sections as $section) {
+                $titles[] = $this->create_course_title($repeattitle, $section);
+            }
+            $repeatedtitle = implode($divider, $titles);
+            $title = str_replace('[REPEAT]', $repeatedtitle, $title);
+        }
+
+        $title = str_replace('[XLSID]', $this->data->sdid, $title);
+
+        // Limited to 254 characters.
+        return substr($title, 0, 254);
+    }
 }

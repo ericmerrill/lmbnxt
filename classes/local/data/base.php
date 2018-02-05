@@ -292,10 +292,20 @@ abstract class base {
         return $obj;
     }
 
+    public function load_existing() {
+        $this->existing = $this->get_record();
+
+        if (empty($this->existing)) {
+            return;
+        }
+
+        $this->load_from_record($this->existing);
+    }
+
     /**
      * Get the existing record for this object and merge it as needed with the internal record.
      */
-    public function load_existing() {
+    public function merge_existing() {
         $this->existing = $this->get_record();
 
         if (empty($this->existing)) {

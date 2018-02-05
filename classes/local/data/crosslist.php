@@ -99,7 +99,7 @@ class crosslist extends base {
             return [];
         }
 
-        $records = $DB->get_records(crosslist_member::TABLE, ['crosslistid' => $this->__get('id')]);
+        $records = $DB->get_records(crosslist_member::TABLE, ['crosslistid' => $this->__get('id')], 'id ASC');
 
         if (empty($records)) {
             return [];
@@ -147,8 +147,8 @@ class crosslist extends base {
         }
     }
 
-    public function load_existing() {
-        parent::load_existing();
+    public function merge_existing() {
+        parent::merge_existing();
 
         if (!$this->__isset('id')) {
             return;
@@ -156,7 +156,7 @@ class crosslist extends base {
 
         foreach ($this->get_members() as $member) {
             $member->crosslistid = $this->__get('id');
-            $member->load_existing();
+            $member->merge_existing();
         }
     }
 

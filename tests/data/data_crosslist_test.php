@@ -187,7 +187,7 @@ class data_crosslist_testcase extends xml_helper {
         $crosslist->sdid = 'XLSAB201740';
         $crosslist->sdidsource = 'Banner';
         $crosslist->type = 'meta';
-        $crosslist->load_existing();
+        $crosslist->merge_existing();
         $crosslist->save_to_db();
 
         $record = $DB->get_record(crosslist::TABLE, ['id' => $crosslist->id]);
@@ -197,7 +197,7 @@ class data_crosslist_testcase extends xml_helper {
         $crosslist = new crosslist();
         $crosslist->sdid = 'XLSAB201740';
         $crosslist->sdidsource = 'Banner';
-        $crosslist->load_existing();
+        $crosslist->merge_existing();
         $crosslist->save_to_db();
 
         $record = $DB->get_record(crosslist::TABLE, ['id' => $crosslist->id]);

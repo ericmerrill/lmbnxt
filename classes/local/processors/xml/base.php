@@ -77,7 +77,7 @@ abstract class base {
 
         // First we are going to use the simple static mappings.
         $this->apply_mappings($node);
-        $this->dataobj->load_existing();
+        $this->dataobj->merge_existing();
 
         // Do any post mapping work that we might want to.
         $this->post_mappings();

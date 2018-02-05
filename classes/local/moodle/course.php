@@ -68,10 +68,10 @@ class course extends base {
 
         // Set the titles if new or forcing.
         if ($new || (bool)$this->settings->get('forcetitle')) {
-            $course->fullname = $this->create_course_title($this->settings->get('coursetitle'));
+            $course->fullname = $this->create_course_title($this->settings->get('coursetitle'), $this->data);
         }
         if ($new || (bool)$this->settings->get('forceshorttitle')) {
-            $course->shortname = $this->create_course_title($this->settings->get('courseshorttitle'));
+            $course->shortname = $this->create_course_title($this->settings->get('courseshorttitle'), $this->data);
         }
 
         // We always update dates.
@@ -260,26 +260,27 @@ class course extends base {
      *   [SECTION] - The section number of the course
      *
      * @param string $spec
+     * @param data\section $section
      * @return string
      */
-    protected function create_course_title($spec) {
-        $title = str_replace('[SOURCEDID]', $this->data->sdid, $spec);
-        $title = str_replace('[CRN]', $this->data->crn, $title);
-        $title = str_replace('[TERM]', $this->data->termsdid, $title);
-        $title = str_replace('[LONG]', $this->data->rubric, $title);
-        $title = str_replace('[FULL]', $this->data->title, $title);
+    protected function create_course_title($spec, $section) {
+        $title = str_replace('[SOURCEDID]', $section->sdid, $spec);
+        $title = str_replace('[CRN]', $section->crn, $title);
+        $title = str_replace('[TERM]', $section->termsdid, $title);
+        $title = str_replace('[LONG]', $section->rubric, $title);
+        $title = str_replace('[FULL]', $section->title, $title);
         $title = str_replace('[RUBRIC]', '[DEPT]-[NUM]', $title);
-        $title = str_replace('[DEPT]', $this->data->deptsdid, $title);
-        $title = str_replace('[NUM]', $this->data->coursenumber, $title);
-        $title = str_replace('[SECTION]', $this->data->sectionnumber, $title);
+        $title = str_replace('[DEPT]', $section->deptsdid, $title);
+        $title = str_replace('[NUM]', $section->coursenumber, $title);
+        $title = str_replace('[SECTION]', $section->sectionnumber, $title);
 
         // Only do the heavy lifting if we really need it.
         if (strpos($title, '[TERMNAME]') !== false) {
-            if ($term = data\term::get_term($this->data->termsdid)) {
+            if ($term = data\term::get_term($section->termsdid)) {
                 $termname = $term->description;
             } else {
                 // Fall back just onto the term short code.
-                $termname = $this->data->termsdid;
+                $termname = $section->termsdid;
             }
             $title = str_replace('[TERMNAME]', $termname, $title);
         }

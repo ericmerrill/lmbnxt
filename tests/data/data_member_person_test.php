@@ -66,7 +66,7 @@ class data_member_person_testcase extends xml_helper {
         // Going to set the lis node as inactive to help to verify what is happening.
         $lisnode->MEMBERSHIPRECORD->MEMBERSHIP->MEMBER->ROLE->STATUS->set_data('Inactive');
         $member = $lisconverter->process_xml_to_data($lisnode);
-        $member->load_existing();
+        $member->merge_existing();
         $member->save_to_db();
 
         $record = $DB->get_record(data\member_person::TABLE, ['id' => $recordid]);
@@ -77,7 +77,7 @@ class data_member_person_testcase extends xml_helper {
         // Now, make sure it doesn't go back to empty.
         $member = $xmlconverter->process_xml_to_data($xmlnode);
         $member = reset($member);
-        $member->load_existing();
+        $member->merge_existing();
         $member->save_to_db();
 
         $record = $DB->get_record(data\member_person::TABLE, ['id' => $recordid]);

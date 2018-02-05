@@ -46,21 +46,20 @@ class moodle_course_testcase extends xml_helper {
         $section = $converter->process_xml_to_data($node);
 
         $moodlecourse = new moodle\course();
-        $moodlecourse->set_data($section);
 
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[SOURCEDID]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[SOURCEDID]', $section]);
         $this->assertEquals('10001.201740', $result);
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[CRN]:[TERM]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[CRN]:[TERM]', $section]);
         $this->assertEquals('10001:201740', $result);
         // The term isn't in the DB, so we just expect the term code.
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[TERMNAME]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[TERMNAME]', $section]);
         $this->assertEquals('201740', $result);
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[LONG]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[LONG]', $section]);
         $this->assertEquals('ENG-101-001', $result);
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[RUBRIC]:[DEPT]:[NUM]:[SECTION]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[RUBRIC]:[DEPT]:[NUM]:[SECTION]', $section]);
         $this->assertEquals('ENG-101:ENG:101:001', $result);
         // This one will have the full semester name in the title, because we haven't loaded the term in the DB yet.
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[FULL]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[FULL]', $section]);
         $this->assertEquals('Fall Semester 2017 - Course Title', $result);
 
         // Load up the term into the DB.
@@ -73,7 +72,7 @@ class moodle_course_testcase extends xml_helper {
         $this->set_protected_property(data\term::class, 'terms', []);
 
         // Now try the term name again.
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[TERMNAME]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[TERMNAME]', $section]);
         $this->assertEquals('Fall Semester 2017', $result);
 
         // Now lets try the LIS 1.x based course XML.
@@ -82,19 +81,19 @@ class moodle_course_testcase extends xml_helper {
         $section = $converter->process_xml_to_data($node);
 
         $moodlecourse->set_data($section);
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[SOURCEDID]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[SOURCEDID]', $section]);
         $this->assertEquals('10001.201740', $result);
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[CRN]:[TERM]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[CRN]:[TERM]', $section]);
         $this->assertEquals('10001:201740', $result);
         // The term isn't in the DB, so we just expect the term code.
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[TERMNAME]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[TERMNAME]', $section]);
         $this->assertEquals('Fall Semester 2017', $result);
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[LONG]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[LONG]', $section]);
         $this->assertEquals('ENG-101-001', $result);
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[RUBRIC]:[DEPT]:[NUM]:[SECTION]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[RUBRIC]:[DEPT]:[NUM]:[SECTION]', $section]);
         $this->assertEquals('ENG-101:ENG:101:001', $result);
         // This one will have the full semester name in the title, because we hadn't loaded it up yet.
-        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[FULL]']);
+        $result = $this->run_protected_method($moodlecourse, 'create_course_title', ['[FULL]', $section]);
         $this->assertEquals('Course Title', $result);
     }
 
