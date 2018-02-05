@@ -104,6 +104,11 @@ class section extends base {
             }
         }
 
+        if (empty($this->dataobj->deptsdid) && !empty($this->dataobj->deptunit)) {
+            // Some course messages seem to be missing the normal dept values, so we can get it from here.
+            $this->dataobj->deptsdid = $this->dataobj->deptunit;
+        }
+
         $rubric = $this->dataobj->rubric;
         $dept = $this->dataobj->deptsdid;
         if (!empty($rubric) && !empty($dept)) {

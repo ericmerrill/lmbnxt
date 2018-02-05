@@ -37,6 +37,7 @@ class lis2 extends xml {
                                     'REPLACEGROUPREQUEST' => 'replaceGroupResponse',
                                     'REPLACEPERSONREQUEST' => 'replacePersonResponse',
                                     'REPLACEMEMBERSHIPREQUEST' => 'replaceMembershipResponse',
+                                    'REPLACESECTIONASSOCIATIONREQUEST' => 'replaceSectionAssociationResponse',
                                     'DELETEMEMBERSHIPREQUEST' => 'deleteMembershipResponse');
 
     public function get_response_body() {
@@ -50,7 +51,8 @@ class lis2 extends xml {
             if ($header) {
                 $version = $header->IMSX_VERSION->get_value();
                 $messageid = $header->IMSX_MESSAGEIDENTIFIER->get_value();
-                $headernamespace = $header->get_attribute("XMLNS:XSI");
+                $headerxsinamespace = $header->get_attribute("XMLNS:XSI");
+                $headernamespace = $header->get_attribute("XMLNS");
                 $responseid = uniqid();
 
                 $messtatus = $this->message->get_status();
@@ -60,8 +62,8 @@ class lis2 extends xml {
                 }
 
                 $status = '<imsx_statusInfo>
-                               <imsx_codeMajor>'.$messtatus->get_major().'</imsx_codeMajor>
-                               <imsx_severity>'.$messtatus->get_severity().'</imsx_severity>
+                               <imsx_codeMajor>'.strtolower($messtatus->get_major()).'</imsx_codeMajor>
+                               <imsx_severity>'.strtolower($messtatus->get_severity()).'</imsx_severity>
                                <imsx_messageRefIdentifier>'.$messageid.'</imsx_messageRefIdentifier>';
                 if ($desc = $messtatus->get_description()) {
                     $status .= '<imsx_description>'.$desc.'</imsx_description>';
@@ -81,7 +83,7 @@ class lis2 extends xml {
 
                 $response .= '<soapenv:Header>'.
                              '<imsx_syncResponseHeaderInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" '.
-                             'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="'.$headernamespace.'">'.
+                             'xmlns:xsi="'.$headerxsinamespace.'" xmlns="'.$headernamespace.'">'.
                              '<imsx_version>'.$version.'</imsx_version>'.
                              '<imsx_messageIdentifier>'.$responseid.'</imsx_messageIdentifier>'.
                              $status.
@@ -95,7 +97,7 @@ class lis2 extends xml {
 
         if ($responsetag = $this->get_response_tag()) {
             $response .= '<'.$responsetag.' xmlns:xsd="http://www.w3.org/2001/XMLSchema" '.
-                         'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="'.$this->namespace.'" />';
+                         'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://'.$this->namespace.'" />';
         }
 
         $response .= '</soapenv:Body>';

@@ -61,10 +61,10 @@ class response_lis2_test extends xml_helper {
         $this->assertEquals('meassageId', $messageid);
 
         $status = $header->IMSX_STATUSINFO->IMSX_CODEMAJOR->get_value();
-        $this->assertEquals('Success', $status);
+        $this->assertEquals('success', $status);
 
         $sev = $header->IMSX_STATUSINFO->IMSX_SEVERITY->get_value();
-        $this->assertEquals('Status', $sev);
+        $this->assertEquals('status', $sev);
 
         $this->assertEquals('REPLACEMEMBERSHIPRESPONSE', $response->get_name());
     }

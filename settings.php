@@ -51,6 +51,9 @@ if ($ADMIN->fulltree) {
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/logginglevel', get_string('logginglevel', 'enrol_lmb'),
             get_string('logginglevel_help', 'enrol_lmb'), logging::ERROR_NOTICE, $loggingoptions));
 
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/logwsmessages', get_string('logwsmessages', 'enrol_lmb'),
+            get_string('logwsmessages_help', 'enrol_lmb'), 0));
+
     // Parse Person --------------------------------------------------------------------------------.
     $settingslmb->add(new admin_setting_heading('enrol_lmb_parseperson', get_string('parseperson', 'enrol_lmb'), ''));
 

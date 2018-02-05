@@ -54,19 +54,11 @@ class section_assoc extends base {
      */
     const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/section_assoc.json';
 
-    protected $newmembers = [];
-
     /**
      * Basic constructor.
      */
     public function __construct() {
         $this->load_mappings();
-    }
-
-    public function process_xml_to_data($node) {
-        $this->newmembers = [];
-
-        return parent::process_xml_to_data($node);
     }
 
     /**
@@ -87,24 +79,23 @@ class section_assoc extends base {
         $member->status = 1;
 
         $this->newmembers[$member->sdid] = $member;
-
+        $this->dataobj->add_member($member);
     }
 
     protected function post_mappings() {
         // LIS crosslists have the property that if a member is missing, it is considered dropped,
         // so we need to take care of that.
+
         $existing = $this->dataobj->get_existing_members();
+        $newmembers = $this->dataobj->get_members();
 
-        $results = $this->newmembers;
-
-        // Merge them together.
-        foreach ($existing as $id => $member) {
-            if (!isset($results[$id])) {
-                $member->status = 0;
-                $results[$id] = $member;
+        foreach ($existing as $exists) {
+            if (!isset($newmembers[$exists->sdid])) {
+                $exists->status = 0;
+                $newmembers[$exists->sdid] = $exists;
             }
         }
 
-        $this->dataobj->set_members($results);
+        $this->dataobj->set_members($newmembers);
     }
 }

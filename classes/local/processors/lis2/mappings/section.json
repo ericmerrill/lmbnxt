@@ -35,6 +35,9 @@
         "ORGNAME": {
           "TEXTSTRING": "deptname"
         },
+        "ORGUNIT": {
+          "TEXTSTRING": "deptunit"
+        },
         "ID": {
           "TEXTSTRING": "deptsdid"
         }

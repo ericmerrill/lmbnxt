@@ -76,6 +76,10 @@ class controller {
         // TODO - Authentication, etc.
         $xml = file_get_contents('php://input');
 
+        if (settings::get_settings()->get('logwsmessages')) {
+            logging::instance()->log_line($xml);
+        }
+
         if (empty($xml)) {
             // TODO - maybe a XML fatal response? Check spec.
 

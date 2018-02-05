@@ -125,6 +125,10 @@ class lis2_section_assoc_test extends xml_helper {
         $this->assertEquals('10002.201740', $member->sdid);
         $this->assertEquals(1, $member->status);
 
+        // Do it again and try to save...
+        $crosslist->save_to_db();
+        $crosslist = $converter->process_xml_to_data($node);
+        $crosslist->save_to_db();
     }
 
 
