@@ -111,7 +111,7 @@ class enrol_lmb_plugin extends enrol_plugin {
      * @param stdClass $instance The enrol instance object
      * @param bool $keepteachers If true, teachers can stay in the course if there is content TODO
      */
-    public function unenrol_all_users(stdClass $instance, bool $keepteachers = null) {
+    public function unenrol_all_users(stdClass $instance, $keepteachers = false) {
         global $DB;
         if (!$keepteachers) {
             $sql = "SELECT u.id AS userid, u.idnumber FROM {user_enrolments} ue
