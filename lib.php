@@ -137,7 +137,7 @@ class enrol_lmb_plugin extends enrol_plugin {
      * @param stdClass $course The course object if known. Saves a DB hit.
      * @return stdClass|false The instance, or false if not found
      */
-    public function get_instance_for_section_sdid(string $sdid, stdClass $course = null) {
+    public function get_instance_for_section_sdid($sdid, stdClass $course = null) {
         global $DB;
 
         if (empty($course) || empty($course->idnumber) || strcasecmp($course->idnumber, $sdid) !== 0) {
@@ -163,7 +163,7 @@ class enrol_lmb_plugin extends enrol_plugin {
      * @param stdClass $course The course object if known. Saves a DB hit.
      * @return stdClass[] An array of instances. Empty array if none.
      */
-    public function get_current_instances(string $groupsdid, stdClass $course = null) {
+    public function get_current_instances($groupsdid, stdClass $course = null) {
         global $DB;
         $crosslists = data\crosslist_member::get_members_for_section_sdid($groupsdid);
 
