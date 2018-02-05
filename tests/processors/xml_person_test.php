@@ -115,7 +115,7 @@ class xml_person_testcase extends xml_helper {
         $this->assertEquals(1, $person->rolestaff);
         $this->assertEquals(1, $person->rolestudent);
         $this->assertEquals(1, $person->roleprospectivestudent);
-        $this->assertFalse(isset($person->rolealumni));
-        $this->assertFalse(isset($person->rolefaculty));
+        $this->assertEquals(0, $person->rolefaculty);
+        $this->assertEquals(0, $person->rolealumni);
     }
 }

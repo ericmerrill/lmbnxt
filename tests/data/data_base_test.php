@@ -96,5 +96,7 @@ class data_base_testcase extends xml_helper {
         $this->assertEquals('Default value', $obj->defkey);
 
         $this->assertNull($obj->nondefkey);
+
+        $this->assertEquals('Additional key default', $obj->addkey);
     }
 }

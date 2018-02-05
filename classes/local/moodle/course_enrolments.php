@@ -43,5 +43,31 @@ require_once($CFG->dirroot.'/user/lib.php');
  */
 class course_enrolments extends base {
 
+    /**
+     * Reprocess all the enrolments for a given sourcedid.
+     *
+     * @param string $sdid The course to reprocess for.
+     * @param int|false $status The status to process. False for all statuses.
+     */
+    public static function reprocess_enrolments_for_section_sdid($sdid, $status = 1) {
+        global $DB;
 
+        $params = ['groupsdid' => $sdid];
+        if (!is_numeric($status)) {
+            $params['status'] = $status;
+        }
+
+        $members = $DB->get_recordset(data\member_person::TABLE, $params);
+
+        $enrolment = new enrolment();
+        foreach ($members as $memberrec) {
+            $member = new data\member_person();
+            $member->load_from_record($memberrec);
+            $member->log_id();
+
+            $enrolment->convert_to_moodle($member);
+        }
+
+        $members->close();
+    }
 }

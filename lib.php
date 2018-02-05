@@ -27,6 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once('enrollib.php');
 
+use enrol_lmb\local\data;
+use enrol_lmb\logging;
+
 class enrol_lmb_plugin extends enrol_plugin {
 
     /**
@@ -61,6 +64,9 @@ class enrol_lmb_plugin extends enrol_plugin {
 
         // If not found, we need to make one.
         if (!$instance) {
+            if (!$create) {
+                return false;
+            }
             if (!$course) {
                 // Try to load the course record.
                 $course = $DB->get_record('course', ['id' => $courseid]);
@@ -81,6 +87,7 @@ class enrol_lmb_plugin extends enrol_plugin {
         }
 
         $fields = [];
+        $fields['customchar2'] = $course->idnumber;
         if ($customid) {
             $fields['name'] = get_string('enrolcustomname', 'enrol_lmb', $customid);
             $fields['customchar1'] = $customid;
@@ -98,12 +105,22 @@ class enrol_lmb_plugin extends enrol_plugin {
         return $instance;
     }
 
-    public function unenrol_all_users($instance, $keepteachers = false) {
+    /**
+     * Unenrol all users for a given instance.
+     *
+     * @param stdClass $instance The enrol instance object
+     * @param bool $keepteachers If true, teachers can stay in the course if there is content TODO
+     */
+    public function unenrol_all_users(stdClass $instance, bool $keepteachers = false) {
         global $DB;
         if (!$keepteachers) {
-            $enrols = $DB->get_recordset('user_enrolments', ['enrolid' => $instance->id]);
+            $sql = "SELECT u.id AS userid, u.idnumber FROM {user_enrolments} ue
+                      JOIN {user} u ON u.id = ue.userid
+                      WHERE ue.enrolid = :enrolid";
+            $enrols = $DB->get_recordset_sql($sql, ['enrolid' => $instance->id]);
 
             foreach ($enrols as $enrol) {
+                logging::instance()->log_line("Unenroling user {$enrol->idnumber} from {$instance->customchar2}");
                 $this->unenrol_user($instance, $enrol->userid);
             }
 
@@ -111,6 +128,67 @@ class enrol_lmb_plugin extends enrol_plugin {
         } else {
             debugging("TODO");
         }
+    }
+
+    /**
+     * Gets the enrol instance for the provided sdid
+     *
+     * @param string $sdid The course sdid
+     * @param stdClass $course The course object if known. Saves a DB hit.
+     * @return stdClass|false The instance, or false if not found
+     */
+    public function get_instance_for_section_sdid(string $sdid, stdClass $course = null) {
+        global $DB;
+
+        if (empty($course) || empty($course->idnumber) || strcasecmp($course->idnumber, $sdid) !== 0) {
+            $course = $DB->get_record('course', ['idnumber' => $sdid]);
+        }
+
+        if (empty($course)) {
+            return false;
+        }
+
+        $instance = $this->get_instance($course);
+        if ($instance) {
+            return $instance;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get instances to use to enrol/unenrol users for a given group sdid. Accounds for crosslists and such.
+     *
+     * @param string $groupsdid The course sdid
+     * @param stdClass $course The course object if known. Saves a DB hit.
+     * @return stdClass[] An array of instances. Empty array if none.
+     */
+    public function get_current_instances(string $groupsdid, stdClass $course = null) {
+        global $DB;
+        $crosslists = data\crosslist_member::get_members_for_section_sdid($groupsdid);
+
+        $instances = [];
+
+        if (empty($crosslists)) {
+            $instance = $this->get_instance_for_section_sdid($groupsdid, $course);
+            if ($instance) {
+                $instances[] = $instance;
+            }
+        } else {
+            $enrol = new enrol_lmb_plugin();
+            foreach ($crosslists as $member) {
+                $course = $DB->get_record('course', ['idnumber' => $member->groupsdid]);
+                if (empty($course)) {
+                    continue;
+                }
+                $instance = $enrol->get_instance($course, $member->sdid);
+                if ($instance) {
+                    $instances[] = $instance;
+                }
+            }
+        }
+
+        return $instances;
     }
 
     // Base class overrides.

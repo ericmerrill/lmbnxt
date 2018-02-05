@@ -147,7 +147,7 @@ class data_test extends \enrol_lmb\local\data\base {
                                 'date' => 'handler_date');
 
 
-    protected $defaults = array('defkey' => 'Default value');
+    protected $defaults = array('defkey' => 'Default value', 'addkey' => 'Additional key default');
 
     public function log_id() {
     }

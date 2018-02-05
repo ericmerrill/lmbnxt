@@ -102,30 +102,28 @@ class moodle_course_testcase extends xml_helper {
         $time = time() + (4 * 24 * 3600);
         $starttime = mktime(0, 0, 0, date('n', $time), date('j', $time), date('Y', $time));
         $section = new data\section();
-        data_test::set_value($section, 'begindate', $starttime);
 
         $moodlecourse = new moodle\course();
-        $moodlecourse->set_data($section);
 
         // Setting for 5 days.
         settings_helper::set('cronunhidedays', 5);
 
         // Check always visible
         settings_helper::set('coursehidden', settings::CREATE_COURSE_VISIBLE);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility', [$starttime]);
         $this->assertEquals(1, $result);
         // Check always hidden.
         settings_helper::set('coursehidden', settings::CREATE_COURSE_HIDDEN);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility', [$starttime]);
         $this->assertEquals(0, $result);
         // Check based on cron setting (should be visible).
         settings_helper::set('coursehidden', settings::CREATE_COURSE_CRON);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility', [$starttime]);
         $this->assertEquals(1, $result);
 
         // Check an invalid setting.
         settings_helper::set('coursehidden', 'invalid');
-        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility', [$starttime]);
         $this->assertEquals(1, $result);
 
         // Setting for 2 days.
@@ -133,15 +131,15 @@ class moodle_course_testcase extends xml_helper {
 
         // Check always visible
         settings_helper::set('coursehidden', settings::CREATE_COURSE_VISIBLE);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility', [$starttime]);
         $this->assertEquals(1, $result);
         // Check always hidden.
         settings_helper::set('coursehidden', settings::CREATE_COURSE_HIDDEN);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility', [$starttime]);
         $this->assertEquals(0, $result);
         // Check based on cron setting (should be hidden).
         settings_helper::set('coursehidden', settings::CREATE_COURSE_CRON);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_visibility', [$starttime]);
         $this->assertEquals(0, $result);
 
         settings_helper::reset();
@@ -151,40 +149,38 @@ class moodle_course_testcase extends xml_helper {
 
     public function test_calculate_section_count() {
         $section = new data\section();
-        data_test::set_value($section, 'begindate', mktime(0, 0, 0, 1, 1, 2018));
 
         $moodlecourse = new moodle\course();
-        $moodlecourse->set_data($section);
 
         // We don't have both dates, so these will both be false.
         settings_helper::set('computesections', 0);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count');
+        $begindate = mktime(0, 0, 0, 1, 1, 2018);
+        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count', [$begindate, null]);
         $this->assertFalse($result);
 
         settings_helper::set('computesections', 1);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count', [$begindate, null]);
         $this->assertFalse($result);
 
         // Now add the other date.
-        data_test::set_value($section, 'enddate', mktime(0, 0, 0, 1, 27, 2018));
+        $enddate = mktime(0, 0, 0, 1, 27, 2018);
         settings_helper::set('computesections', 0);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count', [$begindate, $enddate]);
         $this->assertFalse($result);
 
         settings_helper::set('computesections', 1);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count');
+        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count', [$begindate, $enddate]);
         $this->assertEquals(4, $result);
 
         // Now see what happens if that end is before the start.
-        data_test::set_value($section, 'enddate', mktime(0, 0, 0, 12, 31, 2017));
-        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count');
+        $enddate = mktime(0, 0, 0, 12, 31, 2017);
+        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count', [$begindate, $enddate]);
         $this->assertFalse($result);
 
         // And then more than max sections.
         $maxsections = get_config('moodlecourse', 'maxsections');
-        $more = mktime(0, 0, 0, 1, 1, 2018) + (($maxsections + 1) * 7 * 86400);
-        data_test::set_value($section, 'enddate', $more);
-        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count');
+        $enddate = mktime(0, 0, 0, 1, 1, 2018) + (($maxsections + 1) * 7 * 86400);
+        $result = $this->run_protected_method($moodlecourse, 'calculate_section_count', [$begindate, $enddate]);
         $this->assertEquals($maxsections, $result);
     }
 

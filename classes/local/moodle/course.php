@@ -64,6 +64,7 @@ class course extends base {
         if (empty($course)) {
             $new = true;
             $course = $this->create_new_course_object();
+            $course->visible = $this->calculate_visibility($this->data->begindate);
         }
 
         // Set the titles if new or forcing.
@@ -97,7 +98,7 @@ class course extends base {
 
         // Here we update the number of sections.
         if ($new || $this->settings->get('forcecomputesections')) {
-            $newsectioncount = $this->calculate_section_count();
+            $newsectioncount = $this->calculate_section_count($this->data->begindate, $this->data->enddate);
             if ($newsectioncount !== false) {
                 $course->numsections = $newsectioncount;
             }
@@ -172,22 +173,22 @@ class course extends base {
 
         $course->idnumber = $this->data->sdid;
 
-        $course->visible = $this->calculate_visibility();
-
         return $course;
     }
 
     /**
      * Calculates the number of sections (or weeks) that are in a course based on the start and end dates.
      *
+     * @param int $begindate The starting date/time of the course.
+     * @param int $enddate The ending date/time of the course.
      * @return false|int The number of sections, or false if we can't determine it. Use existing or default.
      */
-    protected function calculate_section_count() {
+    protected function calculate_section_count($begindate, $enddate) {
         if (!$this->settings->get('computesections')) {
             return false;
         }
 
-        if (empty($begindate = $this->data->begindate) || empty($enddate = $this->data->enddate)) {
+        if (empty($begindate) || empty($enddate)) {
             // Can't compute if we don't have both dates.
             return false;
         }
@@ -211,9 +212,10 @@ class course extends base {
     /**
      * Calculates the visibility setting for this new course.
      *
+     * @param int $begindate The starting date/time of the course.
      * @return int 0 if the course is hidden, 1 if it is visible.
      */
-    protected function calculate_visibility() {
+    protected function calculate_visibility($begindate) {
         $visible = 1;
 
         switch ($this->settings->get('coursehidden')) {
@@ -226,7 +228,7 @@ class course extends base {
                 $todaytime = mktime(0, 0, 0, date('n', $curtime), date('j', $curtime), date('Y', $curtime));
                 $time = $todaytime + ($this->settings->get('cronunhidedays') * 86400);
 
-                if ($this->data->begindate > $time) {
+                if ($begindate > $time) {
                     $visible = 0;
                 } else {
                     $visible = 1;

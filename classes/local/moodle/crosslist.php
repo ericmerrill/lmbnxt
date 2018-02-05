@@ -47,6 +47,8 @@ class crosslist extends course {
 
     protected $sections = null;
 
+    protected $firstsection = null;
+
     protected $course = null;
 
     /**
@@ -63,6 +65,9 @@ class crosslist extends course {
 
         $this->data = $data;
         $this->sections = $this->get_member_sections();
+        if (!empty($this->sections)) {
+            $this->firstsection = reset($this->sections);
+        }
 
         $settings = $this->settings;
 
@@ -72,59 +77,44 @@ class crosslist extends course {
         if (empty($course)) {
             $new = true;
             $course = $this->create_new_course_object();
+            $course->visible = $this->calculate_visibility($this->firstsection->begindate);
         }
 
+        // We always force the title on crosslists, because they are subject to a lot of change.
+        // TODO - Make a new setting.
         $course->fullname = $this->create_crosslist_title($settings->get('xlstitle'),
                 $settings->get('xlstitlerepeat'), $settings->get('xlstitledivider'));
         $course->shortname = $this->create_crosslist_title($settings->get('xlsshorttitle'),
                 $settings->get('xlsshorttitlerepeat'), $settings->get('xlsshorttitledivider'));
 
-        // Set the titles if new or forcing.
-//         if ($new || (bool)$this->settings->get('forcetitle')) {
-//             $course->fullname = $this->create_course_title($this->settings->get('coursetitle'));
-//         }
-//         if ($new || (bool)$this->settings->get('forceshorttitle')) {
-//             $course->shortname = $this->create_course_title($this->settings->get('courseshorttitle'));
-//         }
 
         // We always update dates.
+        $course->startdate = $this->get_crosslist_start_date();
 
-        $course->startdate = 0;
-//         if (empty($this->data->begindate)) {
-//             if (!isset($course->startdate)) {
-//                 $course->startdate = 0;
-//             }
-//         } else {
-//             $course->startdate = $this->data->begindate;
-//         }
         // A course can only have an end date if it has a start date.
-//         if (empty($course->startdate)) {
-//             $course->enddate = 0;
-//         } else {
-//             if (empty($this->data->enddate)) {
-//                 if (!isset($course->enddate)) {
-//                     $course->enddate = 0;
-//                 }
-//             } else {
-//                 $course->enddate = $this->data->enddate;
-//             }
-//         }
+        if (empty($course->startdate)) {
+            $course->enddate = 0;
+        } else {
+            $course->enddate = $this->get_crosslist_end_date();
+        }
 
         // Here we update the number of sections.
-//         if ($new || $this->settings->get('forcecomputesections')) {
-//             $newsectioncount = $this->calculate_section_count();
-//             if ($newsectioncount !== false) {
-//                 $course->numsections = $newsectioncount;
-//             }
-//         }
+        if ($new || $this->settings->get('forcecomputesections')) {
+            $newsectioncount = $this->calculate_section_count($course->startdate, $course->enddate);
+            if ($newsectioncount !== false) {
+                $course->numsections = $newsectioncount;
+            }
+        }
 
         // Here we set the category
-//         if ($new || $this->settings->get('forcecat')) {
-//             // TODO Category finder.
-//             $course->category = $this->get_category_id();
-//         }
-
-        $course->category = 1;
+        if ($new || $this->settings->get('forcecat')) {
+            // TODO Category finder.
+            if (!empty($this->firstsection)) {
+                $course->category = category::get_category_id($this->firstsection);
+            } else {
+                $course->category = 1;
+            }
+        }
 
         // TODO - Recalculate visibility based on changes in start date.
 
@@ -165,30 +155,82 @@ class crosslist extends course {
 
     }
 
+    /**
+     * Handles the processing of a merge crosslist - including adding or removing members.
+     */
     protected function process_merge_crosslist() {
         $enrol = new enrol_lmb_plugin();
 
-        // First add instances.
-        foreach ($this->sections as $section) {
-            $enrolinstance = $enrol->get_instance($this->course, $section->sdid, false);
-            if (!$enrolinstance) {
-                $enrolinstance = $enrol->create_instance($this->course, $section->sdid);
-                // TODO - if new, enrol users, remove from child course.
+        $members = $this->data->get_existing_members();
 
-                // Unenrol users from the child course.
-
+        foreach ($members as $member) {
+            if ((int)$member->status === (int)$member->moodlestatus) {
+                // This has already been processed, so we can skip it.
+                continue;
             }
 
-        }
+            $section = $member->get_section();
+            if (empty($section)) {
+                continue;
+            }
+            if ((int)$member->status === 1) {
+                // We are adding a new crosslist member.
+                $xlsinstance = $enrol->get_instance($this->course, $section->sdid);
+                $newstatus = 1;
 
-        // Then remove any that shouldn't be there.
-        $inactive = $this->get_member_sections(0);
-        foreach ($inactive as $section) {
-            $enrolinstance = $enrol->get_instance($this->course, $section->sdid, false);
-            if ($enrolinstance) {
-                // TODO - if found move users to child course.
+                // Enrol all existing enrolments in the new course.
+                if ($xlsinstance) {
+                    logging::instance()->log_line("Adding existing enrolments to crosslist.");
+                    logging::instance()->start_level();
+                    course_enrolments::reprocess_enrolments_for_section_sdid($section->sdid);
+                    logging::instance()->end_level();
+                } else {
+                    $newstatus = 0;
+                    $error = "Could not find or create the enrol instance for the crosslist.";
+                    logging::instance()->log_line($error, logging::ERROR_WARN);
+                }
+
+                // Remove all users from the child course.
+                $sectioninstance = $enrol->get_instance_for_section_sdid($section->sdid);
+                if ($sectioninstance) {
+                    logging::instance()->log_line("Removing enrolments from child course.");
+                    logging::instance()->start_level();
+                    $enrol->unenrol_all_users($sectioninstance, false); // TODO - True...
+                    logging::instance()->end_level();
+                }
+
+                $member->moodlestatus = $newstatus;
+
+                $member->save_to_db();
+
+            } else if ((int)$member->status === 0) {
+                $newstatus = 0;
+                $enrolinstance = $enrol->get_instance($this->course, $section->sdid, false);
+                if ($enrolinstance) {
+                    // Add users back to the child course.
+                    logging::instance()->log_line("Adding existing enrolments to child course.");
+                    logging::instance()->start_level();
+                    course_enrolments::reprocess_enrolments_for_section_sdid($section->sdid);
+                    logging::instance()->end_level();
+
+                    // Remove all enrolments from the crosslist course.
+                    logging::instance()->log_line("Removing enrolments from crosslist course.");
+                    logging::instance()->start_level();
+                    $enrol->unenrol_all_users($enrolinstance, false);
+                    logging::instance()->end_level();
+                } else {
+                    $newstatus = 1;
+                }
+
+                $member->moodlestatus = $newstatus;
+                $member->save_to_db();
+            } else {
+                $error = "Member {$member->sdid} has unknown status \"{$member->status}\"";
+                logging::instance()->log_line($error, logging::ERROR_WARN);
             }
         }
+
+
     }
 
     protected function process_meta_crosslist() {
@@ -209,12 +251,10 @@ class crosslist extends course {
     protected function get_member_sections($status = 1) {
         $results = [];
         $members = $this->data->get_existing_members();
+
         foreach ($members as $member) {
-            if (empty($member->status)) {
-                continue;
-            }
             $section = $member->get_section();
-            if ($section) {
+            if ($section && $member->status == $status) {
                 $results[] = $section;
             }
         }
@@ -223,107 +263,85 @@ class crosslist extends course {
     }
 
     /**
-     * If exists, find an existing course that matches this data object.
+     * Determines the start time for a crosslisted course - the earliest start date
+     * of any child course.
      *
-     * @return false|\stdClass
+     * @return int The start time in unit time format
      */
-//     protected function find_existing_course() {
-//     }
+    public function get_crosslist_start_date() {
+        $times = [];
+        foreach ($this->sections as $section) {
+            $begin = $section->begindate;
+            if ($begin) {
+                $times[] = $begin;
+            }
+        }
+
+        if (empty($times)) {
+            // We didn't get a start time, so just do now...
+            return 0;
+        }
+
+        // Sort them smallest to biggest.
+        sort($times);
+
+        // Get the top one.
+        return $times[0];
+    }
 
     /**
-     * Returns a course record for the passed sdid.
+     * Determines the end time for a crosslisted course - the latest end date
+     * of any child course.
      *
-     * @param string $sdid
-     * @return false|\stdClass
+     * @return int The end time in unit time format
      */
-//     public static function get_course_for_sdid($sdid) {
-//     }
+    public function get_crosslist_end_date() {
+        $times = [];
+        foreach ($this->sections as $section) {
+            $end = $section->enddate;
+            if ($end) {
+                $times[] = $end;
+            }
+        }
+
+        if (empty($times)) {
+            // We didn't get a start time, so just do now...
+            return 0;
+        }
+
+        // Sort them biggest to smallest.
+        rsort($times);
+
+        // Get the top one.
+        return $times[0];
+    }
 
     /**
-     * Create a new base course object.
+     * Create a crosslist title based on the provided values.
      *
-     * @return \stdClass
+     * @param string $titlespec The title setting to use
+     * @param string $repeatedtitle The repeated title setting
+     * @param string $divider The seperator that goes between the repeats
+     * @return string
      */
-//     protected function create_new_course_object() {
-//     }
-
-    /**
-     * Calculates the number of sections (or weeks) that are in a course based on the start and end dates.
-     *
-     * @return false|int The number of sections, or false if we can't determine it. Use existing or default.
-     */
-//     protected function calculate_section_count() {
-//         if (!$this->settings->get('computesections')) {
-//             return false;
-//         }
-//
-//         if (empty($begindate = $this->data->begindate) || empty($enddate = $this->data->enddate)) {
-//             // Can't compute if we don't have both dates.
-//             return false;
-//         }
-//
-//         $maxsections = get_config('moodlecourse', 'maxsections');
-//
-//         // Take the difference, convert it to frational weeks, then take the ceiling of that.
-//         $length = $enddate - $begindate;
-//         $length = ceil(($length/(24*3600)/7));
-//
-//         // No less than 1, and no more than maxsections.
-//         if ($length < 1) {
-//             return false;
-//         } else if ($length > $maxsections) {
-//             return $maxsections;
-//         }
-//
-//         return $length;
-//     }
-
-    /**
-     * Calculates the visibility setting for this new course.
-     *
-     * @return int 0 if the course is hidden, 1 if it is visible.
-     */
-//     protected function calculate_visibility() {
-//         $visible = 1;
-//
-//         switch ($this->settings->get('coursehidden')) {
-//             case (settings::CREATE_COURSE_HIDDEN):
-//                 $visible = 0;
-//                 break;
-//             case (settings::CREATE_COURSE_CRON):
-//                 // Get the time at the start of today (this is day based).
-//                 $curtime = time();
-//                 $todaytime = mktime(0, 0, 0, date('n', $curtime), date('j', $curtime), date('Y', $curtime));
-//                 $time = $todaytime + ($this->settings->get('cronunhidedays') * 86400);
-//
-//                 if ($this->data->begindate > $time) {
-//                     $visible = 0;
-//                 } else {
-//                     $visible = 1;
-//                 }
-//                 break;
-//             case (settings::CREATE_COURSE_VISIBLE):
-//                 $visible = 1;
-//                 break;
-//         }
-//
-//         return $visible;
-//     }
-
-//     protected function get_category_id() {
-//         return category::get_category_id($this->data);
-//     }
-
     public function create_crosslist_title($titlespec, $repeattitle, $divider) {
-        $section = reset($this->sections);
-        $title = $this->create_course_title($titlespec, $section);
+        $title = $titlespec;
+
+        // If we have a first section, then use that for any direct bits in the name.
+        if (!empty($this->firstsection)) {
+            $title = $this->create_course_title($title, $this->firstsection);
+        }
 
         if (strpos($titlespec, '[REPEAT]') !== false) {
             $titles = [];
-
-            foreach ($this->sections as $section) {
-                $titles[] = $this->create_course_title($repeattitle, $section);
+            // Now we are going to repeat, making a title for each course section.
+            if (!empty($this->sections)) {
+                foreach ($this->sections as $section) {
+                    $titles[] = $this->create_course_title($repeattitle, $section);
+                }
             }
+
+            // Then join them together with the divider.
             $repeatedtitle = implode($divider, $titles);
             $title = str_replace('[REPEAT]', $repeatedtitle, $title);
         }

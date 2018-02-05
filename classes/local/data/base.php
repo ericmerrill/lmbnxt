@@ -97,15 +97,13 @@ abstract class base {
                 $this->record->$name = json_encode($this->additionaldata, JSON_UNESCAPED_UNICODE);
                 return $this->record->$name;
             }
-            if (isset($this->record->$name)) {
-                return $this->record->$name;
-            } else {
-                if (isset($this->defaults[$name])) {
-                    return $this->defaults[$name];
-                } else {
-                    return $this->record->$name;
-                }
+            if (!isset($this->record->$name) && isset($this->defaults[$name])) {
+                return $this->defaults[$name];
             }
+            return $this->record->$name;
+        }
+        if (!isset($this->additionaldata->$name) && isset($this->defaults[$name])) {
+            return $this->defaults[$name];
         }
         return $this->additionaldata->$name;
 
@@ -152,6 +150,9 @@ abstract class base {
      * @return bool True if the property is set
      */
     public function __isset($name) {
+        if (isset($this->defaults[$name])) {
+            return true;
+        }
         if (in_array($name, $this->dbkeys)) {
             return isset($this->record->$name);
         }
@@ -196,6 +197,7 @@ abstract class base {
 
     public function load_from_record($record) {
         $this->record = $record;
+        $this->existing = clone $record;
         $this->additionaldata = json_decode($record->additional);
     }
 
@@ -269,6 +271,7 @@ abstract class base {
                 throw new \enrol_lmb\local\exception\message_exception('exception_update_failure');
             }
         } catch (\dml_exception $ex) {
+            // TODO - better error handling.
             throw new \enrol_lmb\local\exception\message_exception('exception_update_failure', '', null, $ex->getMessage());
         }
     }
@@ -316,7 +319,13 @@ abstract class base {
         $existingobj->load_from_record($this->existing);
 
         foreach ($this->donotempty as $key) {
-            if (!$this->__isset($key) && $existingobj->__isset($key)) {
+            // We have to do a special isset check, because we want to exclude default value returns.
+            if (in_array($key, $this->dbkeys)) {
+                $isset = isset($this->record->$key);
+            } else {
+                $isset = isset($this->additionaldata->$key);
+            }
+            if (!$isset && $existingobj->__isset($key)) {
                 $this->__set($key, $existingobj->__get($key));
             }
         }
