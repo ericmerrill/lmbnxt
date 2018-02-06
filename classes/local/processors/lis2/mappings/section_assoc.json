@@ -4,7 +4,10 @@
     "TYPE": "type",
     "SOURCEDGUID": {
       "REFAGENTINSTANCEID": "sdidsource",
-      "SOURCEDID": "sdid"
+      "SOURCEDID": {
+        "lmbinternal": true,
+        "function": "process_sdid_node"
+      }
     },
     "SECTIONASSOCIATION": {
       "LABEL": {

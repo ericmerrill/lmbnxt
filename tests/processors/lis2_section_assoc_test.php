@@ -47,7 +47,7 @@ class lis2_section_assoc_test extends xml_helper {
 
         $this->assertInstanceOf(data\crosslist::class, $crosslist);
         $this->assertEquals('ILP', $crosslist->sdidsource);
-        $this->assertEquals('AA201740', $crosslist->sdid);
+        $this->assertEquals('XLSAA201740', $crosslist->sdid);
         $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
 
         $members = $crosslist->get_members();
@@ -129,6 +129,13 @@ class lis2_section_assoc_test extends xml_helper {
         $crosslist->save_to_db();
         $crosslist = $converter->process_xml_to_data($node);
         $crosslist->save_to_db();
+
+        $node->SECTIONASSOCIATIONRECORD->SOURCEDGUID->SOURCEDID->set_data('XLSAB201740');
+        $crosslist = $converter->process_xml_to_data($node);
+
+        $this->assertInstanceOf(data\crosslist::class, $crosslist);
+        $this->assertEquals('ILP', $crosslist->sdidsource);
+        $this->assertEquals('XLSAB201740', $crosslist->sdid);
     }
 
 

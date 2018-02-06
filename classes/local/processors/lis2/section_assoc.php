@@ -82,6 +82,24 @@ class section_assoc extends base {
         $this->dataobj->add_member($member);
     }
 
+    /**
+     * Do a little bit of extra processing on the SourceDID node.
+     *
+     * @param xml_node|array $node The XML node to process, or array of nodes
+     * @param array $mapping The mapping for the field
+     */
+    protected function process_sdid_node($node, $mapping) {
+        $sdid = $node->get_value();
+
+        // We are going to prepend XLS for various legacy reasons, but only if that value isn't
+        // "Plugin Internal" and it doesn't already start with XLS.
+        if (strcasecmp('Plugin Internal', $sdid) !== 0 && stripos($sdid, 'XLS') !== 0) {
+            $sdid = 'XLS'.$sdid;
+        }
+
+        $this->dataobj->sdid = $sdid;
+    }
+
     protected function post_mappings() {
         // LIS crosslists have the property that if a member is missing, it is considered dropped,
         // so we need to take care of that.
