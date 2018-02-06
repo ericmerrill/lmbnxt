@@ -31,14 +31,167 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
 
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2016022300) {
+    // We need to rename all the old tables.
+    if ($oldversion < 2018013000) {
+        $update = false;
+        // Define table enrol_lmb_courses to be renamed to enrol_lmb_old_courses.
+        $table = new xmldb_table('enrol_lmb_courses');
+
+        // Launch rename table for enrol_lmb_courses.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_old_courses');
+            $update = true;
+        }
+
+        // Define table enrol_lmb_people to be renamed to enrol_lmb_old_people.
+        $table = new xmldb_table('enrol_lmb_people');
+
+        // Launch rename table for enrol_lmb_people.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_old_people');
+            $update = true;
+        }
+
+        // Define table enrol_lmb_enrolments to be renamed to enrol_lmb_old_enrolments.
+        $table = new xmldb_table('enrol_lmb_enrolments');
+
+        // Launch rename table for enrol_lmb_enrolments.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_old_enrolments');
+            $update = true;
+        }
+
+        // Define table enrol_lmb_raw_xml to be renamed to enrol_lmb_old_raw_xml.
+        $table = new xmldb_table('enrol_lmb_raw_xml');
+
+        // Launch rename table for enrol_lmb_raw_xml.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_old_raw_xml');
+            $update = true;
+        }
+
+        // Define table enrol_lmb_crosslists to be renamed to enrol_lmb_old_crosslists.
+        $table = new xmldb_table('enrol_lmb_crosslists');
+
+        // Launch rename table for enrol_lmb_crosslists.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_old_crosslists');
+            $update = true;
+        }
+
+        // Define table enrol_lmb_terms to be renamed to enrol_lmb_old_terms.
+        $table = new xmldb_table('enrol_lmb_terms');
+
+        // Launch rename table for enrol_lmb_terms.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_old_terms');
+            $update = true;
+        }
+
+        // Define table enrol_lmb_categories to be renamed to enrol_lmb_old_categories.
+        $table = new xmldb_table('enrol_lmb_categories');
+
+        // Launch rename table for enrol_lmb_categories.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_old_categories');
+            $update = true;
+        }
+
+        if ($update) {
+            // Save a flag so we know we need to upgrade.
+            set_config('needslegacyupgrade', 1, 'enrol_lmb');
+        }
+
+        // Update some various settings.
+        $config = get_config('enrol_lmb');
+        if (isset($config->logtolocation)) {
+            set_config('logpath', $config->logtolocation, 'enrol_lmb');
+            unset_config('logtolocation', 'enrol_lmb');
+        }
+
+        if (isset($config->bannerxmllocation)) {
+            set_config('xmlpath', $config->bannerxmllocation, 'enrol_lmb');
+            unset_config('bannerxmllocation', 'enrol_lmb');
+        }
+
+        if (isset($config->bannerxmlfolder)) {
+            set_config('extractpath', $config->bannerxmlfolder, 'enrol_lmb');
+            unset_config('bannerxmlfolder', 'enrol_lmb');
+        }
+
+        if (isset($config->ignoreemailcase)) {
+            set_config('lowercaseemails', $config->ignoreemailcase, 'enrol_lmb');
+            unset_config('ignoreemailcase', 'enrol_lmb');
+        }
+
+        if (isset($config->ignoreusernamecase)) {
+            unset_config('ignoreusernamecase', 'enrol_lmb');
+        }
+
+        if (isset($config->forcename)) {
+            set_config('forcefirstname', $config->forcename, 'enrol_lmb');
+            set_config('forcelastname', $config->forcename, 'enrol_lmb');
+            unset_config('forcename', 'enrol_lmb');
+        }
+
+        if (isset($config->usernamesource)) {
+            $new = enrol_lmb_upgrade_migrate_user_source_value($config->usernamesource);
+            if ($new !== false) {
+                set_config('usernamesource', $new, 'enrol_lmb');
+            } else {
+                unset_config('usernamesource', 'enrol_lmb');
+            }
+        }
+
+        if (isset($config->customfield1source)) {
+            $new = enrol_lmb_upgrade_migrate_user_source_value($config->customfield1source);
+            if ($new !== false) {
+                set_config('customfield1source', $new, 'enrol_lmb');
+            } else {
+                unset_config('customfield1source', 'enrol_lmb');
+            }
+        }
+
+        if (isset($config->cattype)) {
+            $new = enrol_lmb_upgrade_migrate_cat_type_value($config->cattype);
+            if ($new !== false) {
+                set_config('cattype', $new, 'enrol_lmb');
+            } else {
+                unset_config('cattype', 'enrol_lmb');
+            }
+        }
+
+        if (isset($config->xlstype)) {
+            $new = enrol_lmb_upgrade_migrate_crosslist_type_value($config->xlstype);
+            if ($new !== false) {
+                set_config('xlstype', $new, 'enrol_lmb');
+            } else {
+                unset_config('xlstype', 'enrol_lmb');
+            }
+        }
+    }
+
+    if ($oldversion < 2018013100) {
+        // Define table enrol_lmb to be created.
+        $table = new xmldb_table('enrol_lmb');
+
+        // Adding fields to table enrol_lmb.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+
+        // Adding keys to table enrol_lmb.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        // Conditionally launch create table for enrol_lmb.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
 
         // Define table enrol_lmb_person to be created.
         $table = new xmldb_table('enrol_lmb_person');
 
         // Adding fields to table enrol_lmb_person.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null);
         $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
         $table->add_field('sctid', XMLDB_TYPE_CHAR, '127', null, null, null, null);
         $table->add_field('logonid', XMLDB_TYPE_CHAR, '127', null, null, null, null);
@@ -53,6 +206,7 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         $table->add_field('rolefaculty', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('rolealumni', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
         $table->add_field('roleprospectivestudent', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('primaryrole', XMLDB_TYPE_CHAR, '100', null, null, null, null);
         $table->add_field('additional', XMLDB_TYPE_TEXT, null, null, null, null, null);
         $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
@@ -67,19 +221,15 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
             $dbman->create_table($table);
         }
 
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2016022300, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2016022401) {
-
         // Define table enrol_lmb_term to be created.
         $table = new xmldb_table('enrol_lmb_term');
 
         // Adding fields to table enrol_lmb_term.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null);
         $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('referenceagent', XMLDB_TYPE_CHAR, '64', null, null, null, null);
+        $table->add_field('messagereference', XMLDB_TYPE_CHAR, '128', null, null, null, null);
         $table->add_field('description', XMLDB_TYPE_CHAR, '127', null, null, null, null);
         $table->add_field('begindate', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
         $table->add_field('enddate', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
@@ -97,12 +247,6 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2016022401, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2016052400) {
 
         // Define table enrol_lmb_section to be created.
         $table = new xmldb_table('enrol_lmb_section');
@@ -133,12 +277,6 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
             $dbman->create_table($table);
         }
 
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2016052400, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2016052500) {
-
         // Define table enrol_lmb_course to be created.
         $table = new xmldb_table('enrol_lmb_course');
 
@@ -166,20 +304,16 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
             $dbman->create_table($table);
         }
 
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2016052500, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2016052501) {
-
         // Define table enrol_lmb_member_person to be created.
         $table = new xmldb_table('enrol_lmb_member_person');
 
         // Adding fields to table enrol_lmb_member_person.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('groupsdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('membersdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        $table->add_field('membersdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('referenceagent', XMLDB_TYPE_CHAR, '64', null, null, null, null);
+        $table->add_field('messagereference', XMLDB_TYPE_CHAR, '128', null, null, null, null);
+        $table->add_field('groupsdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null);
         $table->add_field('groupsdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
         $table->add_field('roletype', XMLDB_TYPE_CHAR, '2', null, XMLDB_NOTNULL, null, null);
         $table->add_field('status', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
@@ -191,319 +325,14 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         // Adding keys to table enrol_lmb_member_person.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
 
+        // Adding indexes to table enrol_lmb_member_person.
+        $table->add_index('messagereference-referenceagent', XMLDB_INDEX_NOTUNIQUE, array('messagereference', 'referenceagent'));
+        $table->add_index('membersdid-groupsdid-roletype', XMLDB_INDEX_UNIQUE, array('membersdid', 'groupsdid', 'roletype'));
+
         // Conditionally launch create table for enrol_lmb_member_person.
         if (!$dbman->table_exists($table)) {
             $dbman->create_table($table);
         }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2016052501, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2016052600) {
-
-        // Define table enrol_lmb_member_group to be created.
-        $table = new xmldb_table('enrol_lmb_member_group');
-
-        // Adding fields to table enrol_lmb_member_group.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('groupsdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('groupsdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('status', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('additional', XMLDB_TYPE_TEXT, null, null, null, null, null);
-        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-
-        // Adding keys to table enrol_lmb_member_group.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-
-        // Conditionally launch create table for enrol_lmb_member_group.
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
-        }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2016052600, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2016052600) {
-
-        // Define table enrol_lmb_member_group to be created.
-        $table = new xmldb_table('enrol_lmb_member_group');
-
-        // Adding fields to table enrol_lmb_member_group.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('groupsdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('groupsdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('status', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('additional', XMLDB_TYPE_TEXT, null, null, null, null, null);
-        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-
-        // Adding keys to table enrol_lmb_member_group.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-
-        // Conditionally launch create table for enrol_lmb_member_group.
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
-        }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2016052600, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2017052500) {
-
-        // Define field referenceagent to be added to enrol_lmb_member_person.
-        $table = new xmldb_table('enrol_lmb_member_person');
-        $field = new xmldb_field('referenceagent', XMLDB_TYPE_CHAR, '64', null, null, null, null, 'sdid');
-
-        // Conditionally launch add field referenceagent.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Define field messagereference to be added to enrol_lmb_member_person.
-        $field = new xmldb_field('messagereference', XMLDB_TYPE_CHAR, '128', null, null, null, null, 'referenceagent');
-
-        // Conditionally launch add field messagereference.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Define index sdid-sdidsource (not unique) to be added to enrol_lmb_member_person.
-        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_NOTUNIQUE, array('sdid', 'sdidsource'));
-
-        // Conditionally launch add index sdid-sdidsource.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        // Define index messagereference-referenceagent (not unique) to be added to enrol_lmb_member_person.
-        $index = new xmldb_index('messagereference-referenceagent',
-                XMLDB_INDEX_NOTUNIQUE, array('messagereference', 'referenceagent'));
-
-        // Conditionally launch add index messagereference-referenceagent.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2017052500, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2017052501) {
-
-        // Define index sdid-sdidsource (not unique) to be dropped form enrol_lmb_member_person.
-        $table = new xmldb_table('enrol_lmb_member_person');
-        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_NOTUNIQUE, array('sdid', 'sdidsource'));
-
-        // Conditionally launch drop index sdid-sdidsource.
-        if ($dbman->index_exists($table, $index)) {
-            $dbman->drop_index($table, $index);
-        }
-
-        // Changing nullability of field sdidsource on table enrol_lmb_member_person to null.
-        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
-
-        // Launch change of nullability for field sdidsource.
-        $dbman->change_field_notnull($table, $field);
-
-        // Changing nullability of field groupsdidsource on table enrol_lmb_member_person to null.
-        $field = new xmldb_field('groupsdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'messagereference');
-
-        // Launch change of nullability for field groupsdidsource.
-        $dbman->change_field_notnull($table, $field);
-
-        // Define index sdid-groupsdid (not unique) to be added to enrol_lmb_member_person.
-        $index = new xmldb_index('sdid-groupsdid', XMLDB_INDEX_NOTUNIQUE, array('sdid', 'groupsdid'));
-
-        // Conditionally launch add index sdid-groupsdid.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2017052501, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2017052502) {
-
-        // Define index sdid-sdidsource (not unique) to be dropped form enrol_lmb_term.
-        $table = new xmldb_table('enrol_lmb_term');
-        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
-
-        // Conditionally launch drop index sdid-sdidsource.
-        if ($dbman->index_exists($table, $index)) {
-            $dbman->drop_index($table, $index);
-        }
-
-        // Define field referenceagent to be added to enrol_lmb_term.
-        $field = new xmldb_field('referenceagent', XMLDB_TYPE_CHAR, '64', null, null, null, null, 'sdid');
-
-        // Conditionally launch add field referenceagent.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Define field messagereference to be added to enrol_lmb_term.
-        $field = new xmldb_field('messagereference', XMLDB_TYPE_CHAR, '128', null, null, null, null, 'referenceagent');
-
-        // Conditionally launch add field messagereference.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Changing nullability of field sdidsource on table enrol_lmb_member_person to null.
-        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
-
-        // Launch change of nullability for field sdidsource.
-        $dbman->change_field_notnull($table, $field);
-
-        // Define index sdid-sdidsource (not unique) to be added to enrol_lmb_term.
-        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
-
-        // Conditionally launch add index sdid-sdidsource.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2017052502, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2018012900) {
-        require_once($CFG->dirroot.'/enrol/lmb/upgradelib.php');
-
-        // Define field primaryrole to be added to enrol_lmb_person.
-        $table = new xmldb_table('enrol_lmb_person');
-        $field = new xmldb_field('primaryrole', XMLDB_TYPE_CHAR, '100', null, null, null, null, 'roleprospectivestudent');
-
-        // Conditionally launch add field primaryrole.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        enrol_lmb_upgrade_promote_column('enrol_lmb_person', 'primaryrole');
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2018012900, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2018012901) {
-
-        // Define index sdid-sdidsource (unique) to be dropped form enrol_lmb_person.
-        $table = new xmldb_table('enrol_lmb_person');
-        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
-
-        // Conditionally launch drop index sdid-sdidsource.
-        if ($dbman->index_exists($table, $index)) {
-            $dbman->drop_index($table, $index);
-        }
-
-        // Changing nullability of field sdidsource on table enrol_lmb_person to null.
-        $table = new xmldb_table('enrol_lmb_person');
-        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
-
-        // Launch change of nullability for field sdidsource.
-        $dbman->change_field_notnull($table, $field);
-
-        // Define index sdid-sdidsource (unique) to be added to enrol_lmb_person.
-        $table = new xmldb_table('enrol_lmb_person');
-        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
-
-        // Conditionally launch add index sdid-sdidsource.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        // Now work on member_person.
-
-        // Define index sdid-groupsdid (not unique) to be dropped form enrol_lmb_member_person.
-        $table = new xmldb_table('enrol_lmb_member_person');
-        $index = new xmldb_index('sdid-groupsdid', XMLDB_INDEX_NOTUNIQUE, array('sdid', 'groupsdid'));
-
-        // Conditionally launch drop index sdid-groupsdid.
-        if ($dbman->index_exists($table, $index)) {
-            $dbman->drop_index($table, $index);
-        }
-
-        // Rename field sdidsource on table enrol_lmb_member_person to membersdidsource.
-        $table = new xmldb_table('enrol_lmb_member_person');
-        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
-
-        // Launch rename field membersdidsource.
-        $dbman->rename_field($table, $field, 'membersdidsource');
-
-        // Rename field sdid on table enrol_lmb_member_person to membersdid.
-        $table = new xmldb_table('enrol_lmb_member_person');
-        $field = new xmldb_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null, 'membersdidsource');
-
-        // Launch rename field membersdid.
-        $dbman->rename_field($table, $field, 'membersdid');
-
-        // Define index membersdid-groupsdid-roletype (unique) to be added to enrol_lmb_member_person.
-        $table = new xmldb_table('enrol_lmb_member_person');
-        $index = new xmldb_index('membersdid-groupsdid-roletype', XMLDB_INDEX_UNIQUE, array('membersdid', 'groupsdid', 'roletype'));
-
-        // Conditionally launch add index membersdid-groupsdid-roletype.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        // Now onto member_group.
-        // Rename field sdidsource on table enrol_lmb_member_group to membersdidsource.
-        $table = new xmldb_table('enrol_lmb_member_group');
-        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null, 'id');
-
-        // Launch rename field sdidsource.
-        $dbman->rename_field($table, $field, 'membersdidsource');
-
-        // Rename field sdid on table enrol_lmb_member_group to membersdid.
-        $table = new xmldb_table('enrol_lmb_member_group');
-        $field = new xmldb_field('sdid', XMLDB_TYPE_CHAR, '127', null, XMLDB_NOTNULL, null, null, 'sdidsource');
-
-        // Launch rename field sdid.
-        $dbman->rename_field($table, $field, 'membersdid');
-
-        // Changing nullability of field membersdidsource on table enrol_lmb_member_group to null.
-        $table = new xmldb_table('enrol_lmb_member_group');
-        $field = new xmldb_field('membersdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
-
-        // Launch change of nullability for field membersdidsource.
-        $dbman->change_field_notnull($table, $field);
-
-                // Define index membersdid-groupsdid (unique) to be added to enrol_lmb_member_group.
-        $table = new xmldb_table('enrol_lmb_member_group');
-        $index = new xmldb_index('membersdid-groupsdid', XMLDB_INDEX_UNIQUE, array('membersdid', 'groupsdid'));
-
-        // Conditionally launch add index membersdid-groupsdid.
-        if (!$dbman->index_exists($table, $index)) {
-            $dbman->add_index($table, $index);
-        }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2018012901, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2018013000) {
-
-        // Define field type to be added to enrol_lmb_member_group.
-        $table = new xmldb_table('enrol_lmb_member_group');
-        $field = new xmldb_field('type', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null, 'groupsdid');
-
-        // Conditionally launch add field type.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2018013000, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2018013001) {
 
         // Define table enrol_lmb_crosslist to be created.
         $table = new xmldb_table('enrol_lmb_crosslist');
@@ -541,6 +370,7 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
 
         // Adding keys to table enrol_lmb_crosslist_member.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('crosslistid', XMLDB_KEY_FOREIGN, array('crosslistid'), 'enrol_lmb_crosslist', array('id'));
 
         // Adding indexes to table enrol_lmb_crosslist_member.
         $table->add_index('sdid-crosslistid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'crosslistid', 'sdidsource'));
@@ -550,28 +380,6 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
             $dbman->create_table($table);
         }
 
-        // Lmb savepoint reached.
-        upgrade_plugin_savepoint(true, 2018013001, 'enrol', 'lmb');
-    }
-
-    if ($oldversion < 2018013100) {
-
-        // Define table enrol_lmb_member_group to be dropped.
-        $table = new xmldb_table('enrol_lmb_member_group');
-
-        // Conditionally launch drop table for enrol_lmb_member_group.
-        if ($dbman->table_exists($table)) {
-            $dbman->drop_table($table);
-        }
-
-        // Define key crosslistid (foreign) to be added to enrol_lmb_crosslist_member.
-        $table = new xmldb_table('enrol_lmb_crosslist_member');
-        $key = new xmldb_key('crosslistid', XMLDB_KEY_FOREIGN, array('crosslistid'), 'enrol_lmb_crosslist', array('id'));
-
-        // Launch add key crosslistid.
-        $dbman->add_key($table, $key);
-
-        // Lmb savepoint reached.
         upgrade_plugin_savepoint(true, 2018013100, 'enrol', 'lmb');
     }
 

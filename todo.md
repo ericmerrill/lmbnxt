@@ -1,12 +1,15 @@
 Things to migrate
-Settings
+# Settings
+
+# Settings Done - Needs docs
 - logtolocation > logpath
 - bannerxmllocation > xmlpath
 - bannerxmlfolder > extractpath
 - ignoreemailcase > lowercaseemails
 - ignoreusernamecase > (delete)
 - usernamesource (moved to constants)
-- cattype (moved to constants) (Note that selected is 'other' in old settings)
+- customfield1source (moved to constants)
+- cattype (moved to constants)
 - xlstype (moved to constants)
 - forcename split to forcefirstname and forcelastname
 
@@ -17,6 +20,7 @@ Settings
 * Assumes that if there is a `<?xml` or `<!DOCTYPE` in the start of the doc, it is well formed
 * Otherwise, it wraps the input in <lmb> tags to make sure it works correctly
 * ignoreusernamecaseis now assumed
+* Setting changes from above
 
 # Object types
 

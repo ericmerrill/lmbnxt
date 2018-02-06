@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\settings;
+use enrol_lmb\local\data\crosslist;
+
 function enrol_lmb_upgrade_promote_column($table, $column) {
     global $DB;
 
@@ -57,4 +60,91 @@ function enrol_lmb_upgrade_promote_column($table, $column) {
     }
 
     $recordset->close();
+}
+
+function enrol_lmb_upgrade_migrate_user_source_value($value) {
+    $new = false;
+
+    switch ($value) {
+        case 'email':
+            $new = settings::USER_NAME_EMAIL;
+            break;
+        case 'emailname':
+            $new = settings::USER_NAME_EMAILNAME;
+            break;
+        case 'loginid':
+            $new = settings::USER_NAME_LOGONID;
+            break;
+        case 'sctid':
+            $new = settings::USER_NAME_SCTID;
+            break;
+        case 'emailid':
+            $new = settings::USER_NAME_EMAILID;
+            break;
+        case 'other':
+            $new = settings::USER_NAME_OTHER;
+            break;
+        default:
+            // Assume that if the value is numeric, then it was already converted.
+            if (is_numeric($value)) {
+                $new = $value;
+            }
+            break;
+    }
+
+    return $new;
+}
+
+function enrol_lmb_upgrade_migrate_cat_type_value($value) {
+    $new = false;
+
+    switch ($value) {
+        case 'term':
+            $new = settings::COURSE_CATS_TERMS;
+            break;
+        case 'dept':
+            $new = settings::COURSE_CATS_DEPTS;
+            break;
+        case 'deptcode':
+            $new = settings::COURSE_CATS_DEPTS_SHORT;
+            break;
+        case 'termdept':
+            $new = settings::COURSE_CATS_TERM_DEPTS;
+            break;
+        case 'termdeptcode':
+            $new = settings::COURSE_CATS_TERM_DEPTS_SHORT;
+            break;
+        case 'other':
+            $new = settings::COURSE_CATS_SELECTED;
+            break;
+        default:
+            // Assume that if the value is numeric, then it was already converted.
+            if (is_numeric($value)) {
+                $new = $value;
+            }
+            break;
+    }
+
+    return $new;
+}
+
+function enrol_lmb_upgrade_migrate_crosslist_type_value($value) {
+    $new = false;
+
+    switch ($value) {
+        case 'meta':
+            $new = crosslist::GROUP_TYPE_META;
+            break;
+        case 'merge':
+            $new = crosslist::GROUP_TYPE_MERGE;
+            break;
+        default:
+            // Assume that if the value is numeric, then it was already converted.
+            if (is_numeric($value)) {
+                $new = $value;
+            }
+            break;
+    }
+
+    return $new;
 }
