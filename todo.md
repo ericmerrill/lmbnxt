@@ -14,6 +14,7 @@ Things to migrate
 - xlstype (moved to constants)
 - forcename split to forcefirstname and forcelastname
 - logerrors (convert to menu choice)
+- coursehidden (Moved to constants)
 
 
 

@@ -182,6 +182,15 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
             unset_config('logerrors', 'enrol_lmb');
         }
 
+        if (isset($config->coursehidden)) {
+            $new = enrol_lmb_upgrade_migrate_course_hidden_value($config->coursehidden);
+            if ($new !== false) {
+                set_config('coursehidden', $new, 'enrol_lmb');
+            } else {
+                unset_config('coursehidden', 'enrol_lmb');
+            }
+        }
+
         upgrade_plugin_savepoint(true, 2018013000, 'enrol', 'lmb');
     }
 

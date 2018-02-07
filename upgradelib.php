@@ -152,6 +152,30 @@ function enrol_lmb_upgrade_migrate_crosslist_type_value($value) {
     return $new;
 }
 
+function enrol_lmb_upgrade_migrate_course_hidden_value($value) {
+    $new = false;
+
+    switch ($value) {
+        case 'never':
+            $new = settings::CREATE_COURSE_VISIBLE;
+            break;
+        case 'cron':
+            $new = settings::CREATE_COURSE_CRON;
+            break;
+        case 'always':
+            $new = settings::CREATE_COURSE_HIDDEN;
+            break;
+        default:
+            // Assume that if the value is numeric, then it was already converted.
+            if (is_numeric($value)) {
+                $new = $value;
+            }
+            break;
+    }
+
+    return $new;
+}
+
 function enrol_lmb_upgrade_migrate_old_enrols() {
     global $DB;
 
@@ -321,7 +345,7 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
                      WHERE enrolid = :oldid
                        AND userid IN (SELECT u.id FROM {enrol_lmb_old_enrolments} enrol
                                         JOIN {user} u ON u.idnumber = enrol.personsourcedid
-                                       WHERE coursesourcedid = :groupsdid)";
+                                       WHERE coursesourcedid = :groupsdid AND status = 1)";
 
             $params = ['newid' => $instance->id, 'oldid' => $existing->id, 'groupsdid' => $member->sdid];
 
@@ -333,7 +357,7 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
                        AND component = :component
                        AND userid IN (SELECT u.id FROM {enrol_lmb_old_enrolments} enrol
                                         JOIN {user} u ON u.idnumber = enrol.personsourcedid
-                                       WHERE coursesourcedid = :groupsdid)";
+                                       WHERE coursesourcedid = :groupsdid AND status = 1)";
 
             $params = ['newid' => $instance->id,
                        'oldid' => $existing->id,
@@ -357,5 +381,6 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
         return;
     }
 
-    $DB->delete_records('enrol', ['id' => $existing->id]);
+    $enrol->delete_instance($existing);
+
 }
