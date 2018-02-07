@@ -29,6 +29,8 @@ use enrol_lmb\settings;
 function xmldb_enrol_lmb_upgrade($oldversion=0) {
     global $CFG, $DB;
 
+    require_once($CFG->dirroot.'/enrol/lmb/upgradelib.php');
+
     $dbman = $DB->get_manager();
 
     // We need to rename all the old tables.

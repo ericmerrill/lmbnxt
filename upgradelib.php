@@ -26,7 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\settings;
-use enrol_lmb\local\data\crosslist;
+use enrol_lmb\local\data;
+use enrol_lmb\local\moodle;
 
 function enrol_lmb_upgrade_promote_column($table, $column) {
     global $DB;
@@ -133,10 +134,10 @@ function enrol_lmb_upgrade_migrate_crosslist_type_value($value) {
 
     switch ($value) {
         case 'meta':
-            $new = crosslist::GROUP_TYPE_META;
+            $new = data\crosslist::GROUP_TYPE_META;
             break;
         case 'merge':
-            $new = crosslist::GROUP_TYPE_MERGE;
+            $new = data\crosslist::GROUP_TYPE_MERGE;
             break;
         default:
             // Assume that if the value is numeric, then it was already converted.
@@ -147,4 +148,206 @@ function enrol_lmb_upgrade_migrate_crosslist_type_value($value) {
     }
 
     return $new;
+}
+
+function enrol_lmb_upgrade_migrate_old_enrols() {
+    global $DB;
+
+    $records = $DB->get_recordset('enrol_lmb_old_enrolments');
+
+    foreach ($records as $record) {
+        $member = new data\member_person();
+        $member->membersdid = $record->personsourcedid;
+        $member->groupsdid = $record->coursesourcedid;
+
+        $role = str_pad($record->role, 2, '0', STR_PAD_LEFT);
+        $member->roletype = $role;
+
+        if ($member->exists()) {
+            mtrace("Skipping {$member->membersdid} in {$member->groupsdid}, role {$role} because it already exists.");
+            continue;
+        }
+
+        $member->term = $record->term;
+        $member->status = 1;
+        $member->membertype = 1;
+
+        if (!empty($record->beginrestrict)) {
+            $member->beginrestrict = $record->beginrestrict;
+        }
+        if (!empty($record->endrestrict)) {
+            $member->endrestrict = $record->endrestrict;
+        }
+
+        if (!empty($record->beginrestricttime)) {
+            $member->direct_set('begindate', $record->beginrestricttime);;
+        }
+        if (!empty($record->endrestricttime)) {
+            $member->direct_set('enddate', $record->endrestricttime);;
+        }
+
+        if ($record->succeeded) {
+            $member->moodlestatus = $member->status;
+        } else {
+            if ($member->status) {
+                $member->moodlestatus = 0;
+            } else {
+                $member->moodlestatus = 1;
+            }
+        }
+
+        if ($record->gradable) {
+            $member->gradable = $record->gradable;
+            $member->midtermgrademode = $record->midtermgrademode;
+            $member->midtermsubmitted = $record->midtermsubmitted;
+            $member->finalgrademode = $record->finalgrademode;
+            $member->finalsubmitted = $record->finalsubmitted;
+        }
+
+
+        $member->migrated = 1;
+
+        print "<pre>";var_export($member);print "</pre>";
+    }
+
+    $records->close();
+}
+
+function enrol_lmb_upgrade_migrate_old_crosslists() {
+    global $DB;
+
+    $records = $DB->get_recordset('enrol_lmb_old_crosslists', null, 'crosssourcedidsource ASC');
+
+    $previousxls = '';
+    $crosslist = false;
+
+    foreach ($records as $record) {
+        $crosslistid = $record->crosslistsourcedid;
+        if ($crosslistid != $previousxls) {
+            if ($crosslist) {
+                //print "<pre>";print_r($crosslist);print "</pre>";
+                $crosslist->save_to_db();
+                $crosslist = false;
+            }
+
+            if ($DB->record_exists(data\crosslist::TABLE, ['sdid' => $crosslistid])) {
+                mtrace("Skipping {$crosslistid} because it already exists.");
+                continue;
+            }
+
+            $previousxls = $crosslistid;
+
+            $crosslist = new data\crosslist();
+            $crosslist->sdid = $crosslistid;
+            if (!empty($record->crosslistsourcedid)) {
+                $crosslist->sdidsource = $record->crosssourcedidsource;
+            }
+            $crosslist->type = $record->type;
+            $crosslist->migrated = 1;
+        }
+
+        $member = new data\crosslist_member();
+        $member->sdid = $record->coursesourcedid;
+        if (!empty($record->coursesourcedidsource)) {
+            $member->sdidsource = $record->coursesourcedidsource;
+        }
+        $member->status = $record->status;
+        if (!empty($record->crosslistgroupid)) {
+            $member->groupid = $record->crosslistgroupid;
+        }
+        if (!empty($record->manual)) {
+            $member->manual = $record->manual;
+        }
+
+        $member->migrated = 1;
+        $member->membertype = 2;
+
+        $crosslist->add_member($member);
+
+        //$crosssourcedidsource
+    }
+
+    if ($crosslist) {
+        $crosslist->save_to_db();
+        //print "<pre>";print_r($crosslist);print "</pre>";
+    }
+
+    // TODO - need to migrade enrols...
+
+
+    $records->close();
+}
+
+function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
+    global $DB;
+
+    // Only do merges.
+    if ($crosslist->type != data\crosslist::GROUP_TYPE_MERGE) {
+        return;
+    }
+
+    $course = $DB->get_record('course', ['idnumber' => $crosslist->sdid]);
+    if (!$course) {
+        mtrace("Skipping enrols for {$crosslist->sdid}, course not found.");
+        return;
+    }
+
+    $members = $crosslist->get_members();
+    $enrol = new enrol_lmb_plugin();
+
+    $params = ['enrol' => 'lmb', 'courseid' => $course->id, 'customchar1' => null, 'customchar2' => null];
+    $existing = $DB->get_record('enrol', $params);
+
+    foreach ($members as $member) {
+        if ($member->status) {
+            $instance = $enrol->get_instance($course, $member->sdid);
+            if (empty($existing)) {
+                mtrace("Skipping enrols for {$crosslist->sdid}, original enrol not found.");
+                continue;
+            }
+            if (empty($instance)) {
+                mtrace("Skipping enrols for {$crosslist->sdid} {$member->sdid}, child instance not found.");
+                continue;
+            }
+
+            // Need to update mdl_user_enrolments->enrolid and mdl_role_assignments->itemid (with component enrol_lmb).
+            $sql = "UPDATE {user_enrolments}
+                       SET enrolid = :newid
+                     WHERE enrolid = :oldid
+                       AND userid IN (SELECT u.id FROM {enrol_lmb_old_enrolments} enrol
+                                        JOIN {user} u ON u.idnumber = enrol.personsourcedid
+                                       WHERE coursesourcedid = :groupsdid)";
+
+            $params = ['newid' => $instance->id, 'oldid' => $existing, 'groupsdid' => $member->sdid];
+
+            $DB->execute($sql, $params);
+
+            $sql = "UPDATE {role_assignments}
+                       SET itemid = :newid
+                     WHERE itemid = :oldid
+                       AND component = :component
+                       AND userid IN (SELECT u.id FROM {enrol_lmb_old_enrolments} enrol
+                                        JOIN {user} u ON u.idnumber = enrol.personsourcedid
+                                       WHERE coursesourcedid = :groupsdid";
+
+            $params = ['newid' => $instance->id, 'oldid' => $existing, 'groupsdid' => $member->sdid];
+
+            $DB->execute($sql, $params);
+
+            moodle\course_enrolments::reprocess_enrolments_for_section_sdid($member->sdid);
+        }
+    }
+
+    if (empty($existing)) {
+        return;
+    }
+
+    $count = $DB->count_records('user_enrolments', ['enrolid' => $existing->id]);
+
+    if ($count) {
+        mtrace("Records still left in user_enrolments for {$crosslist->sdid}, not deleting.")
+        return;
+    }
+
+    $DB->delete_records('user_enrolments', ['id' => $existing->id]);
 }

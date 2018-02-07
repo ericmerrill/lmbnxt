@@ -23,6 +23,9 @@ Things to migrate
 * Setting changes from above
 
 # Object types
+* Add additional status columns (crosslists, course, etc)
+* Make additional always save in same order...
+* Add term column to enrol
 
 
 # Features to add

@@ -131,6 +131,20 @@ abstract class base {
     }
 
     /**
+     * Set a property, either in the db object, ot the additional data object, but skipping the handler.
+     *
+     * @param string $name Name of property to set
+     * @param string $value The value
+     */
+    public function direct_set($name, $value) {
+        if (in_array($name, $this->dbkeys)) {
+            $this->record->$name = $value;
+            return;
+        }
+        $this->additionaldata->$name = $value;
+    }
+
+    /**
      * Unset the passed property.
      *
      * @param string $name Name of property to unset
@@ -342,6 +356,14 @@ abstract class base {
         $params = array('sdid' => $this->__get('sdid'));
 
         return $DB->get_record(static::TABLE, $params);
+    }
+
+    public function exists() {
+        if ($this->get_record()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
