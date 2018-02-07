@@ -98,6 +98,26 @@ class enrolment extends base {
         foreach ($instances as $instance) {
             $extra = '';
             if ($data->status) {
+                $sql = "SELECT * FROM {user_enrolments} ue
+                          JOIN {role_assignments} ra
+                            ON ue.userid = ra.userid AND ue.enrolid = ra.itemid AND ra.component = 'enrol_lmb'
+                         WHERE ue.enrolid = :enrolid
+                           AND ue.userid = :userid
+                           AND ue.timestart = :start
+                           AND ue.timeend = :end
+                           AND ra.roleid = :roleid";
+
+
+                $params = ['enrolid' => $instance->id,
+                           'userid' => $user->id,
+                           'start' => 0,
+                           'end' => 0,
+                           'roleid' => $roleid];
+
+                if ($DB->record_exists_sql($sql, $params)) {
+                    // It alrady exists, so we can skip it.
+                    continue;
+                }
                 // TODO - Restricted times.
                 // TODO - Recover grades.
                 if (!empty($instance->customchar2)) {
