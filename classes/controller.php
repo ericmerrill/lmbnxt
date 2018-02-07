@@ -118,8 +118,8 @@ class controller {
 
             if (empty($response)) {
                 // TODO - Error.
-                logging::instance()->log_line("No webservice response found.", logging::ERROR_MAJOR);
-                return;
+                //logging::instance()->log_line("No webservice response found.", logging::ERROR_MAJOR);
+                return 'Temp';
             }
 
             return $response;

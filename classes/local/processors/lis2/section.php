@@ -110,11 +110,11 @@ class section extends base {
         }
 
         $rubric = $this->dataobj->rubric;
-        $dept = $this->dataobj->deptsdid;
-        if (!empty($rubric) && !empty($dept)) {
-            if (preg_match('|^'.$dept.'-([a-zA-Z\d]*)-([a-zA-Z\d]*)$|', $rubric, $matches)) {
-                $this->dataobj->coursenumber = $matches[1];
-                $this->dataobj->sectionnumber = $matches[2];
+        if (!empty($rubric)) {
+            if (preg_match('|^([a-zA-Z\d]*)-([a-zA-Z\d]*)-([a-zA-Z\d]*)$|', $rubric, $matches)) {
+                $this->dataobj->rubricdept = $matches[1];
+                $this->dataobj->coursenumber = $matches[2];
+                $this->dataobj->sectionnumber = $matches[3];
             }
         }
     }

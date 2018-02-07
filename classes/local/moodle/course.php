@@ -272,7 +272,7 @@ class course extends base {
         $title = str_replace('[LONG]', $section->rubric, $title);
         $title = str_replace('[FULL]', $section->title, $title);
         $title = str_replace('[RUBRIC]', '[DEPT]-[NUM]', $title);
-        $title = str_replace('[DEPT]', $section->deptsdid, $title);
+        $title = str_replace('[DEPT]', $section->rubricdept, $title);
         $title = str_replace('[NUM]', $section->coursenumber, $title);
         $title = str_replace('[SECTION]', $section->sectionnumber, $title);
 

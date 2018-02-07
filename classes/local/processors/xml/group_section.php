@@ -113,6 +113,7 @@ class group_section extends base {
 
         if (preg_match('|([a-z0-9]*)-([a-z0-9]*)-([a-z0-9]*)|i', $rubric, $matches)) {
             $this->dataobj->deptsdid = $matches[1];
+            $this->dataobj->rubricdept = $matches[1];
             $this->dataobj->coursenumber = $matches[2];
             $this->dataobj->sectionnumber = $matches[3];
         }
