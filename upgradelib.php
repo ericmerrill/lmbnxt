@@ -29,6 +29,8 @@ use enrol_lmb\settings;
 use enrol_lmb\local\data;
 use enrol_lmb\local\moodle;
 
+require_once($CFG->dirroot.'/enrol/lmb/lib.php');
+
 function enrol_lmb_upgrade_promote_column($table, $column) {
     global $DB;
 
@@ -169,7 +171,7 @@ function enrol_lmb_upgrade_migrate_old_enrols() {
         }
 
         $member->term = $record->term;
-        $member->status = 1;
+        $member->status = $record->status;
         $member->membertype = 1;
 
         if (!empty($record->beginrestrict)) {
@@ -207,7 +209,8 @@ function enrol_lmb_upgrade_migrate_old_enrols() {
 
         $member->migrated = 1;
 
-        print "<pre>";var_export($member);print "</pre>";
+        //print "<pre>";var_export($member);print "</pre>";
+        $member->save_to_db();
     }
 
     $records->close();
@@ -216,7 +219,7 @@ function enrol_lmb_upgrade_migrate_old_enrols() {
 function enrol_lmb_upgrade_migrate_old_crosslists() {
     global $DB;
 
-    $records = $DB->get_recordset('enrol_lmb_old_crosslists', null, 'crosssourcedidsource ASC');
+    $records = $DB->get_recordset('enrol_lmb_old_crosslists', null, 'crosslistsourcedid ASC');
 
     $previousxls = '';
     $crosslist = false;
@@ -227,6 +230,7 @@ function enrol_lmb_upgrade_migrate_old_crosslists() {
             if ($crosslist) {
                 //print "<pre>";print_r($crosslist);print "</pre>";
                 $crosslist->save_to_db();
+                enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist);
                 $crosslist = false;
             }
 
@@ -269,6 +273,7 @@ function enrol_lmb_upgrade_migrate_old_crosslists() {
 
     if ($crosslist) {
         $crosslist->save_to_db();
+        enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist);
         //print "<pre>";print_r($crosslist);print "</pre>";
     }
 
@@ -318,7 +323,7 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
                                         JOIN {user} u ON u.idnumber = enrol.personsourcedid
                                        WHERE coursesourcedid = :groupsdid)";
 
-            $params = ['newid' => $instance->id, 'oldid' => $existing, 'groupsdid' => $member->sdid];
+            $params = ['newid' => $instance->id, 'oldid' => $existing->id, 'groupsdid' => $member->sdid];
 
             $DB->execute($sql, $params);
 
@@ -328,9 +333,12 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
                        AND component = :component
                        AND userid IN (SELECT u.id FROM {enrol_lmb_old_enrolments} enrol
                                         JOIN {user} u ON u.idnumber = enrol.personsourcedid
-                                       WHERE coursesourcedid = :groupsdid";
+                                       WHERE coursesourcedid = :groupsdid)";
 
-            $params = ['newid' => $instance->id, 'oldid' => $existing, 'groupsdid' => $member->sdid];
+            $params = ['newid' => $instance->id,
+                       'oldid' => $existing->id,
+                       'groupsdid' => $member->sdid,
+                       'component' => 'enrol_lmb'];
 
             $DB->execute($sql, $params);
 
@@ -349,5 +357,5 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
         return;
     }
 
-    $DB->delete_records('user_enrolments', ['id' => $existing->id]);
+    $DB->delete_records('enrol', ['id' => $existing->id]);
 }

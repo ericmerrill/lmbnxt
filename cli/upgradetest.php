@@ -29,8 +29,8 @@ require(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->libdir.'/clilib.php');
 require_once($CFG->dirroot.'/enrol/lmb/upgradelib.php');
 
-list($options, $unrecognized) = cli_get_params(array('help' => false),
-                                               array());
+list($options, $unrecognized) = cli_get_params(array('up' => false, 'help' => false),
+                                               array('u' => 'up'));
 
 if ($unrecognized) {
     $unrecognized = implode("\n  ", $unrecognized);
@@ -64,5 +64,16 @@ Example:
     die;
 }
 
-enrol_lmb_upgrade_migrate_old_enrols();
+switch ($options['up']) {
+    case ('1'):
+        enrol_lmb_upgrade_migrate_old_enrols();
+        break;
+    case ('2'):
+        enrol_lmb_upgrade_migrate_old_crosslists();
+        break;
+    case ('3'):
+
+        break;
+}
+//enrol_lmb_upgrade_migrate_old_enrols();
 //enrol_lmb_upgrade_migrate_old_crosslists();

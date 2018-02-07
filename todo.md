@@ -1,6 +1,7 @@
 Things to migrate
 # Settings
 
+
 # Settings Done - Needs docs
 - logtolocation > logpath
 - bannerxmllocation > xmlpath
@@ -12,6 +13,7 @@ Things to migrate
 - cattype (moved to constants)
 - xlstype (moved to constants)
 - forcename split to forcefirstname and forcelastname
+- logerrors (convert to menu choice)
 
 
 

@@ -17,6 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\settings;
+use enrol_lmb\logging;
 
 /**
  * Upgrade file.
@@ -170,6 +171,15 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
             } else {
                 unset_config('xlstype', 'enrol_lmb');
             }
+        }
+
+        if (isset($config->logerrors)) {
+            if ($config->logerrors) {
+                set_config('logginglevel', logging::ERROR_NOTICE, 'enrol_lmb');
+            } else {
+                set_config('logginglevel', logging::ERROR_NONE, 'enrol_lmb');
+            }
+            unset_config('logerrors', 'enrol_lmb');
         }
 
         upgrade_plugin_savepoint(true, 2018013000, 'enrol', 'lmb');
