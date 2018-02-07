@@ -345,7 +345,7 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
     $count = $DB->count_records('user_enrolments', ['enrolid' => $existing->id]);
 
     if ($count) {
-        mtrace("Records still left in user_enrolments for {$crosslist->sdid}, not deleting.")
+        mtrace("Records still left in user_enrolments for {$crosslist->sdid}, not deleting.");
         return;
     }
 
