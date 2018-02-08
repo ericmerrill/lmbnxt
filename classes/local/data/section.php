@@ -68,6 +68,8 @@ class section extends base {
 
     protected $donotempty = array('sdidsource', 'sdid');
 
+    protected $emptyonmissing = array();
+
     /**
      * Log a unique line to id this object.
      */

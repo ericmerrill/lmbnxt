@@ -177,11 +177,11 @@ class enrol_lmb_plugin extends enrol_plugin {
         } else {
             $enrol = new enrol_lmb_plugin();
             foreach ($crosslists as $member) {
-                $course = $DB->get_record('course', ['idnumber' => $member->groupsdid]);
-                if (empty($course)) {
+                $groupcourse = $DB->get_record('course', ['idnumber' => $member->groupsdid]);
+                if (empty($groupcourse)) {
                     continue;
                 }
-                $instance = $enrol->get_instance($course, $member->sdid);
+                $instance = $enrol->get_instance($groupcourse, $member->sdid);
                 if ($instance) {
                     $instances[] = $instance;
                 }
