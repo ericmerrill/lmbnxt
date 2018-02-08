@@ -51,6 +51,9 @@ abstract class base {
     /** @var array An array of keys that should not be blanked out on update if missing */
     protected $donotempty = array();
 
+    /** @var array|null An array of keys that should be blanked out on update if missing. Used instead of donotempty if exists. */
+    protected $emptyonmissing = null;
+
     /** @var object Object that contains additional data about the object. This will be JSON encoded. */
     protected $additionaldata;
 
@@ -198,6 +201,11 @@ abstract class base {
      * @return int The new property value
      */
     protected function handler_date($name, $value) {
+        if (is_int($value) || ctype_digit($value)) {
+            // If this is either an actual integer, or all the characters are ints, then don't convert.
+            return (int)$value;
+        }
+
         // TODO This really needs timezone work...
         $time = strtotime($value.' UTC');
 
@@ -332,17 +340,41 @@ abstract class base {
         $existingobj = new static();
         $existingobj->load_from_record($this->existing);
 
-        foreach ($this->donotempty as $key) {
-            // We have to do a special isset check, because we want to exclude default value returns.
-            if (in_array($key, $this->dbkeys)) {
-                $isset = isset($this->record->$key);
-            } else {
-                $isset = isset($this->additionaldata->$key);
+        if (is_array($this->emptyonmissing)) {
+            foreach ($this->dbkeys as $key) {
+                if ($key === 'additional') {
+                    continue;
+                }
+                if (!isset($this->record->$key) && $existingobj->__isset($key) && !in_array($key, $this->emptyonmissing)) {
+                    $this->direct_set($key, $existingobj->$key);
+                }
             }
-            if (!$isset && $existingobj->__isset($key)) {
-                $this->__set($key, $existingobj->__get($key));
+
+            $keys = $existingobj->get_additional_keys();
+
+            foreach ($keys as $key) {
+                if (!isset($this->additionaldata->$key) && !in_array($key, $this->emptyonmissing)) {
+                    $this->direct_set($key, $existingobj->$key);
+                }
+            }
+
+        } else {
+            foreach ($this->donotempty as $key) {
+                // We have to do a special isset check, because we want to exclude default value returns.
+                if (in_array($key, $this->dbkeys)) {
+                    $isset = isset($this->record->$key);
+                } else {
+                    $isset = isset($this->additionaldata->$key);
+                }
+                if (!$isset && $existingobj->__isset($key)) {
+                    $this->__set($key, $existingobj->__get($key));
+                }
             }
         }
+    }
+
+    public function get_additional_keys() {
+        return array_keys((array)$this->additionaldata);
     }
 
     /**

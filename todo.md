@@ -30,6 +30,11 @@ Things to migrate
 * Make additional always save in same order...
 * Add term column to enrol
 
+# Upgrade
+* Migrate term messages
+* Improve migration process
+* Delete old tables
+
 
 # Features to add
 * Progress object for parsing

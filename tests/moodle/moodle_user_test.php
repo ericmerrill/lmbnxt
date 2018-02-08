@@ -503,4 +503,41 @@ class moodle_user_testcase extends xml_helper {
         $this->assertInstanceOf(\stdClass::class, $result);
         $this->assertEquals('', $result->data);
     }
+
+    public function test_user_creation_enrol() {
+        global $DB, $CFG;
+
+        $this->resetAfterTest(true);
+
+        $course = $this->getDataGenerator()->create_course(['idnumber' => '10001.201740']);
+
+        $startenrols = $DB->count_records('user_enrolments');
+
+        $log = new logging_helper();
+        $log->set_logging_level(logging::ERROR_NOTICE);
+
+        $moodleenrol = new moodle\enrolment();
+        $enrolnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_student.xml');
+        $converter = new xml\membership();
+        $members = $converter->process_xml_to_data($enrolnode);
+        $member = reset($members);
+        $member->save_to_db();
+
+        // First no user.
+        $moodleenrol->convert_to_moodle($member);
+        $error = 'WARNING: Moodle user could not be found.';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        // Make sure no new enrolments happened somehow.
+        $this->assertEquals($startenrols, $DB->count_records('user_enrolments'));
+
+        // Now lets add the user.
+        $moodleuser = new moodle\user();
+        $personnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/person.xml');
+        $converter = new xml\person();
+        $user = $converter->process_xml_to_data($personnode);
+        $moodleuser->convert_to_moodle($user);
+
+        $this->assertEquals($startenrols + 1, $DB->count_records('user_enrolments'));
+    }
 }

@@ -98,4 +98,76 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertEquals('10001.201740', $member->groupsdid);
         $this->assertEquals(1, $member->membertype);
     }
+
+    public function test_member_enrol_and_unenrol() {
+        global $CFG;
+
+        $this->resetAfterTest(true);
+
+        $enrolnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_student.xml');
+        $unenrolnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_student_unenrol.xml');
+
+        $converter = new xml\membership();
+
+        $members = $converter->process_xml_to_data($enrolnode);
+
+        $this->assertInternalType('array', $members);
+        $this->assertCount(1, $members);
+
+        $member = $members[0];
+        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
+        $this->assertEquals('1000001', $member->membersdid);
+
+        $this->assertEquals('01', $member->roletype);
+        $this->assertEquals(1, $member->status);
+        $this->assertEquals(1, $member->recstatus);
+        $this->assertFalse(isset($member->subrole));
+
+        $this->assertEquals(1504051200, $member->begindate);
+        $this->assertEquals(0, $member->beginrestrict);
+        $this->assertEquals(1513468800, $member->enddate);
+        $this->assertEquals(1, $member->endrestrict);
+
+        $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
+        $this->assertEquals('10001.201740', $member->groupsdid);
+        $this->assertEquals(1, $member->membertype);
+
+        $this->assertEquals('Letter Grade', $member->midtermmode);
+        $this->assertEquals('4-Point Grade', $member->finalmode);
+        $this->assertEquals(1, $member->gradable);
+
+        $member->save_to_db();
+
+        $members = $converter->process_xml_to_data($unenrolnode);
+
+        $this->assertInternalType('array', $members);
+        $this->assertCount(1, $members);
+
+        $member = $members[0];
+//        print "<pre>";var_export($member);print "</pre>";
+        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertEquals('Test SCT Banner', $member->membersdidsource);
+        $this->assertEquals('1000001', $member->membersdid);
+
+        $this->assertEquals('01', $member->roletype);
+        $this->assertEquals(0, $member->status);
+        $this->assertEquals(3, $member->recstatus);
+        $this->assertFalse(isset($member->subrole));
+
+        $this->assertEquals(1504051200, $member->begindate);
+        $this->assertEquals(0, $member->beginrestrict);
+        $this->assertEquals(1513468800, $member->enddate);
+        $this->assertEquals(1, $member->endrestrict);
+
+        $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
+        $this->assertEquals('10001.201740', $member->groupsdid);
+        $this->assertEquals(1, $member->membertype);
+
+        $this->assertEquals('Letter Grade', $member->midtermmode);
+        $this->assertEquals('4-Point Grade', $member->finalmode);
+        $this->assertEquals(1, $member->gradable);
+
+        //print "<pre>";var_export($members);print "</pre>";
+    }
 }

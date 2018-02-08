@@ -30,6 +30,7 @@ use enrol_lmb\local\processors\xml;
 use enrol_lmb\local\data;
 use enrol_lmb\local\moodle;
 use enrol_lmb\settings;
+use enrol_lmb\logging;
 
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
@@ -301,5 +302,42 @@ class moodle_course_testcase extends xml_helper {
         $sections = $DB->count_records('course_sections', array('course' => $dbcourse->id));
         $sections -= 1; // Remove 1 to account for the general section.
         $this->assertEquals(18, $sections);
+    }
+
+    public function test_course_creation_enrol() {
+        global $DB, $CFG;
+
+        $this->resetAfterTest(true);
+
+        $course = $this->getDataGenerator()->create_user(['idnumber' => '1000001']);
+
+        $startenrols = $DB->count_records('user_enrolments');
+
+        $log = new logging_helper();
+        $log->set_logging_level(logging::ERROR_NOTICE);
+
+        $moodleenrol = new moodle\enrolment();
+        $enrolnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_student.xml');
+        $converter = new xml\membership();
+        $members = $converter->process_xml_to_data($enrolnode);
+        $member = reset($members);
+        $member->save_to_db();
+
+        // First no course.
+        $moodleenrol->convert_to_moodle($member);
+        $error = 'WARNING: Moodle course could not be found.';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        // Make sure no new enrolments happened somehow.
+        $this->assertEquals($startenrols, $DB->count_records('user_enrolments'));
+
+        // Now lets add the course.
+        $moodlecourse = new moodle\course();
+        $coursenode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/section.xml');
+        $converter = new xml\group();
+        $course = $converter->process_xml_to_data($coursenode);
+        $moodlecourse->convert_to_moodle($course);
+
+        $this->assertEquals($startenrols + 1, $DB->count_records('user_enrolments'));
     }
 }

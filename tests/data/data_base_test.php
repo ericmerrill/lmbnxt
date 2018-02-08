@@ -82,6 +82,12 @@ class data_base_testcase extends xml_helper {
         $log = new logging_helper();
         $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
 
+        $obj->date = "1552384000";
+        $this->assertEquals(1552384000, $obj->date);
+
+        $obj->date = 1552384000;
+        $this->assertEquals(1552384000, $obj->date);
+
         $obj->date = "2016-45-10";
         $this->assertEquals(0, $obj->date);
         $this->assertRegExp("|WARNING: |", $log->test_get_flush_buffer());

@@ -111,7 +111,12 @@ class user extends base {
             }
         }
 
-        $user->idnumber = $this->data->sdid;
+        // In cases where either the user's ID number is changing, or they are new, we should check enrolments.
+        $processenrols = false;
+        if ($new || $user->idnumber != $this->data->sdid) {
+            $user->idnumber = $this->data->sdid;
+            $processenrols = true;
+        }
 
         if ($new || $settings->get('forceemail')) {
             if (!empty($this->data->email)) {
@@ -175,6 +180,10 @@ class user extends base {
         if (!empty($mapping)) {
             $value = $this->get_field_for_setting($settings->get('customfield1source'));
             $this->save_custom_profile_value($mapping, $value);
+        }
+
+        if ($processenrols) {
+            course_enrolments::reprocess_enrolments_for_user_sdid($user->idnumber);
         }
     }
 

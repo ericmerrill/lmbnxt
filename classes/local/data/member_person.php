@@ -65,7 +65,9 @@ class member_person extends base {
                                 'gradable' => 'handler_boolean');
 
     protected $donotempty = array('membersdidsource', 'membersdid', 'referenceagent', 'messagereference', 'roletype', 'status',
-                                  'groupsdidsource', 'groupsdid', 'begindate', 'enddate');
+                                  'groupsdidsource', 'groupsdid', 'begindate', 'enddate', 'beginrestrict', 'endrestrict');
+
+    protected $emptyonmissing = array();
 
     /**
      * Log a unique line to id this object.

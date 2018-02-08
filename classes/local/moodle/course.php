@@ -138,6 +138,11 @@ class course extends base {
             logging::instance()->log_line($error, logging::ERROR_MAJOR);
             throw $e;
         }
+
+        if ($new) {
+            // If this is new, we want to process any existing enrolments that we missed.
+            course_enrolments::reprocess_enrolments_for_section_sdid($course->idnumber);
+        }
     }
 
     /**
