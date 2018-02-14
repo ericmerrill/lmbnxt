@@ -1,0 +1,37 @@
+<enterprise>
+    <group recstatus="1">
+        <sourcedid>
+            <source>Test SCT Banner</source>
+            <id>CRSENG-101</id>
+        </sourcedid>
+        <grouptype>
+            <scheme>Luminis</scheme>
+            <typevalue level="1">Course</typevalue>
+        </grouptype>
+        <description>
+            <short>ENG-101</short>
+            <long>Course Title</long>
+        </description>
+        <relationship relation="1">
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>DEPENG</id>
+            </sourcedid>
+            <label>Department</label>
+        </relationship>
+        <relationship relation="1">
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>COLHUM</id>
+            </sourcedid>
+            <label>College</label>
+        </relationship>
+        <relationship relation="1">
+            <sourcedid>
+                <source>Test SCT Banner</source>
+                <id>OTHR</id>
+            </sourcedid>
+            <label>Unknown</label>
+        </relationship>
+    </group>
+</enterprise>

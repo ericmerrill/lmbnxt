@@ -65,6 +65,8 @@ class section extends base {
     }
 
     protected function post_mappings() {
+        parent::post_mappings();
+
         // See if we can extract the CRN from the SourcedID.
         $sdid = $this->dataobj->sdid;
         $term = $this->dataobj->termsdid;

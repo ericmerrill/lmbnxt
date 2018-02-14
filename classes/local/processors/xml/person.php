@@ -151,6 +151,8 @@ class person extends base {
     }
 
     protected function post_mappings() {
+        parent::post_mappings();
+
         // Nickname may come in "Nickname Family" format. We want just the nickname.
         if (!empty($this->dataobj->nickname) && !empty($this->dataobj->familyname)) {
             $fullnick = $this->dataobj->nickname;

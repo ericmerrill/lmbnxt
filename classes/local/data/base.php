@@ -43,7 +43,7 @@ abstract class base {
     protected $record;
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array();
+    protected $dbkeys = array('id', 'additional', 'timemodified', 'messagetime');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
@@ -79,6 +79,7 @@ abstract class base {
         $this->record = new \stdClass();
         $this->additionaldata = new \stdClass();
         $this->donotempty[] = 'id';
+        $this->donotempty[] = 'messagetime';
     }
 
     /**
@@ -98,6 +99,7 @@ abstract class base {
             if ($name == 'additional') {
                 // Allows easier interaction with outside scripts of DB modification than serialize.
                 $this->record->$name = json_encode($this->additionaldata, JSON_UNESCAPED_UNICODE);
+//                $this->record->$name = $this->export_additional();
                 return $this->record->$name;
             }
             if (!isset($this->record->$name) && isset($this->defaults[$name])) {
@@ -110,6 +112,21 @@ abstract class base {
         }
         return $this->additionaldata->$name;
 
+    }
+
+    protected function export_additional() {
+        $additionaldefaults = array_diff($this->defaults, $this->dbkeys);
+        $additional = clone $this->additionaldata;
+
+        foreach ($additionaldefaults as $key) {
+            if (!isset($additional->$key)) {
+                $additional->$key = $this->__get('key');
+            }
+        }
+
+        $json = json_encode($additional, JSON_UNESCAPED_UNICODE);
+
+        return $json;
     }
 
     /**
@@ -260,17 +277,20 @@ abstract class base {
             $new = $this->convert_to_db_object();
 
             $needsupdate = false;
+            $newmessagetime = false;
             foreach ($this->dbkeys as $key) {
                 if ($key === 'timemodified') {
                     // We ignore the timemodified column.
                     continue;
                 }
 
-//                 if (!$this->__isset($key) && in_array($key, $this->donotempty)) {
-//                     // These are keys that we don't want to overwrite with blanks.
-//                     unset($new->$key);
-//                     continue;
-//                 }
+                if ($key === 'messagetime') {
+                    if ($new->messagetime != $existing->messagetime) {
+                        // If the values don't match, skip the rest.
+                        $newmessagetime = true;
+                        break;
+                    }
+                }
 
                 if ($new->$key != $existing->$key) {
                     // If the values don't match, skip the rest.
@@ -280,9 +300,15 @@ abstract class base {
             }
 
             if (!$needsupdate) {
-                // Nothing to update.
-                logging::instance()->log_line('No database update needed');
-                return;
+                if ($newmessagetime) {
+                    $DB->set_field(static::TABLE, 'messagetime', $new->messagetime, ['id' => $new->id]);
+                    logging::instance()->log_line('Only messagetime updated');
+                    return;
+                } else {
+                    // Nothing to update.
+                    logging::instance()->log_line('No database update needed');
+                    return;
+                }
             }
 
             if ($DB->update_record(static::TABLE, $new)) {

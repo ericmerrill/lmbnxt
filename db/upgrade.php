@@ -406,9 +406,77 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2018013100, 'enrol', 'lmb');
     }
 
+    if ($oldversion < 2018021400) {
+        // Add messagetime columns
+
+        // Define field messagetime to be added to enrol_lmb_person.
+        $table = new xmldb_table('enrol_lmb_person');
+        $field = new xmldb_field('messagetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field messagetime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field messagetime to be added to enrol_lmb_term.
+        $table = new xmldb_table('enrol_lmb_term');
+        $field = new xmldb_field('messagetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field messagetime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field messagetime to be added to enrol_lmb_section.
+        $table = new xmldb_table('enrol_lmb_section');
+        $field = new xmldb_field('messagetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field messagetime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field messagetime to be added to enrol_lmb_course.
+        $table = new xmldb_table('enrol_lmb_course');
+        $field = new xmldb_field('messagetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field messagetime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field messagetime to be added to enrol_lmb_member_person.
+        $table = new xmldb_table('enrol_lmb_member_person');
+        $field = new xmldb_field('messagetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field messagetime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field messagetime to be added to enrol_lmb_crosslist.
+        $table = new xmldb_table('enrol_lmb_crosslist');
+        $field = new xmldb_field('messagetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field messagetime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field messagetime to be added to enrol_lmb_crosslist_member.
+        $table = new xmldb_table('enrol_lmb_crosslist_member');
+        $field = new xmldb_field('messagetime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field messagetime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018021400, 'enrol', 'lmb');
+    }
 
 
-    // TODO - when releasing, migrate setting (see trello).
 
 
 }

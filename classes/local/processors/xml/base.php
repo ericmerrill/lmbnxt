@@ -169,6 +169,9 @@ abstract class base {
      * Do any work that we might want to after loading all the data from mappings.
      */
     protected function post_mappings() {
+        if (isset($this->dataobj)) {
+            $this->dataobj->messagetime = time();
+        }
         return;
     }
 

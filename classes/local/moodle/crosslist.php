@@ -77,7 +77,9 @@ class crosslist extends course {
         if (empty($course)) {
             $new = true;
             $course = $this->create_new_course_object();
-            $course->visible = $this->calculate_visibility($this->firstsection->begindate);
+            if ($this->firstsection) {
+                $course->visible = $this->calculate_visibility($this->firstsection->begindate);
+            }
         }
 
         // We always force the title on crosslists, because they are subject to a lot of change.

@@ -107,6 +107,10 @@ class section_assoc extends base {
         $existing = $this->dataobj->get_existing_members();
         $newmembers = $this->dataobj->get_members();
 
+        foreach ($newmembers as $member) {
+            $member->messagetime = time();
+        }
+
         foreach ($existing as $exists) {
             if (!isset($newmembers[$exists->sdid])) {
                 $exists->status = 0;

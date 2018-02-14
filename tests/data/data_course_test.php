@@ -65,7 +65,7 @@ class data_course_testcase extends xml_helper {
 
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/course.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/course.xml');
         $converter = new xml\group();
         $course = $converter->process_xml_to_data($node);
 
@@ -79,6 +79,13 @@ class data_course_testcase extends xml_helper {
         // Try to save the same object again.
         $course->save_to_db();
         $this->assertRegExp("|No database update needed|", $log->test_get_flush_buffer());
+
+        // Now lets see if the message time needs updating.
+        $DB->set_field(data\course::TABLE, 'messagetime', time() - 10, ['id' => $course->id]);
+        $course = $converter->process_xml_to_data($node);
+        $course->save_to_db();
+        $this->assertRegExp("|Only messagetime updated|", $log->test_get_flush_buffer());
+
 
         // Modify the course and try and insert again.
         $course->title = 'Course title 2';

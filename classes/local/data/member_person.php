@@ -52,7 +52,7 @@ class member_person extends base {
 
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('id', 'membersdidsource', 'membersdid', 'referenceagent', 'messagereference', 'roletype', 'status',
-                              'groupsdidsource', 'groupsdid', 'begindate', 'enddate', 'additional', 'timemodified');
+                              'groupsdidsource', 'groupsdid', 'begindate', 'enddate', 'additional', 'timemodified', 'messagetime');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();

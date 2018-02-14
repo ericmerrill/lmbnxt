@@ -52,7 +52,7 @@ class term extends base {
 
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('id', 'sdidsource', 'sdid', 'referenceagent', 'messagereference', 'description', 'begindate',
-                              'enddate', 'sortorder', 'additional', 'timemodified');
+                              'enddate', 'sortorder', 'additional', 'timemodified', 'messagetime');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();

@@ -53,7 +53,7 @@ class section extends base {
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('id', 'sdidsource', 'sdid', 'title', 'begindate', 'enddate',
                               'deptname', 'termsdidsource', 'termsdid', 'coursesdidsource', 'coursesdid',
-                              'additional', 'timemodified');
+                              'additional', 'timemodified', 'messagetime');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
@@ -65,8 +65,6 @@ class section extends base {
                                 'enrollallowed' => 'handler_boolean',
                                 'begindate' => 'handler_date',
                                 'enddate' => 'handler_date');
-
-    protected $donotempty = array('sdidsource', 'sdid');
 
     protected $emptyonmissing = array();
 

@@ -96,34 +96,54 @@ class data_crosslist_testcase extends xml_helper {
         $members = $DB->get_records(crosslist_member::TABLE, ['crosslistid' => $crosslist->id]);
         $this->assertCount(2, $members);
     }
-//
-//     public function test_db_save() {
-//         global $CFG, $DB;
-//
-//         $this->resetAfterTest(true);
-//
-//         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/crosslist.xml');
-//         $converter = new xml\membership();
-//         $crosslists = $converter->process_xml_to_data($node);
-//
-//         $log = new logging_helper();
-//         $log->set_logging_level(logging::ERROR_NONE);
-//
-//         foreach ($crosslists as $crosslist) {
-//             // First insert.
-//             $crosslist->save_to_db();
-//             $this->assertRegExp("|Inserting into database|", $log->test_get_flush_buffer());
-//
-//             // Try to save the same object again.
-//             $crosslist->save_to_db();
-//             $this->assertRegExp("|No database update needed|", $log->test_get_flush_buffer());
-//
-//             // Modify the course and try and insert again.
-//             $crosslist->status = 0;
-//             $crosslist->save_to_db();
-//             $this->assertRegExp("|Updated database record|", $log->test_get_flush_buffer());
-//
-//             // Now lets get it from the DB and check it.
+
+    public function test_db_save() {
+        global $CFG, $DB;
+
+        $this->resetAfterTest(true);
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_group.xml');
+        $converter = new xml\membership();
+        $crosslist = $converter->process_xml_to_data($node);
+
+        $log = new logging_helper();
+        $log->set_logging_level(logging::ERROR_NONE);
+
+
+            // First insert.
+            $crosslist->save_to_db();
+            $output = $log->test_get_flush_buffer();
+            $count = substr_count($output, 'Inserting into database');
+            $this->assertEquals(3, $count);
+
+            // Try to save the same object again.
+            $crosslist->save_to_db();
+            $output = $log->test_get_flush_buffer();
+            $count = substr_count($output, 'No database update needed');
+            $this->assertEquals(3, $count);
+
+            // Now lets see if the message time needs updating.
+            $DB->set_field(crosslist::TABLE, 'messagetime', time() - 10, ['id' => $crosslist->id]);
+            $DB->set_field(crosslist_member::TABLE, 'messagetime', time() - 10, ['crosslistid' => $crosslist->id]);
+            $crosslist = $converter->process_xml_to_data($node);
+            $crosslist->save_to_db();
+            $output = $log->test_get_flush_buffer();
+//             print "<pre>";var_export($output);print "</pre>";
+//             $count = substr_count($output, 'Only messagetime updated');
+//             $this->assertEquals(3, $count);
+
+            // Modify the course and try and insert again.
+            $crosslist->status = 0;
+            $crosslist->save_to_db();
+            $output = $log->test_get_flush_buffer();
+            // TODO - Work this out...
+//             print "<pre>";var_export($output);print "</pre>";
+//             $count = substr_count($output, 'Updated database record');
+//             $this->assertEquals(1, $count);
+//             $count = substr_count($output, 'No database update needed');
+//             $this->assertEquals(2, $count);
+
+            // Now lets get it from the DB and check it.
 //             $params = array('membersdid' => $crosslist->membersdid, 'membersdidsource' => $crosslist->membersdidsource,
 //                     'groupsdid' => $crosslist->groupsdid, 'groupsdidsource' => $crosslist->groupsdidsource);
 //             $dbrecord = $DB->get_record(crosslist::TABLE, $params);
@@ -137,8 +157,8 @@ class data_crosslist_testcase extends xml_helper {
 //                 }
 //                 $this->assertEquals($crosslist->$key, $value, "Key {$key} did not match");
 //             }
-//         }
-//     }
+
+    }
 
     public function test_handler_group_type() {
         $this->resetAfterTest(true);

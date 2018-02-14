@@ -123,8 +123,14 @@ class membership extends base {
         if ($iscrosslist) {
             $crosslist->merge_existing();
 
+            $this->dataobj = $crosslist;
+
+            $this->post_mappings();
+
             return $crosslist;
         }
+
+        $this->post_mappings();
 
         return $results;
     }

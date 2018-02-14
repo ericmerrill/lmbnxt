@@ -46,7 +46,7 @@ class crosslist_member extends base {
     const TABLE = 'enrol_lmb_crosslist_member';
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'crosslistid', 'sdidsource', 'sdid', 'status', 'additional', 'timemodified');
+    protected $dbkeys = array('id', 'crosslistid', 'sdidsource', 'sdid', 'status', 'additional', 'timemodified', 'messagetime');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array('moodlestatus' => 0);

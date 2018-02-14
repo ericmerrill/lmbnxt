@@ -81,6 +81,12 @@ class data_section_testcase extends xml_helper {
         $section->save_to_db();
         $this->assertRegExp("|No database update needed|", $log->test_get_flush_buffer());
 
+        // Now lets see if the message time needs updating.
+        $DB->set_field(data\section::TABLE, 'messagetime', time() - 10, ['id' => $section->id]);
+        $section = $converter->process_xml_to_data($node);
+        $section->save_to_db();
+        $this->assertRegExp("|Only messagetime updated|", $log->test_get_flush_buffer());
+
         // Modify the section and try and insert again.
         $section->title = 'Course title 2';
         $section->save_to_db();

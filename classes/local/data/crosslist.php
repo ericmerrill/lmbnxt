@@ -55,7 +55,7 @@ class crosslist extends base {
     const GROUP_TYPE_MERGE = 2;
 
     /** @var array Array of keys that go in the database object */
-    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'type', 'additional', 'timemodified');
+    protected $dbkeys = array('id', 'sdidsource', 'sdid', 'type', 'additional', 'timemodified', 'messagetime');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();
@@ -197,32 +197,5 @@ class crosslist extends base {
     public function get_moodle_converter() {
         return new moodle\crosslist();
     }
-
-//     public static function get_crosslists_for_section_sdid($sdid, $status = 1, $type = static::GROUP_TYPE_MERGE) {
-//         global $DB;
-//
-//         $params = ['coursesdid' => $sdid, 'status' => $status, 'type' => $type];
-//
-//         $sql = "SELECT * FROM {".static::TABLE."} cl
-//                  WHERE cl.type = :type
-//                    AND cl.id IN (SELECT cm.id FROM {".crosslist_member::TABLE."} cm
-//                                   WHERE cm.sdid = :coursesdid
-//                                     AND cm.status = :status)";
-//
-//         $records = $DB->get_records_sql($sql, $params);
-//
-//         $results = [];
-//         if (empty($records)) {
-//             return $results;
-//         }
-//
-//         foreach ($records as $record) {
-//             $crosslist = new self();
-//             $crosslist->load_from_record($record);
-//             $results[] = $crosslist;
-//         }
-//
-//         return $results;
-//     }
 
 }

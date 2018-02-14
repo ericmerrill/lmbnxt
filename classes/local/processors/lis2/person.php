@@ -64,10 +64,6 @@ class person extends base {
         $this->load_mappings();
     }
 
-    protected function post_mappings() {
-
-    }
-
     protected function process_formname_node($node, $mapping) {
         $isset = isset($node->FORMNAMETYPE->INSTANCEVALUE->TEXTSTRING);
 

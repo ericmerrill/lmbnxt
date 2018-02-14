@@ -52,7 +52,7 @@ class course extends base {
 
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('id', 'sdidsource', 'sdid', 'title', 'rubric', 'deptsdidsource', 'deptsdid',
-                              'collegesdidsource', 'collegesdid', 'additional', 'timemodified');
+                              'collegesdidsource', 'collegesdid', 'additional', 'timemodified', 'messagetime');
 
     /** @var array An array of default property->value pairs */
     protected $defaults = array();

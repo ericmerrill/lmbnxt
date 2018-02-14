@@ -63,6 +63,8 @@ class member_person_delete extends base {
     protected function post_mappings() {
         global $DB;
 
+        parent::post_mappings();
+
         // Without a message reference, there isn't anything we can do.
         if (empty($this->dataobj->messagereference)) {
             $this->dataobj = false;
