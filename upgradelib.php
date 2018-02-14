@@ -252,7 +252,6 @@ function enrol_lmb_upgrade_migrate_old_crosslists() {
         $crosslistid = $record->crosslistsourcedid;
         if ($crosslistid != $previousxls) {
             if ($crosslist) {
-                //print "<pre>";print_r($crosslist);print "</pre>";
                 $crosslist->save_to_db();
                 enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist);
                 $crosslist = false;
@@ -291,18 +290,12 @@ function enrol_lmb_upgrade_migrate_old_crosslists() {
         $member->membertype = 2;
 
         $crosslist->add_member($member);
-
-        //$crosssourcedidsource
     }
 
     if ($crosslist) {
         $crosslist->save_to_db();
         enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist);
-        //print "<pre>";print_r($crosslist);print "</pre>";
     }
-
-    // TODO - need to migrade enrols...
-
 
     $records->close();
 }
@@ -383,4 +376,34 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
 
     $enrol->delete_instance($existing);
 
+}
+
+function enrol_lmb_upgrade_migrate_old_terms() {
+    global $DB;
+
+    $records = $DB->get_recordset('enrol_lmb_old_terms');
+
+    foreach ($records as $record) {
+        $sdid = $record->sourcedid;
+        if ($DB->record_exists(data\term::TABLE, ['sdid' => $sdid])) {
+            mtrace("Skipping {$sdid} because it already exists.");
+            continue;
+        }
+
+        $term = new data\term();
+        $term->sdidsource = $record->sourcedidsource;
+        $term->sdid = $sdid;
+        $term->description = $record->title;
+        $term->shortdescription = $record->title;
+        $term->begindate = $record->starttime;
+        $term->enddate = $record->endtime;
+        $term->sortorder = $sdid;
+        $term->beginrestrict = 0;
+        $term->endrestrict = 0;
+        $term->migrated = 1;
+
+        $term->save_to_db();
+    }
+
+    $records->close();
 }

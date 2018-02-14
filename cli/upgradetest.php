@@ -72,7 +72,7 @@ switch ($options['up']) {
         enrol_lmb_upgrade_migrate_old_crosslists();
         break;
     case ('3'):
-
+        enrol_lmb_upgrade_migrate_old_terms();
         break;
 }
 //enrol_lmb_upgrade_migrate_old_enrols();
