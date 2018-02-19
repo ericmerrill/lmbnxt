@@ -44,7 +44,7 @@ class crosslist extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_crosslist';
+    const TABLE = 'enrol_lmb_crosslists';
 
     /**
      * The class of the Moodle converter for this data object.

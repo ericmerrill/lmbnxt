@@ -44,7 +44,7 @@ class types {
                                     'replacepersonrequest' => '\\enrol_lmb\\local\\processors\\lis2\\person',
                                     'replacecoursesectionrequest' => '\\enrol_lmb\\local\\processors\\lis2\\section',
                                     'replacegrouprequest' => '\\enrol_lmb\\local\\processors\\lis2\\group',
-                                    'deletemembershiprequest' => '\\enrol_lmb\\local\\processors\\lis2\\member_person_delete',
+                                    'deletemembershiprequest' => '\\enrol_lmb\\local\\processors\\lis2\\person_member_delete',
                                     'replacesectionassociationrequest' => '\\enrol_lmb\\local\\processors\\lis2\\section_assoc',
                                     'imsx_syncrequestheaderinfo' => false);
 

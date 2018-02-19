@@ -32,19 +32,19 @@ use enrol_lmb\local\exception;
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class lis2_member_person_delete_test extends xml_helper {
-    public function test_member_person_teacher() {
+class lis2_person_member_delete_test extends xml_helper {
+    public function test_person_member_teacher() {
         global $CFG, $DB;
 
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/member_person_delete.xml');
-        $converter = new lis2\member_person_delete();
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/person_member_delete.xml');
+        $converter = new lis2\person_member_delete();
 
         // First, there is no matching record in the DB, so we will see what it came up with.
         $member = $converter->process_xml_to_data($node);
         $this->assertFalse(isset($member->id));
-        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertInstanceOf(data\person_member::class, $member);
         $this->assertEquals('CM-editingteacher-CS10001.201740-1000001', $member->messagereference);
         $this->assertEquals('editingteacher', $member->lis_roletype);
         $this->assertEquals('10001.201740', $member->groupsdid);

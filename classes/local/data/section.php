@@ -43,7 +43,7 @@ class section extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_section';
+    const TABLE = 'enrol_lmb_course_sections';
 
     /**
      * The class of the Moodle converter for this data object.

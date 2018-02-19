@@ -32,8 +32,8 @@ use enrol_lmb\local\exception;
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class lis2_member_person_test extends xml_helper {
-    public function test_member_person_teacher() {
+class lis2_person_member_test extends xml_helper {
+    public function test_person_member_teacher() {
         global $CFG;
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/member_replace_teacher.xml');
 
@@ -41,7 +41,7 @@ class lis2_member_person_test extends xml_helper {
 
         $member = $converter->process_xml_to_data($node);
 
-        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertInstanceOf(data\person_member::class, $member);
 
         $this->assertEmpty($member->membersdidsource);
         $this->assertEquals('1000001', $member->membersdid);
@@ -60,7 +60,7 @@ class lis2_member_person_test extends xml_helper {
     }
 
     /**
-     * Data provider for test_member_person_status.
+     * Data provider for test_person_member_status.
      *
      * @return array
      */
@@ -83,8 +83,8 @@ class lis2_member_person_test extends xml_helper {
      * @param string $data The input status
      * @param int|false $expected The expected return value. False for exception.
      */
-    public function test_member_person_status($data, $expected) {
-        $converter = new lis2\member_person();
+    public function test_person_member_status($data, $expected) {
+        $converter = new lis2\person_member();
 
         $node = $this->get_node_for_xml('<replaceMembershipRequest><membershipRecord><membership><member><role><status>'.
                                         $data.
@@ -108,7 +108,7 @@ class lis2_member_person_test extends xml_helper {
     }
 
     /**
-     * Data provider for test_member_person_roletype.
+     * Data provider for test_person_member_roletype.
      *
      * @return array
      */
@@ -127,8 +127,8 @@ class lis2_member_person_test extends xml_helper {
      * @param string $data The input status
      * @param int|false $expected The expected return value. False for exception.
      */
-    public function test_member_person_roletype($data, $expected) {
-        $converter = new lis2\member_person();
+    public function test_person_member_roletype($data, $expected) {
+        $converter = new lis2\person_member();
 
         $node = $this->get_node_for_xml('<replaceMembershipRequest><membershipRecord><membership><member><role><roleType>'.
                                         $data.

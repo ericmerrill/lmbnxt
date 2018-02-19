@@ -101,7 +101,7 @@ class membership extends base {
             switch ($member->IDTYPE->get_value()) {
                 case '1':
                     // A person member.
-                    $enrol = new member_person();
+                    $enrol = new person_member();
                     $enrol->set_group_info($groupid, $groupsource);
                     $result = $enrol->process_xml_to_data($member);
                     $results[] = $result;

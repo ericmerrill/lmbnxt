@@ -52,8 +52,8 @@ class enrolment extends base {
     public function convert_to_moodle(\enrol_lmb\local\data\base $data) {
         global $DB;
 
-        if (!($data instanceof data\member_person)) {
-            throw new \coding_exception('Expected instance of data\member_person to be passed.');
+        if (!($data instanceof data\person_member)) {
+            throw new \coding_exception('Expected instance of data\person_member to be passed.');
         }
 
         $this->data = $data;

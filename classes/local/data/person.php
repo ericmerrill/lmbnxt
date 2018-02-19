@@ -42,7 +42,7 @@ class person extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_person';
+    const TABLE = 'enrol_lmb_people';
 
     /**
      * The class of the Moodle converter for this data object.

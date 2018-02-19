@@ -39,16 +39,16 @@ use enrol_lmb\local\moodle;
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_person extends base {
+class person_member extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_member_person';
+    const TABLE = 'enrol_lmb_person_members';
 
     /**
      * The class of the Moodle converter for this data object.
      */
-    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\member_person';
+    const MOODLE_CLASS = '\\enrol_lmb\\local\\moodle\\enrolment';
 
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('id', 'membersdidsource', 'membersdid', 'referenceagent', 'messagereference', 'roletype', 'status',
@@ -89,7 +89,7 @@ class member_person extends base {
         $gsource = (empty($gsource) ? "(empty)" : $gsource);
 
         if (empty($id) || empty($gid)) {
-            throw new \enrol_lmb\local\exception\message_exception('exception_bad_member_person');
+            throw new \enrol_lmb\local\exception\message_exception('exception_bad_person_member');
         } else {
             logging::instance()->log_line("Person \"{$id}\" from \"{$source}\" membership into \"{$gid}\" from \"{$gsource}\"".
                     $extramsg);

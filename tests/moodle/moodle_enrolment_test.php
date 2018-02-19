@@ -45,10 +45,10 @@ class moodle_enrolment_testcase extends xml_helper {
         global $CFG;
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
-        $converter = new lis2\member_person();
+        $converter = new lis2\person_member();
         $member1 = $converter->process_xml_to_data($node);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/person_member.xml');
         $converter = new xml\membership();
         $member2 = $converter->process_xml_to_data($node);
 
@@ -62,7 +62,7 @@ class moodle_enrolment_testcase extends xml_helper {
      * Test that two identical enrolments are made from LIS1-XML and LIS2 content.
      *
      * @dataProvider convert_to_moodle_testcases
-     * @param data\member_person $section The input section
+     * @param data\person_member $section The input section
      */
     public function test_convert_to_moodle($member) {
         global $CFG, $DB;
@@ -81,7 +81,7 @@ class moodle_enrolment_testcase extends xml_helper {
             $this->fail("Expected exception not thrown.");
         } catch (\Exception $ex) {
             $this->assertInstanceOf(\coding_exception::class, $ex);
-            $this->assertContains('Expected instance of data\member_person to be passed', $ex->getMessage());
+            $this->assertContains('Expected instance of data\person_member to be passed', $ex->getMessage());
         }
 
         // First no user or course.
@@ -134,7 +134,7 @@ class moodle_enrolment_testcase extends xml_helper {
     public function test_get_moodle_role_id() {
         $moodleenrol = new moodle\enrolment();
 
-        $enrol = new data\member_person();
+        $enrol = new data\person_member();
         $moodleenrol->set_data($enrol);
 
         // Unset the setting to make sure we get a default.

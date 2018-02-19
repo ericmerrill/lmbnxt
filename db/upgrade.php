@@ -476,7 +476,64 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2018021400, 'enrol', 'lmb');
     }
 
+    if ($oldversion < 2018021900) {
+        // Define table enrol_lmb_person to be renamed to enrol_lmb_people.
+        $table = new xmldb_table('enrol_lmb_person');
 
+        // Launch rename table for enrol_lmb_person.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_people');
+        }
 
+        // Define table enrol_lmb_term to be renamed to enrol_lmb_terms.
+        $table = new xmldb_table('enrol_lmb_term');
 
+        // Launch rename table for enrol_lmb_term.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_terms');
+        }
+
+        // Define table enrol_lmb_section to be renamed to enrol_lmb_course_sections.
+        $table = new xmldb_table('enrol_lmb_section');
+
+        // Launch rename table for enrol_lmb_section.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_course_sections');
+        }
+
+        // Define table enrol_lmb_course to be renamed to enrol_lmb_courses.
+        $table = new xmldb_table('enrol_lmb_course');
+
+        // Launch rename table for enrol_lmb_course.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_courses');
+        }
+
+        // Define table enrol_lmb_member_person to be renamed to enrol_lmb_person_members.
+        $table = new xmldb_table('enrol_lmb_member_person');
+
+        // Launch rename table for enrol_lmb_member_person.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_person_members');
+        }
+
+        // Define table enrol_lmb_crosslist to be renamed to enrol_lmb_crosslists.
+        $table = new xmldb_table('enrol_lmb_crosslist');
+
+        // Launch rename table for enrol_lmb_crosslist.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_crosslists');
+        }
+
+        // Define table enrol_lmb_crosslist_member to be renamed to enrol_lmb_crosslist_members.
+        $table = new xmldb_table('enrol_lmb_crosslist_member');
+
+        // Launch rename table for enrol_lmb_crosslist_member.
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'enrol_lmb_crosslist_members');
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018021900, 'enrol', 'lmb');
+    }
 }

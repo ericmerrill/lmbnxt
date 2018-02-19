@@ -68,7 +68,7 @@ class membership extends base {
         // From WSDL valid values are courseTemplate, courseOffering, courseSection, sectionAssociation, and group.
         switch (strtolower($node->MEMBERSHIPRECORD->MEMBERSHIP->MEMBERSHIPIDTYPE->get_value())) {
             case 'coursesection':
-                $membership = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\lis2\\member_person');
+                $membership = types::get_processor_for_class('\\enrol_lmb\\local\\processors\\lis2\\person_member');
                 return $membership->process_xml_to_data($node);
         }
 

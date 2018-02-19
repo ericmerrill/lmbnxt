@@ -43,7 +43,7 @@ class crosslist_member extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_crosslist_member';
+    const TABLE = 'enrol_lmb_crosslist_members';
 
     /** @var array Array of keys that go in the database object */
     protected $dbkeys = array('id', 'crosslistid', 'sdidsource', 'sdid', 'status', 'additional', 'timemodified', 'messagetime');

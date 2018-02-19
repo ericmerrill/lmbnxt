@@ -182,7 +182,7 @@ function enrol_lmb_upgrade_migrate_old_enrols() {
     $records = $DB->get_recordset('enrol_lmb_old_enrolments');
 
     foreach ($records as $record) {
-        $member = new data\member_person();
+        $member = new data\person_member();
         $member->membersdid = $record->personsourcedid;
         $member->groupsdid = $record->coursesourcedid;
 

@@ -31,10 +31,10 @@ use enrol_lmb\local\data;
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class xml_member_person_testcase extends xml_helper {
+class xml_person_member_testcase extends xml_helper {
     public function test_conversion() {
         global $CFG;
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/member_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/person_member.xml');
 
         $converter = new xml\membership();
 
@@ -44,7 +44,7 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertCount(3, $members);
 
         $member = $members[0];
-        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertInstanceOf(data\person_member::class, $member);
 
         $this->assertEquals('Test SCT Banner', $member->membersdidsource);
         $this->assertEquals('1000002', $member->membersdid);
@@ -63,7 +63,7 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertEquals(1, $member->membertype);
 
         $member = $members[1];
-        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertInstanceOf(data\person_member::class, $member);
         $this->assertEquals('Test SCT Banner', $member->membersdidsource);
         $this->assertEquals('1000001', $member->membersdid);
 
@@ -86,7 +86,7 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertEquals(1, $member->gradable);
 
         $member = $members[2];
-        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertInstanceOf(data\person_member::class, $member);
         $this->assertEquals('Test SCT Banner', $member->membersdidsource);
         $this->assertEquals('1000003', $member->membersdid);
 
@@ -115,7 +115,7 @@ class xml_member_person_testcase extends xml_helper {
         $this->assertCount(1, $members);
 
         $member = $members[0];
-        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertInstanceOf(data\person_member::class, $member);
         $this->assertEquals('Test SCT Banner', $member->membersdidsource);
         $this->assertEquals('1000001', $member->membersdid);
 
@@ -146,7 +146,7 @@ class xml_member_person_testcase extends xml_helper {
 
         $member = $members[0];
 //        print "<pre>";var_export($member);print "</pre>";
-        $this->assertInstanceOf(data\member_person::class, $member);
+        $this->assertInstanceOf(data\person_member::class, $member);
         $this->assertEquals('Test SCT Banner', $member->membersdidsource);
         $this->assertEquals('1000001', $member->membersdid);
 

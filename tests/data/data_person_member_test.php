@@ -34,16 +34,16 @@ use enrol_lmb\logging;
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
-class data_member_person_testcase extends xml_helper {
+class data_person_member_testcase extends xml_helper {
     public function test_message_ref_overwrite() {
         global $CFG, $DB;
 
         $this->resetAfterTest(true);
 
         $lisnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
-        $lisconverter = new lis2\member_person_delete();
+        $lisconverter = new lis2\person_member_delete();
 
-        $xmlnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_person.xml');
+        $xmlnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/person_member.xml');
         $xmlconverter = new xml\membership();
 
         // First, save it without a message reference.
@@ -52,7 +52,7 @@ class data_member_person_testcase extends xml_helper {
         $member->save_to_db();
         $recordid = $member->id;
 
-        $record = $DB->get_record(data\member_person::TABLE, ['id' => $recordid]);
+        $record = $DB->get_record(data\person_member::TABLE, ['id' => $recordid]);
         $this->assertInstanceOf(\stdClass::class, $record);
         $this->assertEquals('', $record->messagereference);
         $this->assertEquals('1', $record->status);
@@ -69,7 +69,7 @@ class data_member_person_testcase extends xml_helper {
         $member->merge_existing();
         $member->save_to_db();
 
-        $record = $DB->get_record(data\member_person::TABLE, ['id' => $recordid]);
+        $record = $DB->get_record(data\person_member::TABLE, ['id' => $recordid]);
         $this->assertInstanceOf(\stdClass::class, $record);
         $this->assertEquals('CM-editingteacher-CS10001.201740-1000001', $record->messagereference);
         $this->assertEquals('0', $record->status);
@@ -80,7 +80,7 @@ class data_member_person_testcase extends xml_helper {
         $member->merge_existing();
         $member->save_to_db();
 
-        $record = $DB->get_record(data\member_person::TABLE, ['id' => $recordid]);
+        $record = $DB->get_record(data\person_member::TABLE, ['id' => $recordid]);
         $this->assertInstanceOf(\stdClass::class, $record);
         $this->assertEquals('CM-editingteacher-CS10001.201740-1000001', $record->messagereference);
         $this->assertEquals('1', $record->status);
@@ -89,7 +89,7 @@ class data_member_person_testcase extends xml_helper {
     public function test_log_id() {
         global $CFG;
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/member_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/person_member.xml');
         $converter = new xml\membership();
         $members = $converter->process_xml_to_data($node);
 
@@ -109,7 +109,7 @@ class data_member_person_testcase extends xml_helper {
                 $this->fail('message_exception expected');
             } catch (exception\message_exception $ex) {
                 $this->assertInstanceOf(exception\message_exception::class, $ex);
-                $expected = get_string('exception_bad_member_person', 'enrol_lmb');
+                $expected = get_string('exception_bad_person_member', 'enrol_lmb');
                 $this->assertRegExp("|{$expected}|", $ex->getMessage());
             }
         }
@@ -120,7 +120,7 @@ class data_member_person_testcase extends xml_helper {
 
         $this->resetAfterTest(true);
 
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_person.xml');
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/person_member.xml');
         $converter = new xml\membership();
         $members = $converter->process_xml_to_data($node);
 
@@ -144,7 +144,7 @@ class data_member_person_testcase extends xml_helper {
             // Now lets get it from the DB and check it.
             $params = array('membersdid' => $member->membersdid, 'membersdidsource' => $member->membersdidsource,
                     'groupsdid' => $member->groupsdid, 'groupsdidsource' => $member->groupsdidsource);
-            $dbrecord = $DB->get_record(data\member_person::TABLE, $params);
+            $dbrecord = $DB->get_record(data\person_member::TABLE, $params);
 
             $this->assertNotEmpty($dbrecord);
 

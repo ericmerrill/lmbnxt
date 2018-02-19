@@ -35,17 +35,17 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2016 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_person extends base {
+class person_member extends base {
     use trait_timeframe;
     /**
      * The data object path for this object.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_person';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\person_member';
 
     /**
      * Path to this objects mappings.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/xml/mappings/member_person.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/xml/mappings/person_member.json';
 
     protected $groupsdid = null;
     protected $groupsdidsource = null;

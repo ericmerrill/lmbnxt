@@ -37,7 +37,7 @@ use enrol_lmb\local\data;
  * @copyright  2018 Oakland University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class member_person_delete extends base {
+class person_member_delete extends base {
     /**
      * Namespace associated with this object.
      */
@@ -46,12 +46,12 @@ class member_person_delete extends base {
     /**
      * Path to the mapping file.
      */
-    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/member_person_delete.json';
+    const MAPPING_PATH = '/enrol/lmb/classes/local/processors/lis2/mappings/person_member_delete.json';
 
     /**
      * Data class used by this type.
      */
-    const DATA_CLASS = '\\enrol_lmb\\local\\data\\member_person';
+    const DATA_CLASS = '\\enrol_lmb\\local\\data\\person_member';
 
     /**
      * Basic constructor.
@@ -74,7 +74,7 @@ class member_person_delete extends base {
         $messageref = $this->dataobj->messagereference;
 
         // Now we are going to try and find an existing.
-        $record = $DB->get_record(data\member_person::TABLE, ['messagereference' => $messageref]);
+        $record = $DB->get_record(data\person_member::TABLE, ['messagereference' => $messageref]);
 
         if ($record) {
             $this->dataobj->load_from_record($record);
@@ -90,13 +90,13 @@ class member_person_delete extends base {
             }
 
             $rolename = $matches[1];
-            $imsrole = member_person::get_roletype_for_name($rolename);
+            $imsrole = person_member::get_roletype_for_name($rolename);
 
             $groupsdid = $matches[2];
             $usersdid = $matches[3];
 
             $params = ['membersdid' => $usersdid, 'groupsdid' => $groupsdid, 'roletype' => $imsrole];
-            $record = $DB->get_record(data\member_person::TABLE, $params);
+            $record = $DB->get_record(data\person_member::TABLE, $params);
 
             if ($record) {
                 $this->dataobj->load_from_record($record);

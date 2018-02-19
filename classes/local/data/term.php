@@ -43,7 +43,7 @@ class term extends base {
     /**
      * The table name of this object.
      */
-    const TABLE = 'enrol_lmb_term';
+    const TABLE = 'enrol_lmb_terms';
 
     /**
      * The class of the Moodle converter for this data object.

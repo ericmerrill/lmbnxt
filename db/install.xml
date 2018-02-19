@@ -12,7 +12,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="enrol_lmb_person" COMMENT="People from the SIS">
+    <TABLE NAME="enrol_lmb_people" COMMENT="People from the SIS">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
@@ -42,7 +42,7 @@
         <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_term" COMMENT="Terms from the SIS">
+    <TABLE NAME="enrol_lmb_terms" COMMENT="Terms from the SIS">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
@@ -64,7 +64,7 @@
         <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_section" COMMENT="Course sections from the SIS.">
+    <TABLE NAME="enrol_lmb_course_sections" COMMENT="Course sections from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
@@ -88,7 +88,7 @@
         <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_course" COMMENT="Courses from the SIS.">
+    <TABLE NAME="enrol_lmb_courses" COMMENT="Courses from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
@@ -110,7 +110,7 @@
         <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_member_person" COMMENT="Person enrolments from the SIS.">
+    <TABLE NAME="enrol_lmb_person_members" COMMENT="Person enrolments from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="membersdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
@@ -135,7 +135,7 @@
         <INDEX NAME="membersdid-groupsdid-roletype" UNIQUE="true" FIELDS="membersdid, groupsdid, roletype"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_crosslist" COMMENT="Holds information about the crosslist group.">
+    <TABLE NAME="enrol_lmb_crosslists" COMMENT="Holds information about the crosslist group.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
@@ -152,7 +152,7 @@
         <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="enrol_lmb_crosslist_member" COMMENT="A table that holds members of crosslists.">
+    <TABLE NAME="enrol_lmb_crosslist_members" COMMENT="A table that holds members of crosslists.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="crosslistid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>

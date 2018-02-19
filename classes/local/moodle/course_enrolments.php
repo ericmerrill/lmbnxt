@@ -57,11 +57,11 @@ class course_enrolments extends base {
             $params['status'] = $status;
         }
 
-        $members = $DB->get_recordset(data\member_person::TABLE, $params);
+        $members = $DB->get_recordset(data\person_member::TABLE, $params);
 
         $enrolment = new enrolment();
         foreach ($members as $memberrec) {
-            $member = new data\member_person();
+            $member = new data\person_member();
             $member->load_from_record($memberrec);
             $member->log_id();
 
@@ -85,11 +85,11 @@ class course_enrolments extends base {
             $params['status'] = $status;
         }
 
-        $members = $DB->get_recordset(data\member_person::TABLE, $params);
+        $members = $DB->get_recordset(data\person_member::TABLE, $params);
 
         $enrolment = new enrolment();
         foreach ($members as $memberrec) {
-            $member = new data\member_person();
+            $member = new data\person_member();
             $member->load_from_record($memberrec);
             $member->log_id();
 
