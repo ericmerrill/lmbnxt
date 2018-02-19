@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\settings;
+use enrol_lmb\logging;
 use enrol_lmb\local\data;
 use enrol_lmb\local\moodle;
 
@@ -176,12 +177,26 @@ function enrol_lmb_upgrade_migrate_course_hidden_value($value) {
     return $new;
 }
 
-function enrol_lmb_upgrade_migrate_old_enrols() {
+function enrol_lmb_upgrade_migrate_old_enrols($progress = false) {
     global $DB;
 
-    $records = $DB->get_recordset('enrol_lmb_old_enrolments');
+    if ($progress) {
+        $count = $DB->count_records('enrol_lmb_old_enrolments');
+        if ($count) {
+            $progress->start_progress('', $count);
+        } else {
+            $progress->start_progress('');
+        }
+    }
 
+    $records = $DB->get_recordset('enrol_lmb_old_enrolments');
+    $count = 0;
     foreach ($records as $record) {
+        $count++;
+        if ($progress) {
+            $progress->progress($count);
+        }
+
         $member = new data\person_member();
         $member->membersdid = $record->personsourcedid;
         $member->groupsdid = $record->coursesourcedid;
@@ -190,7 +205,8 @@ function enrol_lmb_upgrade_migrate_old_enrols() {
         $member->roletype = $role;
 
         if ($member->exists()) {
-            mtrace("Skipping {$member->membersdid} in {$member->groupsdid}, role {$role} because it already exists.");
+            $message = "Skipping {$member->membersdid} in {$member->groupsdid}, role {$role} because it already exists.";
+            logging::instance()->log_line($message);
             continue;
         }
 
@@ -237,18 +253,37 @@ function enrol_lmb_upgrade_migrate_old_enrols() {
         $member->save_to_db();
     }
 
+    if ($progress) {
+        $progress->end_progress();
+    }
+
     $records->close();
 }
 
-function enrol_lmb_upgrade_migrate_old_crosslists() {
+function enrol_lmb_upgrade_migrate_old_crosslists($progress = false) {
     global $DB;
+
+    if ($progress) {
+        $count = $DB->count_records('enrol_lmb_old_crosslists');
+        if ($count) {
+            $progress->start_progress('', $count);
+        } else {
+            $progress->start_progress('');
+        }
+    }
 
     $records = $DB->get_recordset('enrol_lmb_old_crosslists', null, 'crosslistsourcedid ASC');
 
     $previousxls = '';
     $crosslist = false;
 
+    $count = 0;
     foreach ($records as $record) {
+        $count++;
+        if ($progress) {
+            $progress->progress($count);
+        }
+
         $crosslistid = $record->crosslistsourcedid;
         if ($crosslistid != $previousxls) {
             if ($crosslist) {
@@ -258,7 +293,7 @@ function enrol_lmb_upgrade_migrate_old_crosslists() {
             }
 
             if ($DB->record_exists(data\crosslist::TABLE, ['sdid' => $crosslistid])) {
-                mtrace("Skipping {$crosslistid} because it already exists.");
+                logging::instance()->log_line("Skipping {$crosslistid} because it already exists.");
                 continue;
             }
 
@@ -297,6 +332,10 @@ function enrol_lmb_upgrade_migrate_old_crosslists() {
         enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist);
     }
 
+    if ($progress) {
+        $progress->end_progress();
+    }
+
     $records->close();
 }
 
@@ -310,7 +349,7 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
 
     $course = $DB->get_record('course', ['idnumber' => $crosslist->sdid]);
     if (!$course) {
-        mtrace("Skipping enrols for {$crosslist->sdid}, course not found.");
+        logging::instance()->log_line("Skipping enrols for {$crosslist->sdid}, course not found.");
         return;
     }
 
@@ -324,11 +363,11 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
         if ($member->status) {
             $instance = $enrol->get_instance($course, $member->sdid);
             if (empty($existing)) {
-                mtrace("Skipping enrols for {$crosslist->sdid}, original enrol not found.");
+                logging::instance()->log_line("Skipping enrols for {$crosslist->sdid}, original enrol not found.");
                 continue;
             }
             if (empty($instance)) {
-                mtrace("Skipping enrols for {$crosslist->sdid} {$member->sdid}, child instance not found.");
+                logging::instance()->log_line("Skipping enrols for {$crosslist->sdid} {$member->sdid}, child instance not found.");
                 continue;
             }
 
@@ -370,7 +409,7 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
     $count = $DB->count_records('user_enrolments', ['enrolid' => $existing->id]);
 
     if ($count) {
-        mtrace("Records still left in user_enrolments for {$crosslist->sdid}, not deleting.");
+        logging::instance()->log_line("Records still left in user_enrolments for {$crosslist->sdid}, not deleting.");
         return;
     }
 
@@ -378,15 +417,30 @@ function enrol_lmb_upgrade_migrate_crosslist_enrols($crosslist) {
 
 }
 
-function enrol_lmb_upgrade_migrate_old_terms() {
+function enrol_lmb_upgrade_migrate_old_terms($progress = false) {
     global $DB;
+
+    if ($progress) {
+        $count = $DB->count_records('enrol_lmb_old_terms');
+        if ($count) {
+            $progress->start_progress('', $count);
+        } else {
+            $progress->start_progress('');
+        }
+    }
 
     $records = $DB->get_recordset('enrol_lmb_old_terms');
 
+    $count = 0;
     foreach ($records as $record) {
+        $count++;
+        if ($progress) {
+            $progress->progress($count);
+        }
+
         $sdid = $record->sourcedid;
         if ($DB->record_exists(data\term::TABLE, ['sdid' => $sdid])) {
-            mtrace("Skipping {$sdid} because it already exists.");
+            logging::instance()->log_line("Skipping {$sdid} because it already exists.");
             continue;
         }
 
@@ -403,6 +457,10 @@ function enrol_lmb_upgrade_migrate_old_terms() {
         $term->migrated = 1;
 
         $term->save_to_db();
+    }
+
+    if ($progress) {
+        $progress->end_progress();
     }
 
     $records->close();

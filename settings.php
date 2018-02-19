@@ -326,3 +326,12 @@ if ($ADMIN->fulltree) {
 }
 
 $settings->add('enrolsettingscat', $settingslmb);
+
+$settings->add('enrolsettingscat', new admin_category('enroltoolsscat',
+        get_string('tools', 'enrol_lmb'), false));
+
+//if (!empty(get_config('enrol_lmb', 'needslegacyupgrade'))) {
+    $settings->add("enroltoolsscat", new admin_externalpage('enrollmbtooldatamigration',
+            get_string('page_datamigration', 'enrol_lmb'),
+            "$CFG->wwwroot/enrol/lmb/tools/datamigration.php", "moodle/site:config"));
+//}

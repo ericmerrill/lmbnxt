@@ -27,6 +27,31 @@ $string['pluginname'] = 'LMB NXT';
 // Misc.
 $string['ignore'] = 'Ignore';
 $string['enrolcustomname'] = 'LMB NXT from {$a}';
+$string['page_datamigration'] = 'Migrate old data';
+$string['tools'] = 'Tools';
+
+// Data Migration Tool.
+$string['migratingenrols'] = 'Migrating enrolment data';
+$string['migratingcrosslists'] = 'Migrating crosslists data';
+$string['migratingterms'] = 'Migrating terms data';
+$string['migrateenrols'] = 'Migrate enrolment data';
+$string['migratecrosslists'] = 'Migrate crosslists data';
+$string['migrateterms'] = 'Migrate terms data';
+
+$string['deletingenrols'] = 'Deleting table enrol_lmb_old_enrolments';
+$string['deletingcrosslists'] = 'Deleting table enrol_lmb_old_crosslists';
+$string['deletingterms'] = 'Deleting table enrol_lmb_old_terms';
+$string['deletingcourses'] = 'Deleting table enrol_lmb_old_courses';
+$string['deletingcats'] = 'Deleting table enrol_lmb_old_categories';
+$string['deletingpeople'] = 'Deleting table enrol_lmb_old_people';
+$string['deletingxml'] = 'Deleting table enrol_lmb_old_raw_xml';
+$string['deleteenrols'] = 'Delete table enrol_lmb_old_enrolments';
+$string['deletecrosslists'] = 'Delete table enrol_lmb_old_crosslists';
+$string['deleteterms'] = 'Delete table enrol_lmb_old_terms';
+$string['deletecourses'] = 'Delete table enrol_lmb_old_courses';
+$string['deletecats'] = 'Delete table enrol_lmb_old_categories';
+$string['deletepeople'] = 'Delete table enrol_lmb_old_people';
+$string['deletexml'] = 'Delete table enrol_lmb_old_raw_xml';
 
 // Settings.
 $string['logginglevel'] = 'Error logging';
