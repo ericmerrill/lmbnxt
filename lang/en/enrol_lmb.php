@@ -53,6 +53,9 @@ $string['deletecats'] = 'Delete table enrol_lmb_old_categories';
 $string['deletepeople'] = 'Delete table enrol_lmb_old_people';
 $string['deletexml'] = 'Delete table enrol_lmb_old_raw_xml';
 
+// Tasks.
+$string['task_unhidecourses'] = 'Auto unhide courses';
+
 // Settings.
 $string['logginglevel'] = 'Error logging';
 $string['logginglevel_help'] = 'Log messages at this level or higher will be logged. TODO.';

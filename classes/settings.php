@@ -24,8 +24,8 @@
  */
 
 namespace enrol_lmb;
-defined('MOODLE_INTERNAL') || die();
 
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * An object that provides settings for the plugin.
@@ -75,11 +75,33 @@ class settings {
         $this->settings = get_config('enrol_lmb');
     }
 
+    /**
+     * Get the value of a setting, null if not set.
+     *
+     * @param string $key The setting key
+     * @return mixed
+     */
     public function get($key) {
         if (!isset($this->settings->$key)) {
             return null;
         }
 
         return $this->settings->$key;
+    }
+
+    /**
+     * Set the setting for a key value. Unset value on null
+     *
+     * @param string $key The key
+     * @param mixed $value The value to set.
+     */
+    public function set($key, $value) {
+        $this->settings->$key = $value;
+
+        if (is_null($value)) {
+            unset_config($key, 'enrol_lmb');
+        } else {
+            set_config($key, $value, 'enrol_lmb');
+        }
     }
 }
