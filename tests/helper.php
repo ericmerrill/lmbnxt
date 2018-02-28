@@ -235,7 +235,7 @@ class logging_helper extends \enrol_lmb\logging {
 }
 
 class settings_helper extends \enrol_lmb\settings {
-    public static function set($key, $value) {
+    public static function temp_set($key, $value) {
         $settings = \enrol_lmb\settings::get_settings();
         $settings->settings->$key = $value;
     }

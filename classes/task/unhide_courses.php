@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace enrol_lmb;
+namespace enrol_lmb\task;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -62,11 +62,13 @@ class unhide_courses extends \core\task\scheduled_task {
         }
 
         // Get the current date-time.
-        $date = new DateTime();
+        $date = new \DateTime();
+        // I set it to noon so that any time change in the addition below won't cause a date change.
+        $date->setTime(12, 0, 0, 0);
+        // Add the number of days into the future we are working with.
+        $date->add(\DateInterval::createFromDateString($settings->get('cronunhidedays').' day'));
         // Set it to the end of the day, so we unhide courses that start anytime during the day.
         $date->setTime(23, 59, 59, 0);
-        // Add the number of days into the future we are working with.
-        $date->add(DateInterval::createFromDateString($settings->get('cronunhidedays').' day'));
         $endtime = $date->getTimestamp();
 
         $starttime = $settings->get('prevunhideendtime');
@@ -78,7 +80,8 @@ class unhide_courses extends \core\task\scheduled_task {
 
         // SQL that only updates courses that are from LMB.
         $sql = 'UPDATE {course}
-                   SET visible=1
+                   SET visible=1,
+                       visibleold=1
                  WHERE visible=0
                    AND (idnumber IN (SELECT sdid FROM {'.data\section::TABLE.'})
                         OR

@@ -163,7 +163,7 @@ class data_crosslist_testcase extends xml_helper {
     public function test_handler_group_type() {
         $this->resetAfterTest(true);
 
-        settings_helper::set('xlstype', crosslist::GROUP_TYPE_MERGE);
+        settings_helper::temp_set('xlstype', crosslist::GROUP_TYPE_MERGE);
         $crosslist = new crosslist();
 
         $result = $this->run_protected_method($crosslist, 'handler_group_type', array('', crosslist::GROUP_TYPE_META));
@@ -175,7 +175,7 @@ class data_crosslist_testcase extends xml_helper {
         $result = $this->run_protected_method($crosslist, 'handler_group_type', array('', 'Unknown'));
         $this->assertEquals(crosslist::GROUP_TYPE_MERGE, $result);
 
-        settings_helper::set('xlstype', crosslist::GROUP_TYPE_META);
+        settings_helper::temp_set('xlstype', crosslist::GROUP_TYPE_META);
 
         $result = $this->run_protected_method($crosslist, 'handler_group_type', array('', crosslist::GROUP_TYPE_MERGE));
         $this->assertEquals(crosslist::GROUP_TYPE_MERGE, $result);
@@ -191,7 +191,7 @@ class data_crosslist_testcase extends xml_helper {
         global $DB;
 
         $this->resetAfterTest(true);
-        settings_helper::set('xlstype', crosslist::GROUP_TYPE_MERGE);
+        settings_helper::temp_set('xlstype', crosslist::GROUP_TYPE_MERGE);
 
         // Start with the default value.
         $crosslist = new crosslist();

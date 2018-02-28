@@ -224,6 +224,7 @@ abstract class base {
         }
 
         // TODO This really needs timezone work...
+        // Need to convert to straight date in some cases...
         $time = strtotime($value.' UTC');
 
         if ($time === false) {

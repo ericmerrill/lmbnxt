@@ -26,7 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\local\data;
+use enrol_lmb\settings;
 use enrol_lmb\local\moodle;
+use enrol_lmb\local\processors\xml;
 use enrol_lmb\task\unhide_courses;
 
 global $CFG;
@@ -41,18 +43,95 @@ class unhide_courses_test extends xml_helper {
         $this->resetAfterTest(true);
         $task = new unhide_courses();
 
+        settings_helper::temp_set('cronunhidedays', 5);
+        settings_helper::temp_set('cronunhidecourses', 1);
+        settings_helper::temp_set('coursehidden', settings::CREATE_COURSE_HIDDEN);
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/term.xml');
+        $converter = new xml\group_term();
+        $term = $converter->process_xml_to_data($node);
+        $term->save_to_db();
+
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/section.xml');
         $converter = new xml\group_section();
         $section = $converter->process_xml_to_data($node);
+        $section->save_to_db();
 
         $moodlecourse = new moodle\course();
+
+        // Just make sure there is no error.
+        $task->execute();
+
+        // Now setup some time stuff.
+        $curtime = time();
+        $prevtime = $curtime + (4 * DAYSECS);
+        $prevrun = mktime(23, 59, 59, date('n', $prevtime), date('j', $prevtime), date('Y', $prevtime));
+        settings_helper::temp_set('prevunhideendtime', $prevrun);
+
+        // First test at midnight on the day allowed (today+5 at 00:00:00).
+        $reftime = $curtime + (5 * DAYSECS);
+        $startmidnight = mktime(0, 0, 0, date('n', $reftime), date('j', $reftime), date('Y', $reftime));
+        $section->begindate = $startmidnight;
+        $section->enddate = $startmidnight + (100 * DAYSECS);
+
         $moodlecourse->convert_to_moodle($section);
 
-        $curtime = time();
-        $starttoday = mktime(0, 0, 0, date('n', $curtime), date('j', $curtime), date('Y', $curtime));
-//DAYSECS
+        $course = $DB->get_record('course', ['idnumber' => $section->sdid]);
+
+        $this->assertEquals('0', $course->visible);
+        $this->assertEquals('0', $course->visibleold);
 
         $task->execute();
+
+        $course = $DB->get_record('course', ['idnumber' => $section->sdid]);
+        $this->assertEquals('1', $course->visible);
+        $this->assertEquals('1', $course->visibleold);
+
+        // Now test at the end of the day (Test today+5 at 23:59:59).
+        settings_helper::temp_set('prevunhideendtime', $prevrun);
+        $startmidnight = mktime(23, 59, 59, date('n', $reftime), date('j', $reftime), date('Y', $reftime));
+        $section->begindate = $startmidnight;
+
+        $moodlecourse->convert_to_moodle($section);
+        $DB->set_field('course', 'visible', 0, ['idnumber' => $section->sdid]);
+
+        $task->execute();
+        $course = $DB->get_record('course', ['idnumber' => $section->sdid]);
+        $this->assertEquals('1', $course->visible);
+
+        // Now test just before (Test Today+4 at 23:59:59).
+        settings_helper::temp_set('prevunhideendtime', $prevrun);
+        $reftime = $curtime + (4 * DAYSECS);
+        $startmidnight = mktime(23, 59, 59, date('n', $reftime), date('j', $reftime), date('Y', $reftime));
+        $section->begindate = $startmidnight;
+
+        $moodlecourse->convert_to_moodle($section);
+        $DB->set_field('course', 'visible', 0, ['idnumber' => $section->sdid]);
+
+        $task->execute();
+
+        $course = $DB->get_record('course', ['idnumber' => $section->sdid]);
+        $this->assertEquals('0', $course->visible);
+
+        // And now just after (Test today+6 at 00:00:00).
+        settings_helper::temp_set('prevunhideendtime', $prevrun);
+        $reftime = $curtime + (6 * DAYSECS);
+        $startmidnight = mktime(0, 0, 0, date('n', $reftime), date('j', $reftime), date('Y', $reftime));
+        $section->begindate = $startmidnight;
+
+        $moodlecourse->convert_to_moodle($section);
+        $DB->set_field('course', 'visible', 0, ['idnumber' => $section->sdid]);
+
+        $task->execute();
+
+        $course = $DB->get_record('course', ['idnumber' => $section->sdid]);
+        $this->assertEquals('0', $course->visible);
+
+        // Check and reset prevunhideendtime each time.
+
+        // Try to test around time change?
+
+
     }
 
 }

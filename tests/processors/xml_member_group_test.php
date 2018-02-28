@@ -38,7 +38,7 @@ class xml_member_group_testcase extends xml_helper {
 
         $converter = new xml\membership();
 
-        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
+        settings_helper::temp_set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
 
         $crosslist = $converter->process_xml_to_data($node);
 
@@ -71,7 +71,7 @@ class xml_member_group_testcase extends xml_helper {
         $this->assertEquals(2, $member->membertype);
 
         // Now make sure we get the right default type.
-        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_META);
+        settings_helper::temp_set('xlstype', data\crosslist::GROUP_TYPE_META);
         $node->TYPE->set_data('MeRgE');
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
@@ -81,7 +81,7 @@ class xml_member_group_testcase extends xml_helper {
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
 
-        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
+        settings_helper::temp_set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
 
@@ -90,7 +90,7 @@ class xml_member_group_testcase extends xml_helper {
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
 
-        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_META);
+        settings_helper::temp_set('xlstype', data\crosslist::GROUP_TYPE_META);
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
     }

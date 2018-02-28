@@ -138,7 +138,7 @@ class moodle_enrolment_testcase extends xml_helper {
         $moodleenrol->set_data($enrol);
 
         // Unset the setting to make sure we get a default.
-        settings_helper::set('imsrolemap01', null);
+        settings_helper::temp_set('imsrolemap01', null);
         $enrol->roletype = '01';
         $result = $this->run_protected_method($moodleenrol, 'get_moodle_role_id');
 
@@ -148,7 +148,7 @@ class moodle_enrolment_testcase extends xml_helper {
         $this->assertEquals($roleid, $result);
 
         // Now set an ID.
-        settings_helper::set('imsrolemap01', $roleid+1);
+        settings_helper::temp_set('imsrolemap01', $roleid+1);
         $result = $this->run_protected_method($moodleenrol, 'get_moodle_role_id');
         $this->assertEquals($roleid+1, $result);
 

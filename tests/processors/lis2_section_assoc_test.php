@@ -41,7 +41,7 @@ class lis2_section_assoc_test extends xml_helper {
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/section_assoc_replace.xml');
         $converter = new lis2\section_assoc();
 
-        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
+        settings_helper::temp_set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
 
         $crosslist = $converter->process_xml_to_data($node);
 
@@ -72,7 +72,7 @@ class lis2_section_assoc_test extends xml_helper {
         $this->assertEquals(1, $member->status);
 
         // Now make sure we get the right default type.
-        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_META);
+        settings_helper::temp_set('xlstype', data\crosslist::GROUP_TYPE_META);
         $node->SECTIONASSOCIATIONRECORD->TYPE->set_data('MeRgE');
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
@@ -82,7 +82,7 @@ class lis2_section_assoc_test extends xml_helper {
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
 
-        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
+        settings_helper::temp_set('xlstype', data\crosslist::GROUP_TYPE_MERGE);
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
 
@@ -91,7 +91,7 @@ class lis2_section_assoc_test extends xml_helper {
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_MERGE, $crosslist->type);
 
-        settings_helper::set('xlstype', data\crosslist::GROUP_TYPE_META);
+        settings_helper::temp_set('xlstype', data\crosslist::GROUP_TYPE_META);
         $crosslist = $converter->process_xml_to_data($node);
         $this->assertEquals(data\crosslist::GROUP_TYPE_META, $crosslist->type);
 

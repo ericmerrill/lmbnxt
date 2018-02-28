@@ -47,39 +47,39 @@ class moodle_user_testcase extends xml_helper {
         $moodleuser = new moodle\user();
         $moodleuser->set_data($person);
 
-        settings_helper::set('sourcedidfallback', 0);
+        settings_helper::temp_set('sourcedidfallback', 0);
 
-        settings_helper::set('usernamesource', settings::USER_NAME_EMAIL);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_EMAIL);
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertEquals('testuser@example.com', $result);
 
-        settings_helper::set('usernamesource', settings::USER_NAME_EMAILNAME);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_EMAILNAME);
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertEquals('testuser', $result);
 
-        settings_helper::set('usernamesource', settings::USER_NAME_LOGONID);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_LOGONID);
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertEquals('logoniduserid', $result);
 
-        settings_helper::set('usernamesource', settings::USER_NAME_SCTID);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_SCTID);
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertEquals(strtolower($person->sctid), $result);
 
-        settings_helper::set('usernamesource', settings::USER_NAME_EMAILID);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_EMAILID);
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertEquals('emailuserid', $result);
 
-        settings_helper::set('usernamesource', settings::USER_NAME_OTHER);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_OTHER);
         // Setting usernamesource isn't set, so expect false.
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertFalse($result);
 
         // With sourcedid fallback, we get that.
-        settings_helper::set('sourcedidfallback', 1);
+        settings_helper::temp_set('sourcedidfallback', 1);
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertEquals('1000001', $result);
 
-        settings_helper::set('otheruserid', 'Other ID');
+        settings_helper::temp_set('otheruserid', 'Other ID');
         $result = $this->run_protected_method($moodleuser, 'get_username');
         $this->assertEquals('otheruserid', $result);
     }
@@ -159,8 +159,8 @@ class moodle_user_testcase extends xml_helper {
         }
 
         // Now try with creating of new users disabled.
-        settings_helper::set('createnewusers', 0);
-        settings_helper::set('lowercaseemails', 0);
+        settings_helper::temp_set('createnewusers', 0);
+        settings_helper::temp_set('lowercaseemails', 0);
 
         $moodleuser->convert_to_moodle($person);
 
@@ -168,26 +168,26 @@ class moodle_user_testcase extends xml_helper {
         $this->assertFalse($dbuser);
 
         // Now enabled.
-        settings_helper::set('createnewusers', 1);
+        settings_helper::temp_set('createnewusers', 1);
 
         // Now try some bad email settings.
-        settings_helper::set('createusersemaildomain', 'example.com');
-        settings_helper::set('ignoredomaincase', 0);
-        settings_helper::set('donterroremail', 0);
+        settings_helper::temp_set('createusersemaildomain', 'example.com');
+        settings_helper::temp_set('ignoredomaincase', 0);
+        settings_helper::temp_set('donterroremail', 0);
         $moodleuser->convert_to_moodle($person);
         $error = 'WARNING: User email not allowed by email domain settings.';
         $this->assertContains($error, $log->test_get_flush_buffer());
 
         // Test no error setting.
-        settings_helper::set('donterroremail', 1);
+        settings_helper::temp_set('donterroremail', 1);
         $moodleuser->convert_to_moodle($person);
         $resulterror = $log->test_get_flush_buffer();
         $error = "User email not allowed by email domain settings.\n";
         $this->assertEquals($error, $resulterror);
 
         // Now put the setting back.
-        settings_helper::set('createusersemaildomain', '');
-        settings_helper::set('nickname', settings::USER_NICK_DISABLED);
+        settings_helper::temp_set('createusersemaildomain', '');
+        settings_helper::temp_set('nickname', settings::USER_NICK_DISABLED);
 
         // Test a normally created user.
         $moodleuser->convert_to_moodle($person);
@@ -211,10 +211,10 @@ class moodle_user_testcase extends xml_helper {
         $clearuser->alternatename = 'x';
         $DB->update_record('user', $clearuser);
 
-        settings_helper::set('forceemail', 0);
-        settings_helper::set('forcefirstname', 0);
-        settings_helper::set('forcelastname', 0);
-        settings_helper::set('forcealtname', 0);
+        settings_helper::temp_set('forceemail', 0);
+        settings_helper::temp_set('forcefirstname', 0);
+        settings_helper::temp_set('forcelastname', 0);
+        settings_helper::temp_set('forcealtname', 0);
 
         // Check that they don't get reset.
         $moodleuser->convert_to_moodle($person);
@@ -226,16 +226,16 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('x', $dbuser->alternatename);
 
         // Now see that forces work.
-        settings_helper::set('forceemail', 1);
-        settings_helper::set('forcefirstname', 1);
-        settings_helper::set('forcelastname', 1);
-        settings_helper::set('forcealtname', 1);
+        settings_helper::temp_set('forceemail', 1);
+        settings_helper::temp_set('forcefirstname', 1);
+        settings_helper::temp_set('forcelastname', 1);
+        settings_helper::temp_set('forcealtname', 1);
         // Testing lower case email.
-        settings_helper::set('lowercaseemails', 1);
+        settings_helper::temp_set('lowercaseemails', 1);
         // Testing alt nickname.
-        settings_helper::set('nickname', settings::USER_NICK_ALT);
-        settings_helper::set('customfield1mapping', 'text1');
-        settings_helper::set('customfield1source', settings::USER_NAME_EMAILNAME);
+        settings_helper::temp_set('nickname', settings::USER_NICK_ALT);
+        settings_helper::temp_set('customfield1mapping', 'text1');
+        settings_helper::temp_set('customfield1source', settings::USER_NAME_EMAILNAME);
 
         $moodleuser->convert_to_moodle($person);
         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
@@ -250,7 +250,7 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('testUser', $custom->data);
 
         // Now check the first name alt-name.
-        settings_helper::set('nickname', settings::USER_NICK_FIRST);
+        settings_helper::temp_set('nickname', settings::USER_NICK_FIRST);
         $moodleuser->convert_to_moodle($person);
         $dbuser = $this->run_protected_method($moodleuser, 'find_existing_user');
         $this->assertEquals('Nick', $dbuser->firstname);
@@ -273,9 +273,9 @@ class moodle_user_testcase extends xml_helper {
 
         $log = new logging_helper();
 
-        settings_helper::set('createnewusers', 1);
-        settings_helper::set('sourcedidfallback', 0);
-        settings_helper::set('usernamesource', settings::USER_NAME_EMAILNAME);
+        settings_helper::temp_set('createnewusers', 1);
+        settings_helper::temp_set('sourcedidfallback', 0);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_EMAILNAME);
 
         // First, try to make a user with no user.
         $moodleuser->convert_to_moodle($person);
@@ -285,7 +285,7 @@ class moodle_user_testcase extends xml_helper {
         $this->assertFalse($dbuser);
 
         // See that it falls back to the sourcedid.
-        settings_helper::set('sourcedidfallback', 1);
+        settings_helper::temp_set('sourcedidfallback', 1);
         $moodleuser->convert_to_moodle($person);
         $buffer = $log->test_get_flush_buffer();
         $this->assertNotContains('NOTICE', $buffer);
@@ -295,8 +295,8 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals($person->sdid, $dbuser->username);
 
         // Now no email address, but with username.
-        settings_helper::set('usernamesource', settings::USER_NAME_LOGONID);
-        settings_helper::set('sourcedidfallback', 0);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_LOGONID);
+        settings_helper::temp_set('sourcedidfallback', 0);
         $moodleuser->convert_to_moodle($person);
         $buffer = $log->test_get_flush_buffer();
         $this->assertNotContains('NOTICE', $buffer);
@@ -308,7 +308,7 @@ class moodle_user_testcase extends xml_helper {
 
         // Now with an email address, but don't force.
         $person->email = 'testUser@eXample.com';
-        settings_helper::set('forceemail', 0);
+        settings_helper::temp_set('forceemail', 0);
         $moodleuser->convert_to_moodle($person);
         $buffer = $log->test_get_flush_buffer();
         $this->assertNotContains('NOTICE', $buffer);
@@ -319,7 +319,7 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('', $dbuser->email);
 
         // Now check that we do force.
-        settings_helper::set('forceemail', 1);
+        settings_helper::temp_set('forceemail', 1);
         $moodleuser->convert_to_moodle($person);
         $buffer = $log->test_get_flush_buffer();
         $this->assertNotContains('NOTICE', $buffer);
@@ -328,7 +328,7 @@ class moodle_user_testcase extends xml_helper {
         $this->assertEquals('testUser@eXample.com', $dbuser->email);
 
         // Finally we want to check the error what happens when user has no username after creation.
-        settings_helper::set('usernamesource', settings::USER_NAME_OTHER);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_OTHER);
         $moodleuser->convert_to_moodle($person);
         $error = "WARNING: User has no username with current settings. Keeping logoniduserid.";
         $this->assertContains($error, $log->test_get_flush_buffer());
@@ -343,13 +343,13 @@ class moodle_user_testcase extends xml_helper {
         $moodleuser = new moodle\user();
         $moodleuser->set_data($person);
 
-        settings_helper::set('createusersemaildomain', '');
-        settings_helper::set('ignoredomaincase', 0);
+        settings_helper::temp_set('createusersemaildomain', '');
+        settings_helper::temp_set('ignoredomaincase', 0);
 
         $result = $this->run_protected_method($moodleuser, 'check_email_domain');
         $this->assertTrue($result);
 
-        settings_helper::set('createusersemaildomain', 'example.com');
+        settings_helper::temp_set('createusersemaildomain', 'example.com');
         $result = $this->run_protected_method($moodleuser, 'check_email_domain');
         $this->assertFalse($result);
 
@@ -365,7 +365,7 @@ class moodle_user_testcase extends xml_helper {
         $result = $this->run_protected_method($moodleuser, 'check_email_domain');
         $this->assertFalse($result);
 
-        settings_helper::set('ignoredomaincase', 1);
+        settings_helper::temp_set('ignoredomaincase', 1);
 
         $result = $this->run_protected_method($moodleuser, 'check_email_domain');
         $this->assertTrue($result);
@@ -384,7 +384,7 @@ class moodle_user_testcase extends xml_helper {
         $converter = new lis2\person();
         $person = $converter->process_xml_to_data($node);
 
-        settings_helper::set('usernamesource', settings::USER_NAME_EMAILNAME);
+        settings_helper::temp_set('usernamesource', settings::USER_NAME_EMAILNAME);
 
         $moodleuser->convert_to_moodle($person);
 
@@ -397,14 +397,14 @@ class moodle_user_testcase extends xml_helper {
 
         // Now we are going to clear the idnumber of that record.
         $DB->set_field('user', 'idnumber', '', ['id' => $dbuser1->id]);
-        settings_helper::set('consolidateusernames', 0);
+        settings_helper::temp_set('consolidateusernames', 0);
 
         // With consolidate off, we shouldn't be able to find it.
         $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
         $this->assertFalse($dbuser2);
 
         // Now find it by username.
-        settings_helper::set('consolidateusernames', 1);
+        settings_helper::temp_set('consolidateusernames', 1);
         $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
         $this->assertEquals($dbuser1->id, $dbuser2->id);
 
