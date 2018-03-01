@@ -64,11 +64,11 @@ class unhide_courses extends \core\task\scheduled_task {
         // Get the current date-time.
         $date = new \DateTime();
         // I set it to noon so that any time change in the addition below won't cause a date change.
-        $date->setTime(12, 0, 0, 0);
+        $date->setTime(12, 0, 0);
         // Add the number of days into the future we are working with.
         $date->add(\DateInterval::createFromDateString($settings->get('cronunhidedays').' day'));
         // Set it to the end of the day, so we unhide courses that start anytime during the day.
-        $date->setTime(23, 59, 59, 0);
+        $date->setTime(23, 59, 59);
         $endtime = $date->getTimestamp();
 
         $starttime = $settings->get('prevunhideendtime');
