@@ -191,6 +191,15 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
             }
         }
 
+        if (isset($config->userestrictdates)) {
+            if ($config->userestrictdates) {
+                set_config('restrictenroldates', 1, 'enrol_lmb');
+            } else {
+                set_config('restrictenroldates', 0, 'enrol_lmb');
+            }
+            unset_config('userestrictdates', 'enrol_lmb');
+        }
+
         upgrade_plugin_savepoint(true, 2018013000, 'enrol', 'lmb');
     }
 

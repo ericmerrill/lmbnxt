@@ -98,6 +98,19 @@ class enrolment extends base {
         foreach ($instances as $instance) {
             $extra = '';
             if ($data->status) {
+                $starttime = 0;
+                $endtime = 0;
+
+                if ($this->settings->get('userestrictdates')) {
+                    // If we have restrict dates set, and they have dates, then use them.
+                    if (!empty($data->begindate)) {
+                        $starttime = $data->begindate;
+                    }
+                    if (!empty($data->enddate)) {
+                        $endtime = $data->enddate;
+                    }
+                }
+
                 $sql = "SELECT * FROM {user_enrolments} ue
                           JOIN {role_assignments} ra
                             ON ue.userid = ra.userid AND ue.enrolid = ra.itemid AND ra.component = 'enrol_lmb'
@@ -110,21 +123,21 @@ class enrolment extends base {
 
                 $params = ['enrolid' => $instance->id,
                            'userid' => $user->id,
-                           'start' => 0,
-                           'end' => 0,
+                           'start' => $starttime,
+                           'end' => $endtime,
                            'roleid' => $roleid];
 
                 if ($DB->record_exists_sql($sql, $params)) {
                     // It alrady exists, so we can skip it.
                     continue;
                 }
-                // TODO - Restricted times.
+
                 // TODO - Recover grades.
                 if (!empty($instance->customchar2)) {
                     $extra = ' in '.$instance->customchar2;
                 }
                 logging::instance()->log_line("Enrolling user {$this->data->membersdid}".$extra);
-                $enrol->enrol_user($instance, $user->id, $roleid, 0, 0, ENROL_USER_ACTIVE, true);
+                $enrol->enrol_user($instance, $user->id, $roleid, $starttime, $endtime, ENROL_USER_ACTIVE, true);
             } else {
                 // TODO - We need to handle multiple overlapping role assign/unassign. Unenroll and unassign are different...
                 if (!empty($instance->customchar2)) {

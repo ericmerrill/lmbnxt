@@ -15,6 +15,7 @@ Things to migrate
 - forcename split to forcefirstname and forcelastname
 - logerrors (convert to menu choice)
 - coursehidden (Moved to constants)
+- userestrictdates > restrictenroldates
 
 
 

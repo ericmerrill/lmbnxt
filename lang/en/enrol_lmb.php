@@ -226,6 +226,8 @@ $string['imsrolename02'] = 'Instructor (02)';
 $string['imsrolename03'] = 'Extra 1 (03)';
 $string['imsrolename04'] = 'Extra 2 (04)';
 $string['imsrolename05'] = 'Extra 3 (05)';
+$string['restrictenroldates'] = 'TODO';
+$string['restrictenroldates_help'] = 'TODO';
 
 // XLS Settings.
 $string['parsexls'] = 'Crosslist Processing';
