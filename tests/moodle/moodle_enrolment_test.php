@@ -99,6 +99,8 @@ class moodle_enrolment_testcase extends xml_helper {
         $course = $this->getDataGenerator()->create_course(['idnumber' => '10001.201740']);
         $context = context_course::instance($course->id);
 
+        settings_helper::temp_set('restrictenroldates', 0);
+
         // Now everything is made. Lets test an unknown roletype.
         $roletype = $member->roletype;
         $member->roletype = '10';
@@ -120,6 +122,10 @@ class moodle_enrolment_testcase extends xml_helper {
         $this->assertTrue(is_enrolled($context, $user));
         $this->assertCount(1, get_user_roles($context, $user->id));
 
+        $record = $DB->get_record('user_enrolments', ['userid' => $user->id]);
+        $this->assertEquals(0, $record->timestart);
+        $this->assertEquals(0, $record->timeend);
+
         // And now unenrol.
         $member->status = 0;
 
@@ -129,6 +135,21 @@ class moodle_enrolment_testcase extends xml_helper {
 
         $this->assertFalse(is_enrolled($context, $user));
         $this->assertCount(0, get_user_roles($context, $user->id));
+
+        // Now we want restricted dates.
+//         settings_helper::temp_set('restrictenroldates', 1);
+//
+//         $member->status = 1;
+//
+//         $moodleenrol->convert_to_moodle($member);
+//         $error = 'Enrolling user';
+//         $this->assertContains($error, $log->test_get_flush_buffer());
+//
+//         $this->assertTrue(is_enrolled($context, $user));
+//         $this->assertCount(1, get_user_roles($context, $user->id));
+//
+//         $record = $DB->get_record('user_enrolments', ['userid' => $user->id]);
+//         print "<pre>";var_export($record);print "</pre>";
     }
 
     public function test_get_moodle_role_id() {
