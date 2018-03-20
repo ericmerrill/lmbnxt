@@ -126,6 +126,17 @@ class moodle_enrolment_testcase extends xml_helper {
         $this->assertEquals(0, $record->timestart);
         $this->assertEquals(0, $record->timeend);
 
+        // And do it a second time.
+        $moodleenrol->convert_to_moodle($member);
+        $this->assertEmpty($log->test_get_flush_buffer());
+
+        $this->assertTrue(is_enrolled($context, $user));
+        $this->assertCount(1, get_user_roles($context, $user->id));
+
+        $record = $DB->get_record('user_enrolments', ['userid' => $user->id]);
+        $this->assertEquals(0, $record->timestart);
+        $this->assertEquals(0, $record->timeend);
+
         // And now unenrol.
         $member->status = 0;
 
@@ -136,20 +147,62 @@ class moodle_enrolment_testcase extends xml_helper {
         $this->assertFalse(is_enrolled($context, $user));
         $this->assertCount(0, get_user_roles($context, $user->id));
 
-        // Now we want restricted dates.
-//         settings_helper::temp_set('restrictenroldates', 1);
-//
-//         $member->status = 1;
-//
-//         $moodleenrol->convert_to_moodle($member);
-//         $error = 'Enrolling user';
-//         $this->assertContains($error, $log->test_get_flush_buffer());
-//
-//         $this->assertTrue(is_enrolled($context, $user));
-//         $this->assertCount(1, get_user_roles($context, $user->id));
-//
-//         $record = $DB->get_record('user_enrolments', ['userid' => $user->id]);
-//         print "<pre>";var_export($record);print "</pre>";
+        // Now double check restrict dates. These users shouldn't have them.
+        settings_helper::temp_set('restrictenroldates', 1);
+
+        $member->status = 1;
+
+        $moodleenrol->convert_to_moodle($member);
+        $error = 'Enrolling user';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        $this->assertTrue(is_enrolled($context, $user));
+        $this->assertCount(1, get_user_roles($context, $user->id));
+
+        $record = $DB->get_record('user_enrolments', ['userid' => $user->id]);
+        $this->assertEquals(0, $record->timestart);
+        $this->assertEquals(0, $record->timeend);
+    }
+
+    public function test_convert_to_moodle_dates() {
+        global $CFG, $DB;
+
+        $this->resetAfterTest(true);
+
+        settings_helper::temp_set('restrictenroldates', 0);
+
+        $moodleenrol = new moodle\enrolment();
+
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_student.xml');
+        $converter = new xml\membership();
+        $member = $converter->process_xml_to_data($node)[0];
+
+        $user = $this->getDataGenerator()->create_user(['idnumber' => '1000001']);
+        $course = $this->getDataGenerator()->create_course(['idnumber' => '10001.201740']);
+        $context = context_course::instance($course->id);
+
+        // Now trying to enrol.
+        $moodleenrol->convert_to_moodle($member);
+
+        $this->assertTrue(is_enrolled($context, $user));
+        $this->assertCount(1, get_user_roles($context, $user->id));
+
+        $record = $DB->get_record('user_enrolments', ['userid' => $user->id]);
+        $this->assertEquals(0, $record->timestart);
+        $this->assertEquals(0, $record->timeend);
+
+        //Now try with dates.
+        settings_helper::temp_set('restrictenroldates', 1);
+
+        $moodleenrol->convert_to_moodle($member);
+
+        $this->assertTrue(is_enrolled($context, $user));
+        $this->assertCount(1, get_user_roles($context, $user->id));
+
+        $record = $DB->get_record('user_enrolments', ['userid' => $user->id]);
+        $this->assertEquals(1504051200, $record->timestart);
+        $this->assertEquals(1513468800, $record->timeend);
+
     }
 
     public function test_get_moodle_role_id() {

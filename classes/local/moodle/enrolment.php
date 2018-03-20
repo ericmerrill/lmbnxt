@@ -100,8 +100,7 @@ class enrolment extends base {
             if ($data->status) {
                 $starttime = 0;
                 $endtime = 0;
-
-                if ($this->settings->get('userestrictdates')) {
+                if ($this->settings->get('restrictenroldates')) {
                     // If we have restrict dates set, and they have dates, then use them.
                     if (!empty($data->begindate)) {
                         $starttime = $data->begindate;
