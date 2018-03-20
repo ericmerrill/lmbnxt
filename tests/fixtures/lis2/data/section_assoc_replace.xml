@@ -1,33 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
   <soapenv:Header>
-    <imsx_syncRequestHeaderInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_
-v1p0">
+    <imsx_syncRequestHeaderInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_v1p0">
       <imsx_version>V1.0</imsx_version>
       <imsx_messageIdentifier>2</imsx_messageIdentifier>
     </imsx_syncRequestHeaderInfo>
   </soapenv:Header>
   <soapenv:Body>
-    <replaceSectionAssociationRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/i
-mscms_v1p0">
-      <sourcedId>AS201740</sourcedId>
+    <replaceSectionAssociationRequest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.imsglobal.org/services/lis/cmsv1p0/wsdl11/sync/imscms_v1p0">
+      <sourcedId>AA201740</sourcedId>
       <sectionAssociationRecord>
         <sourcedGUID>
           <refAgentInstanceID>ILP</refAgentInstanceID>
-          <sourcedId>AS201740</sourcedId>
+          <sourcedId>AA201740</sourcedId>
         </sourcedGUID>
+        <type>meta</type>
         <sectionAssociation>
           <label>
             <language>en</language>
-            <textString>AS201740</textString>
+            <textString>LabelString</textString>
           </label>
           <title>
             <language>en</language>
-            <textString>AS201740</textString>
+            <textString>TitleString</textString>
           </title>
           <status>Active</status>
           <courseSectionIdList>
-            <courseSectionId>45300.201740</courseSectionId>
-            <courseSectionId>45301.201740</courseSectionId>
+            <courseSectionId>10001.201740</courseSectionId>
+            <courseSectionId>10002.201740</courseSectionId>
           </courseSectionIdList>
           <dataSource>Banner</dataSource>
         </sectionAssociation>

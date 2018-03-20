@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Tests for the xml parser.
+ * Tests for the process controller.
  *
  * @package    enrol_lmb
  * @author     Eric Merrill <merrill@oakland.edu>
@@ -28,13 +28,15 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 
+use enrol_lmb\controller;
+
 class controller_test extends xml_helper {
 
     public function test_import_file() {
         global $CFG;
         $this->resetAfterTest();
 
-        $controller = new \enrol_lmb\controller();
+        $controller = new controller();
 
         // No file error.
         $this->resetDebugging();
@@ -57,7 +59,7 @@ class controller_test extends xml_helper {
         global $CFG;
         $this->resetAfterTest();
 
-        $controller = new \enrol_lmb\controller();
+        $controller = new controller();
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/section_replace.xml');
 //print "<pre>";print_r($node);print "</pre>";
