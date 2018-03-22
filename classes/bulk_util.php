@@ -98,8 +98,10 @@ class bulk_util {
             INNER JOIN {".section::TABLE."} section
                     ON enrol.groupsdid = section.sdid
                  WHERE enrol.messagetime >= :start AND enrol.messagetime <= :end
+                   AND enrol.status = :status
               GROUP BY section.termsdid";
 
+        $params['status'] = 1;
         $terms = $DB->get_records_sql($sql, $params);
 
         if ($terms) {
@@ -109,5 +111,49 @@ class bulk_util {
         }
 
         return $output;
+    }
+
+    /**
+     * Returns the count of currently active enrolments in the term.
+     *
+     * @param string $termsdid The term sdid to check
+     * @return int
+     */
+    public function get_term_enrols_active_count($termsdid) {
+        global $DB;
+
+        $sql = "SELECT COUNT(enrol.id) AS cnt
+                  FROM {".person_member::TABLE."} enrol
+            INNER JOIN {".section::TABLE."} section
+                    ON enrol.groupsdid = section.sdid
+                 WHERE section.termsdid = :term
+                   AND enrol.status = :status";
+
+        $params = ['term' => $termsdid, 'status' => 1];
+
+        return $DB->count_records_sql($sql, $params);
+    }
+
+    /**
+     * Get the count of records that would be dropped before
+     *
+     * @param string $termsdid The sdid of the term
+     * @param int $time The time that marked the start of the bulk run
+     * @return int
+     */
+    public function get_term_enrols_to_drop_count($termsdid, $time) {
+        global $DB;
+
+        $sql = "SELECT COUNT(enrol.id) AS cnt
+                  FROM {".person_member::TABLE."} enrol
+            INNER JOIN {".section::TABLE."} section
+                    ON enrol.groupsdid = section.sdid
+                 WHERE enrol.messagetime < :reftime
+                   AND section.termsdid = :term
+                   AND enrol.status = :status";
+
+        $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time];
+
+        return $DB->count_records_sql($sql, $params);
     }
 }

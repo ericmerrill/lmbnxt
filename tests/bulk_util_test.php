@@ -34,59 +34,139 @@ use enrol_lmb\local\processors\lis2;
 class bulk_util_test extends xml_helper {
 
     public function test_get_terms_in_timeframe() {
-        global $CFG;
         $this->resetAfterTest();
+        $this->setup_bulk();
 
         $util = new bulk_util();
+        $results = $util->get_terms_in_timeframe(1510000000);
 
-        $start = time();
+        $this->assertTrue(isset($results['201730']));
+        $this->assertTrue(isset($results['201730']['termupdate']));
+        $this->assertEquals(1, $results['201730']['termupdate']);
+        $this->assertTrue(isset($results['201730']['sectionupdate']));
+        $this->assertEquals(2, $results['201730']['sectionupdate']);
+        $this->assertTrue(isset($results['201730']['enrolupdates']));
+        $this->assertEquals(12, $results['201730']['enrolupdates']);
 
-        // First the term.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/term_replace.xml');
-        $converter = new lis2\group();
+        $this->assertTrue(isset($results['201720']));
+        $this->assertFalse(isset($results['201720']['termupdate']));
+        $this->assertTrue(isset($results['201720']['sectionupdate']));
+        $this->assertEquals(1, $results['201720']['sectionupdate']);
+        $this->assertTrue(isset($results['201720']['enrolupdates']));
+        $this->assertEquals(5, $results['201720']['enrolupdates']);
 
-        $term = $converter->process_xml_to_data($node);
-        $term->save_to_db();
-
-        // Now a section.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/section_replace.xml');
-        $converter = new lis2\section();
-
-        $section = $converter->process_xml_to_data($node);
-        $section->save_to_db();
-
-        // Then a crosslist membership.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/section_assoc_replace.xml');
-        $converter = new lis2\section_assoc();
-
-        $xlsmember = $converter->process_xml_to_data($node);
-        $xlsmember->save_to_db();
-
-        // Now an enrolment.
-        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/member_replace_teacher.xml');
-        $converter = new lis2\membership();
-
-        $member = $converter->process_xml_to_data($node);
-        $member->save_to_db();
-
-
-        $results = $util->get_terms_in_timeframe($start);
-
-
-        $this->assertTrue(isset($results['201740']));
-        $this->assertTrue(isset($results['201740']['termupdate']));
-        $this->assertEquals(1, $results['201740']['termupdate']);
-        $this->assertTrue(isset($results['201740']['sectionupdate']));
-        $this->assertEquals(1, $results['201740']['sectionupdate']);
-        $this->assertTrue(isset($results['201740']['crossmemberupdate']));
-        $this->assertEquals(1, $results['201740']['crossmemberupdate']);
-        $this->assertTrue(isset($results['201740']['enrolupdates']));
-        $this->assertEquals(1, $results['201740']['enrolupdates']);
-
-        // TODO - This needs much better testing.
-
-        //print "<pre>";var_export($results);print "</pre>\n";
+        $this->assertFalse(isset($results['201710']));
     }
 
+    public function test_get_term_enrols_active_count() {
+        $this->resetAfterTest();
+        $this->setup_bulk();
 
+        $util = new bulk_util();
+        $results = $util->get_term_enrols_active_count('201700');
+        $this->assertEquals(0, $results);
+
+        $results = $util->get_term_enrols_active_count('201710');
+        $this->assertEquals(15, $results);
+
+        $results = $util->get_term_enrols_active_count('201720');
+        $this->assertEquals(20, $results);
+
+        $results = $util->get_term_enrols_active_count('201730');
+        $this->assertEquals(17, $results);
+    }
+
+    public function test_get_term_enrols_to_drop_count() {
+        $this->resetAfterTest();
+        $this->setup_bulk();
+
+        $util = new bulk_util();
+        // Check a term that doesn't exist, this would get any if they existed.
+        $results = $util->get_term_enrols_to_drop_count('201700', 1520000000);
+        $this->assertEquals(0, $results);
+
+        // Because we didn't receive any messages for this term, everything would be to drop.
+        $results = $util->get_term_enrols_to_drop_count('201710', 1510000000);
+        $this->assertEquals(15, $results);
+
+        $results = $util->get_term_enrols_to_drop_count('201720', 1510000000);
+        $this->assertEquals(15, $results);
+        $results = $util->get_term_enrols_to_drop_count('201720', 1520000000);
+        $this->assertEquals(20, $results);
+
+        $results = $util->get_term_enrols_to_drop_count('201730', 1510000000);
+        $this->assertEquals(5, $results);
+        $results = $util->get_term_enrols_to_drop_count('201730', 1520000000);
+        $this->assertEquals(17, $results);
+    }
+
+    protected function setup_bulk() {
+        $oldtime = 1500000000;
+        $newtime = 1510000000;
+
+        $users = [];
+        for ($i = 0; $i < 20; $i++) {
+            $users[$i] = $this->create_lmb_person();
+        }
+
+        $terms = [];
+        $sections = [];
+        $term = $this->create_lmb_term(['sdid' => '201710', 'messagetime' => $oldtime]);
+        $terms['201710'] = $term;
+
+        $section = $this->create_lmb_section(['termsdid' => '201710', 'messagetime' => $oldtime]);
+        $sections['201710'][$section->sdid] = $section;
+        for ($i = 0; $i < 5; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $oldtime]);
+        }
+        for ($i = 5; $i < 7; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $oldtime, 'status' => 0]);
+        }
+
+        $section = $this->create_lmb_section(['termsdid' => '201710', 'messagetime' => $oldtime]);
+        $sections['201710'][$section->sdid] = $section;
+        for ($i = 0; $i < 10; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $oldtime]);
+        }
+
+        $term = $this->create_lmb_term(['sdid' => '201720', 'messagetime' => $oldtime]);
+        $terms['201720'] = $term;
+        $section = $this->create_lmb_section(['termsdid' => '201720', 'messagetime' => $oldtime]);
+        $sections['201720'][$section->sdid] = $section;
+        for ($i = 0; $i < 5; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $oldtime]);
+        }
+        for ($i = 5; $i < 10; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $newtime]);
+        }
+        for ($i = 10; $i < 12; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $oldtime, 'status' => 0]);
+        }
+
+        $section = $this->create_lmb_section(['termsdid' => '201720', 'messagetime' => $newtime]);
+        $sections['201720'][$section->sdid] = $section;
+        for ($i = 0; $i < 10; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $oldtime]);
+        }
+
+        $term = $this->create_lmb_term(['sdid' => '201730', 'messagetime' => $newtime]);
+        $terms['201730'] = $term;
+        $section = $this->create_lmb_section(['termsdid' => '201730', 'messagetime' => $newtime]);
+        $sections['201730'][$section->sdid] = $section;
+        for ($i = 0; $i < 5; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $oldtime]);
+        }
+        for ($i = 5; $i < 10; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $newtime]);
+        }
+        for ($i = 10; $i < 12; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $newtime, 'status' => 0]);
+        }
+
+        $section = $this->create_lmb_section(['termsdid' => '201730', 'messagetime' => $newtime]);
+        $sections['201730'][$section->sdid] = $section;
+        for ($i = 0; $i < 7; $i++) {
+            $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $newtime]);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="enrol/lmb/db" VERSION="20180214" COMMENT="XMLDB file for Moodle enrol/lmb"
+<XMLDB PATH="enrol/lmb/db" VERSION="20180322" COMMENT="XMLDB file for Moodle enrol/lmb"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -37,9 +37,10 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="sdid" TYPE="unique" FIELDS="sdid"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
+        <INDEX NAME="messagetime" UNIQUE="false" FIELDS="messagetime"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="enrol_lmb_terms" COMMENT="Terms from the SIS">
@@ -59,15 +60,16 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="sdid" TYPE="unique" FIELDS="sdid"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
+        <INDEX NAME="messagetime" UNIQUE="false" FIELDS="messagetime"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="enrol_lmb_course_sections" COMMENT="Course sections from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="title" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="begindate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
@@ -83,15 +85,19 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="sdid" TYPE="unique" FIELDS="sdid"/>
+        <KEY NAME="termsdid" TYPE="foreign" FIELDS="termsdid" REFTABLE="enrol_lmb_terms" REFFIELDS="sdid"/>
+        <KEY NAME="coursesdid" TYPE="foreign" FIELDS="coursesdid" REFTABLE="enrol_lmb_courses" REFFIELDS="sdid"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
+        <INDEX NAME="begindate" UNIQUE="false" FIELDS="begindate"/>
+        <INDEX NAME="messagetime" UNIQUE="false" FIELDS="messagetime"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="enrol_lmb_courses" COMMENT="Courses from the SIS.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="sdidsource" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="sdid" TYPE="char" LENGTH="127" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="title" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="rubric" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
@@ -105,9 +111,10 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="sdid" TYPE="unique" FIELDS="sdid"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
+        <INDEX NAME="messagetime" UNIQUE="false" FIELDS="messagetime"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="enrol_lmb_person_members" COMMENT="Person enrolments from the SIS.">
@@ -129,10 +136,14 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="membersdid" TYPE="foreign" FIELDS="membersdid" REFTABLE="enrol_lmb_people" REFFIELDS="sdid"/>
+        <KEY NAME="groupsdid" TYPE="foreign" FIELDS="groupsdid" REFTABLE="enrol_lmb_course_sections" REFFIELDS="sdid"/>
       </KEYS>
       <INDEXES>
         <INDEX NAME="messagereference-referenceagent" UNIQUE="false" FIELDS="messagereference, referenceagent" COMMENT="Index for LIS message IDs. Possibly make unique?"/>
         <INDEX NAME="membersdid-groupsdid-roletype" UNIQUE="true" FIELDS="membersdid, groupsdid, roletype"/>
+        <INDEX NAME="status" UNIQUE="false" FIELDS="status"/>
+        <INDEX NAME="messagetime" UNIQUE="false" FIELDS="messagetime"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="enrol_lmb_crosslists" COMMENT="Holds information about the crosslist group.">
@@ -147,9 +158,10 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="sdid" TYPE="unique" FIELDS="sdid"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="sdid-sdidsource" UNIQUE="true" FIELDS="sdid, sdidsource"/>
+        <INDEX NAME="messagetime" UNIQUE="false" FIELDS="messagetime"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="enrol_lmb_crosslist_members" COMMENT="A table that holds members of crosslists.">
@@ -166,9 +178,12 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="crosslistid" TYPE="foreign" FIELDS="crosslistid" REFTABLE="enrol_lmb_crosslist" REFFIELDS="id"/>
+        <KEY NAME="sdid" TYPE="foreign" FIELDS="sdid" REFTABLE="enrol_lmb_course_sections" REFFIELDS="sdid"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="sdid-crosslistid-sdidsource" UNIQUE="true" FIELDS="sdid, crosslistid, sdidsource"/>
+        <INDEX NAME="sdid-crosslistid" UNIQUE="true" FIELDS="sdid, crosslistid"/>
+        <INDEX NAME="status" UNIQUE="false" FIELDS="status"/>
+        <INDEX NAME="messagetime" UNIQUE="false" FIELDS="messagetime"/>
       </INDEXES>
     </TABLE>
   </TABLES>

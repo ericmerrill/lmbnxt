@@ -68,8 +68,9 @@ class course extends base {
     public function log_id() {
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
+        $source = (empty($source) ? "(empty)" : $source);
         $desc = $this->__get('title');
-        if (empty($id) || empty($source)) {
+        if (empty($id)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_bad_course');
         } else {
             logging::instance()->log_line("Course \"{$desc}\", ID \"{$id}\" from \"{$source}\"");

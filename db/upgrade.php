@@ -545,4 +545,254 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         // Lmb savepoint reached.
         upgrade_plugin_savepoint(true, 2018021900, 'enrol', 'lmb');
     }
+
+    if ($oldversion < 2018032200) {
+        // Change term table.
+        // Define index sdid-sdidsource (unique) to be dropped form enrol_lmb_terms.
+        $table = new xmldb_table('enrol_lmb_terms');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Define key sdid (unique) to be added to enrol_lmb_terms.
+        $table = new xmldb_table('enrol_lmb_terms');
+        $key = new xmldb_key('sdid', XMLDB_KEY_UNIQUE, array('sdid'));
+
+        // Launch add key sdid.
+        $dbman->add_key($table, $key);
+
+        // Define index messagetime (not unique) to be added to enrol_lmb_terms.
+        $table = new xmldb_table('enrol_lmb_terms');
+        $index = new xmldb_index('messagetime', XMLDB_INDEX_NOTUNIQUE, array('messagetime'));
+
+        // Conditionally launch add index messagetime.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Changing courses table.
+        // Define index sdid-sdidsource (unique) to be dropped form enrol_lmb_courses.
+        $table = new xmldb_table('enrol_lmb_courses');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Changing nullability of field sdidsource on table enrol_lmb_courses to null.
+        $table = new xmldb_table('enrol_lmb_courses');
+        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
+
+        // Launch change of nullability for field sdidsource.
+        $dbman->change_field_notnull($table, $field);
+
+        // Define key sdid (unique) to be added to enrol_lmb_courses.
+        $table = new xmldb_table('enrol_lmb_courses');
+        $key = new xmldb_key('sdid', XMLDB_KEY_UNIQUE, array('sdid'));
+
+        // Launch add key sdid.
+        $dbman->add_key($table, $key);
+
+        // Define index messagetime (not unique) to be added to enrol_lmb_courses.
+        $table = new xmldb_table('enrol_lmb_courses');
+        $index = new xmldb_index('messagetime', XMLDB_INDEX_NOTUNIQUE, array('messagetime'));
+
+        // Conditionally launch add index messagetime.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Change sections table.
+        // Define index sdid-sdidsource (unique) to be dropped form enrol_lmb_course_sections.
+        $table = new xmldb_table('enrol_lmb_course_sections');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Changing nullability of field sdidsource on table enrol_lmb_course_sections to null.
+        $table = new xmldb_table('enrol_lmb_course_sections');
+        $field = new xmldb_field('sdidsource', XMLDB_TYPE_CHAR, '127', null, null, null, null, 'id');
+
+        // Launch change of nullability for field sdidsource.
+        $dbman->change_field_notnull($table, $field);
+
+        // Define key sdid (unique) to be added to enrol_lmb_course_sections.
+        $table = new xmldb_table('enrol_lmb_course_sections');
+        $key = new xmldb_key('sdid', XMLDB_KEY_UNIQUE, array('sdid'));
+
+        // Launch add key sdid.
+        $dbman->add_key($table, $key);
+
+        // Define key termsdid (foreign) to be added to enrol_lmb_course_sections.
+        $table = new xmldb_table('enrol_lmb_course_sections');
+        $key = new xmldb_key('termsdid', XMLDB_KEY_FOREIGN, array('termsdid'), 'enrol_lmb_terms', array('sdid'));
+
+        // Launch add key termsdid.
+        $dbman->add_key($table, $key);
+
+        // Define key coursesdid (foreign) to be added to enrol_lmb_course_sections.
+        $table = new xmldb_table('enrol_lmb_course_sections');
+        $key = new xmldb_key('coursesdid', XMLDB_KEY_FOREIGN, array('coursesdid'), 'enrol_lmb_courses', array('sdid'));
+
+        // Launch add key coursesdid.
+        $dbman->add_key($table, $key);
+
+        // Define index begindate (not unique) to be added to enrol_lmb_course_sections.
+        $table = new xmldb_table('enrol_lmb_course_sections');
+        $index = new xmldb_index('begindate', XMLDB_INDEX_NOTUNIQUE, array('begindate'));
+
+        // Conditionally launch add index begindate.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define index messagetime (not unique) to be added to enrol_lmb_course_sections.
+        $table = new xmldb_table('enrol_lmb_course_sections');
+        $index = new xmldb_index('messagetime', XMLDB_INDEX_NOTUNIQUE, array('messagetime'));
+
+        // Conditionally launch add index messagetime.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Change the people table.
+        // Define index sdid-sdidsource (unique) to be dropped form enrol_lmb_people.
+        $table = new xmldb_table('enrol_lmb_people');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Define key sdid (unique) to be added to enrol_lmb_people.
+        $table = new xmldb_table('enrol_lmb_people');
+        $key = new xmldb_key('sdid', XMLDB_KEY_UNIQUE, array('sdid'));
+
+        // Launch add key sdid.
+        $dbman->add_key($table, $key);
+
+        // Define index messagetime (not unique) to be added to enrol_lmb_people.
+        $table = new xmldb_table('enrol_lmb_people');
+        $index = new xmldb_index('messagetime', XMLDB_INDEX_NOTUNIQUE, array('messagetime'));
+
+        // Conditionally launch add index messagetime.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Change person enrolments table.
+        // Define key membersdid (foreign) to be added to enrol_lmb_person_members.
+        $table = new xmldb_table('enrol_lmb_person_members');
+        $key = new xmldb_key('membersdid', XMLDB_KEY_FOREIGN, array('membersdid'), 'enrol_lmb_people', array('sdid'));
+
+        // Launch add key membersdid.
+        $dbman->add_key($table, $key);
+
+        // Define key groupsdid (foreign) to be added to enrol_lmb_person_members.
+        $table = new xmldb_table('enrol_lmb_person_members');
+        $key = new xmldb_key('groupsdid', XMLDB_KEY_FOREIGN, array('groupsdid'), 'enrol_lmb_course_sections', array('sdid'));
+
+        // Launch add key groupsdid.
+        $dbman->add_key($table, $key);
+
+        // Define index status (not unique) to be added to enrol_lmb_person_members.
+        $table = new xmldb_table('enrol_lmb_person_members');
+        $index = new xmldb_index('status', XMLDB_INDEX_NOTUNIQUE, array('status'));
+
+        // Conditionally launch add index status.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define index messagetime (not unique) to be added to enrol_lmb_person_members.
+        $table = new xmldb_table('enrol_lmb_person_members');
+        $index = new xmldb_index('messagetime', XMLDB_INDEX_NOTUNIQUE, array('messagetime'));
+
+        // Conditionally launch add index messagetime.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Changing crosslists tables.
+        // Define index sdid-sdidsource (unique) to be dropped form enrol_lmb_crosslists.
+        $table = new xmldb_table('enrol_lmb_crosslists');
+        $index = new xmldb_index('sdid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Define key sdid (unique) to be added to enrol_lmb_crosslists.
+        $table = new xmldb_table('enrol_lmb_crosslists');
+        $key = new xmldb_key('sdid', XMLDB_KEY_UNIQUE, array('sdid'));
+
+        // Launch add key sdid.
+        $dbman->add_key($table, $key);
+
+        // Define index messagetime (not unique) to be added to enrol_lmb_crosslists.
+        $table = new xmldb_table('enrol_lmb_crosslists');
+        $index = new xmldb_index('messagetime', XMLDB_INDEX_NOTUNIQUE, array('messagetime'));
+
+        // Conditionally launch add index messagetime.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Changing crosslists members table.
+        // Define index sdid-crosslistid-sdidsource (unique) to be dropped form enrol_lmb_crosslist_members.
+        $table = new xmldb_table('enrol_lmb_crosslist_members');
+        $index = new xmldb_index('sdid-crosslistid-sdidsource', XMLDB_INDEX_UNIQUE, array('sdid', 'crosslistid', 'sdidsource'));
+
+        // Conditionally launch drop index sdid-crosslistid-sdidsource.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        // Define index sdid-crosslistid (unique) to be added to enrol_lmb_crosslist_members.
+        $table = new xmldb_table('enrol_lmb_crosslist_members');
+        $index = new xmldb_index('sdid-crosslistid', XMLDB_INDEX_UNIQUE, array('sdid', 'crosslistid'));
+
+        // Conditionally launch add index sdid-crosslistid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define key sdid (foreign) to be added to enrol_lmb_crosslist_members.
+        $table = new xmldb_table('enrol_lmb_crosslist_members');
+        $key = new xmldb_key('sdid', XMLDB_KEY_FOREIGN, array('sdid'), 'enrol_lmb_course_sections', array('sdid'));
+
+        // Launch add key sdid.
+        $dbman->add_key($table, $key);
+
+        // Define index status (not unique) to be added to enrol_lmb_crosslist_members.
+        $table = new xmldb_table('enrol_lmb_crosslist_members');
+        $index = new xmldb_index('status', XMLDB_INDEX_NOTUNIQUE, array('status'));
+
+        // Conditionally launch add index status.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Define index messagetime (not unique) to be added to enrol_lmb_crosslist_members.
+        $table = new xmldb_table('enrol_lmb_crosslist_members');
+        $index = new xmldb_index('messagetime', XMLDB_INDEX_NOTUNIQUE, array('messagetime'));
+
+        // Conditionally launch add index messagetime.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018032200, 'enrol', 'lmb');
+    }
+
 }

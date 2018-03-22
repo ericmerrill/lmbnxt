@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\settings;
+use enrol_lmb\local\data;
 
 /**
  * A base testcase for XML tests.
@@ -36,6 +37,10 @@ use enrol_lmb\settings;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class xml_helper extends advanced_testcase {
+
+    protected $useridnum = 0;
+    protected $sectionidnum = 10000;
+    protected $termidnum = 201700;
 
     public function setUp() {
         settings_helper::reset();
@@ -98,6 +103,217 @@ abstract class xml_helper extends advanced_testcase {
         $property->setValue($obj, $value);
     }
 
+    // Some generator stuff (should move it).
+    protected function create_lmb_person($record = null) {
+        $record = (array)$record;
+
+        if (isset($record['sdid'])) {
+            $idnum = $record['sdid'];
+        } else {
+            $this->useridnum++;
+            $idnum = $this->useridnum;
+        }
+
+        $user = new data\person();
+
+        $user->sdid = $idnum;
+
+        $user->email = 'user'.$idnum.'@example.com';
+        $user->familyname = 'User';
+        $user->givenname = 'Test'.$idnum;
+        $user->fullname = 'Test'.$idnum.' User';
+
+        if (isset($record['nickname'])) {
+            $user->nickname = $record['nickname'];
+        }
+
+        if (isset($record['rolestudent'])) {
+            $user->rolestudent = $record['rolestudent'];
+        }
+
+        if (isset($record['rolestaff'])) {
+            $user->rolestaff = $record['rolestaff'];
+        }
+
+        if (isset($record['rolefaculty'])) {
+            $user->rolefaculty = $record['rolefaculty'];
+        }
+
+        if (isset($record['roleprospectivestudent'])) {
+            $user->roleprospectivestudent = $record['roleprospectivestudent'];
+        }
+
+        if (isset($record['primaryrole'])) {
+            $user->primaryrole = $record['primaryrole'];
+        }
+
+        if (isset($record['sdidsource'])) {
+            $user->sdidsource = $record['sdidsource'];
+        }
+
+        if (isset($record['sctid'])) {
+            $user->sctid = $record['sctid'];
+        }
+
+        if (isset($record['logonid'])) {
+            $user->logonid = $record['logonid'];
+        }
+
+        if (isset($record['emailid'])) {
+            $user->emailid = $record['emailid'];
+        }
+
+        if (isset($record['messagetime'])) {
+            $user->messagetime = $record['messagetime'];
+        } else {
+            $user->messagetime = time();
+        }
+
+        $user->save_to_db();
+
+        return $user;
+    }
+
+    protected function create_lmb_term($record = null) {
+        $record = (array)$record;
+
+        $term = new data\term();
+
+        if (isset($record['sdid'])) {
+            $idnum = $record['sdid'];
+        } else {
+            $this->termidnum += 10;
+            $idnum = $this->termidnum;
+        }
+
+        $term->sdid = $idnum;
+
+        if (isset($record['sdidsource'])) {
+            $term->sdidsource = $record['sdidsource'];
+        }
+
+        if (isset($record['description'])) {
+            $term->description = $record['description'];
+        } else {
+            $term->description = 'Term '.$idnum;
+        }
+
+        if (isset($record['begindate'])) {
+            $term->begindate = $record['begindate'];
+        }
+
+        if (isset($record['enddate'])) {
+            $term->enddate = $record['enddate'];
+        }
+
+        if (isset($record['sortorder'])) {
+            $term->sortorder = $record['sortorder'];
+        }
+
+        if (isset($record['messagetime'])) {
+            $term->messagetime = $record['messagetime'];
+        } else {
+            $term->messagetime = time();
+        }
+
+        $term->save_to_db();
+
+        return $term;
+    }
+
+    protected function create_lmb_section($record = null) {
+        $record = (array)$record;
+
+        $section = new data\section();
+
+        if (isset($record['termsdid'])) {
+            $termid = $record['termsdid'];
+        } else {
+            $this->termidnum;
+            $termid = $this->sectionidnum;
+        }
+
+        if (isset($record['sdid'])) {
+            $idnum = $record['sdid'];
+        } else {
+            $this->sectionidnum++;
+            $idnum = $termid.'.'.$this->sectionidnum;
+        }
+
+        $section->sdid = $idnum;
+        $section->termsdid = $termid;
+
+        if (isset($record['title'])) {
+            $section->title = $record['title'];
+        } else {
+            $section->title = 'Course '.$idnum;
+        }
+
+        if (isset($record['begindate'])) {
+            $section->begindate = $record['begindate'];
+        }
+
+        if (isset($record['enddate'])) {
+            $section->enddate = $record['enddate'];
+        }
+
+        if (isset($record['deptname'])) {
+            $section->deptname = $record['deptname'];
+        }
+
+        if (isset($record['coursesdid'])) {
+            $section->coursesdid = $record['coursesdid'];
+        }
+
+        if (isset($record['messagetime'])) {
+            $section->messagetime = $record['messagetime'];
+        } else {
+            $section->messagetime = time();
+        }
+
+        $section->save_to_db();
+
+        return $section;
+    }
+
+    protected function create_lmb_enrol($section, $person, $record = null) {
+        $record = (array)$record;
+
+        $enrol = new data\person_member();
+
+        $enrol->membersdid = $person->sdid;
+        $enrol->groupsdid = $section->sdid;
+
+        if (isset($record['roletype'])) {
+            $enrol->roletype = $record['roletype'];
+        } else {
+            $enrol->roletype = '01';
+        }
+
+        if (isset($record['status'])) {
+            $enrol->status = $record['status'];
+        } else {
+            $enrol->status = 1;
+        }
+
+        if (isset($record['begindate'])) {
+            $enrol->begindate = $record['begindate'];
+        }
+
+        if (isset($record['enddate'])) {
+            $enrol->enddate = $record['enddate'];
+        }
+
+        if (isset($record['messagetime'])) {
+            $enrol->messagetime = $record['messagetime'];
+        } else {
+            $enrol->messagetime = time();
+        }
+
+        $enrol->save_to_db();
+
+        return $enrol;
+    }
 }
 
 /**

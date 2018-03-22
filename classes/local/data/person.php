@@ -76,7 +76,8 @@ class person extends base {
     public function log_id() {
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
-        if (empty($id) || empty($source)) {
+        $source = (empty($source) ? "(empty)" : $source);
+        if (empty($id)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_bad_person');
         } else {
             logging::instance()->log_line("Person ID \"{$id}\" from \"{$source}\"");

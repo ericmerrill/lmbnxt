@@ -74,8 +74,9 @@ class section extends base {
     public function log_id() {
         $id = $this->__get('sdid');
         $source = $this->__get('sdidsource');
+        $source = (empty($source) ? "(empty)" : $source);
         $desc = $this->__get('title');
-        if (empty($id) || empty($source)) {
+        if (empty($id)) {
             throw new \enrol_lmb\local\exception\message_exception('exception_bad_section');
         } else {
             logging::instance()->log_line("Section ID \"{$id}\", \"{$desc}\", from \"{$source}\"");
