@@ -124,12 +124,15 @@ class bulk_util {
 
         $sql = "SELECT COUNT(enrol.id) AS cnt
                   FROM {".person_member::TABLE."} enrol
-            INNER JOIN {".section::TABLE."} section
+             LEFT JOIN {".section::TABLE."} section
                     ON enrol.groupsdid = section.sdid
-                 WHERE section.termsdid = :term
+                 WHERE (section.termsdid = :term
+                       OR (section.termsdid IS NULL -- This catches cases where we don't have the section yet.
+                           AND
+                           enrol.groupsdid LIKE :termfind))
                    AND enrol.status = :status";
 
-        $params = ['term' => $termsdid, 'status' => 1];
+        $params = ['term' => $termsdid, 'status' => 1, 'termfind' => '%.'.$termsdid];
 
         return $DB->count_records_sql($sql, $params);
     }
@@ -146,14 +149,46 @@ class bulk_util {
 
         $sql = "SELECT COUNT(enrol.id) AS cnt
                   FROM {".person_member::TABLE."} enrol
-            INNER JOIN {".section::TABLE."} section
+             LEFT JOIN {".section::TABLE."} section
                     ON enrol.groupsdid = section.sdid
                  WHERE enrol.messagetime < :reftime
-                   AND section.termsdid = :term
+                   AND (section.termsdid = :term
+                       OR (section.termsdid IS NULL -- This catches cases where we don't have the section yet.
+                           AND
+                           enrol.groupsdid LIKE :termfind))
                    AND enrol.status = :status";
 
-        $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time];
+        $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'termfind' => '%.'.$termsdid];
 
         return $DB->count_records_sql($sql, $params);
+    }
+
+    public function drop_old_term_enrols($termsdid, $time) {
+        global $DB;
+
+        $sql = "SELECT enrol.id
+                  FROM {".person_member::TABLE."} enrol
+             LEFT JOIN {".section::TABLE."} section
+                    ON enrol.groupsdid = section.sdid
+                 WHERE enrol.messagetime < :reftime
+                   AND (section.termsdid = :term
+                       OR (section.termsdid IS NULL -- This catches cases where we don't have the section yet.
+                           AND
+                           enrol.groupsdid LIKE :termfind))
+                   AND enrol.status = :status";
+
+        $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'termfind' => '%.'.$termsdid];
+
+        $ids = $DB->get_recordset_sql($sql, $params);
+
+        foreach ($ids as $id => $notused) {
+            $enrol = person_member::get_for_id($id);
+
+            if (empty($enrol)) {
+                continue;
+            }
+        }
+
+        $ids->close();
     }
 }

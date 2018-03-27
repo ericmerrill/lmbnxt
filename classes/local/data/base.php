@@ -417,6 +417,22 @@ abstract class base {
         return $DB->get_record(static::TABLE, $params);
     }
 
+    public static function get_for_id($id) {
+        global $DB;
+
+        $record = $DB->get_record(static::TABLE, ['id' => $id]);
+
+        if (empty($record)) {
+            return false;
+        }
+
+        $obj = new static();
+
+        $obj->load_from_record($record);
+
+        return $obj;
+    }
+
     public function exists() {
         if ($this->get_record()) {
             return true;

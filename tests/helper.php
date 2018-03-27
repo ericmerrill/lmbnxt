@@ -282,7 +282,12 @@ abstract class xml_helper extends advanced_testcase {
         $enrol = new data\person_member();
 
         $enrol->membersdid = $person->sdid;
-        $enrol->groupsdid = $section->sdid;
+
+        if (is_string($section)) {
+            $enrol->groupsdid = $section;
+        } else {
+            $enrol->groupsdid = $section->sdid;
+        }
 
         if (isset($record['roletype'])) {
             $enrol->roletype = $record['roletype'];

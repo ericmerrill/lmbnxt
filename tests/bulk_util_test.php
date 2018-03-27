@@ -73,7 +73,7 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(20, $results);
 
         $results = $util->get_term_enrols_active_count('201730');
-        $this->assertEquals(17, $results);
+        $this->assertEquals(26, $results);
     }
 
     public function test_get_term_enrols_to_drop_count() {
@@ -95,9 +95,9 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(20, $results);
 
         $results = $util->get_term_enrols_to_drop_count('201730', 1510000000);
-        $this->assertEquals(5, $results);
+        $this->assertEquals(8, $results);
         $results = $util->get_term_enrols_to_drop_count('201730', 1520000000);
-        $this->assertEquals(17, $results);
+        $this->assertEquals(26, $results);
     }
 
     protected function setup_bulk() {
@@ -168,5 +168,26 @@ class bulk_util_test extends xml_helper {
         for ($i = 0; $i < 7; $i++) {
             $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $newtime]);
         }
+
+        // Now a course section that doesn't exist.
+        for ($i = 0; $i < 6; $i++) {
+            $this->create_lmb_enrol('99999.201730', $users[$i], ['messagetime' => $newtime]);
+        }
+        for ($i = 6; $i < 9; $i++) {
+            $this->create_lmb_enrol('99999.201730', $users[$i], ['messagetime' => $oldtime]);
+        }
+        for ($i = 9; $i < 13; $i++) {
+            $this->create_lmb_enrol('99999.201730', $users[$i], ['messagetime' => $newtime, 'status' => 0]);
+        }
+    }
+
+    public function test_drop_old_term_enrols() {
+        $this->resetAfterTest();
+        $this->setup_bulk();
+
+        $util = new bulk_util();
+        $results = $util->drop_old_term_enrols('201730', 1510000000);
+
+
     }
 }
