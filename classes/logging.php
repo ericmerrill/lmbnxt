@@ -93,9 +93,10 @@ class logging {
      * Protected constructor, please use the static instance method.
      */
     protected function __construct() {
-        $this->outputerrorlevel = get_config('enrol_lmb', 'logginglevel');
+        $settings = settings::get_settings();
+        $this->outputerrorlevel = $settings->get('logginglevel');
 
-        $path = get_config('enrol_lmb', 'logpath');
+        $path = $settings->get('logpath');
         if (!empty($path)) {
             $handle = fopen($path, 'a');
             if ($handle) {

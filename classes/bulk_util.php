@@ -166,6 +166,9 @@ class bulk_util {
     public function drop_old_term_enrols($termsdid, $time) {
         global $DB;
 
+        $log = logging::instance();
+
+        // We only get the record ids now so that we get the most up to date record when we actually use it.
         $sql = "SELECT enrol.id
                   FROM {".person_member::TABLE."} enrol
              LEFT JOIN {".section::TABLE."} section
@@ -182,11 +185,38 @@ class bulk_util {
         $ids = $DB->get_recordset_sql($sql, $params);
 
         foreach ($ids as $id => $notused) {
+            // Load the most up to date record for this id.
             $enrol = person_member::get_for_id($id);
 
             if (empty($enrol)) {
+                // This shouldn't happen, but if it does, it isn't much of a concern.
+                debugging('Enrolment '.$id.' was missing when we tried to find it.');
+            }
+
+            // Start a log message with this enrols log line.
+            $enrol->log_id();
+            $log->start_level();
+
+            // This could happen if it takes us a long time to process through the ids.
+            if ($enrol->status != 1 || $enrol->messagetime >= $time) {
+                $log->log_line('Message time or status changed. Skipping.', logging::ERROR_NOTICE);
+                $log->end_message();
                 continue;
             }
+
+            $log->log_line('Changing to status 0');
+            $enrol->status = 0;
+            $enrol->bulkdropped = $time;
+
+            $converter = $enrol->get_moodle_converter();
+            if ($converter) {
+                $converter->convert_to_moodle($enrol);
+            }
+
+            $enrol->save_to_db();
+
+            // Make sure to end the message to reset logging.
+            $log->end_message();
         }
 
         $ids->close();

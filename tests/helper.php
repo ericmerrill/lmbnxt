@@ -104,7 +104,7 @@ abstract class xml_helper extends advanced_testcase {
     }
 
     // Some generator stuff (should move it).
-    protected function create_lmb_person($record = null) {
+    protected function create_lmb_person($record = null, $convert = false) {
         $record = (array)$record;
 
         if (isset($record['sdid'])) {
@@ -171,10 +171,17 @@ abstract class xml_helper extends advanced_testcase {
 
         $user->save_to_db();
 
+        if ($convert) {
+            $converter = $user->get_moodle_converter();
+            if ($converter) {
+                $converter->convert_to_moodle($user);
+            }
+        }
+
         return $user;
     }
 
-    protected function create_lmb_term($record = null) {
+    protected function create_lmb_term($record = null, $convert = false) {
         $record = (array)$record;
 
         $term = new data\term();
@@ -218,10 +225,17 @@ abstract class xml_helper extends advanced_testcase {
 
         $term->save_to_db();
 
+        if ($convert) {
+            $converter = $term->get_moodle_converter();
+            if ($converter) {
+                $converter->convert_to_moodle($term);
+            }
+        }
+
         return $term;
     }
 
-    protected function create_lmb_section($record = null) {
+    protected function create_lmb_section($record = null, $convert = false) {
         $record = (array)$record;
 
         $section = new data\section();
@@ -237,11 +251,12 @@ abstract class xml_helper extends advanced_testcase {
             $idnum = $record['sdid'];
         } else {
             $this->sectionidnum++;
-            $idnum = $termid.'.'.$this->sectionidnum;
+            $idnum = $this->sectionidnum.'.'.$termid;
         }
 
         $section->sdid = $idnum;
         $section->termsdid = $termid;
+        $section->crn = explode('.', $idnum)[0];
 
         if (isset($record['title'])) {
             $section->title = $record['title'];
@@ -273,10 +288,17 @@ abstract class xml_helper extends advanced_testcase {
 
         $section->save_to_db();
 
+        if ($convert) {
+            $converter = $section->get_moodle_converter();
+            if ($converter) {
+                $converter->convert_to_moodle($section);
+            }
+        }
+
         return $section;
     }
 
-    protected function create_lmb_enrol($section, $person, $record = null) {
+    protected function create_lmb_enrol($section, $person, $record = null, $convert = false) {
         $record = (array)$record;
 
         $enrol = new data\person_member();
@@ -316,6 +338,13 @@ abstract class xml_helper extends advanced_testcase {
         }
 
         $enrol->save_to_db();
+
+        if ($convert) {
+            $converter = $enrol->get_moodle_converter();
+            if ($converter) {
+                $converter->convert_to_moodle($enrol);
+            }
+        }
 
         return $enrol;
     }
