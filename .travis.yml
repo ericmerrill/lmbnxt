@@ -3,7 +3,6 @@ language: php
 sudo: false
 
 addons:
-  postgresql: $PGVER
   apt:
     packages:
       - oracle-java8-installer
@@ -24,32 +23,36 @@ env:
 
  matrix:
     # Moodle 3.5
-  - PHPVER=7.0 PGVER=9.2 DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
-  - PHPVER=7.1 PGVER="9.3" DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
+  - PHPVER=7.0 DB=mysqli            MOODLE_BRANCH=MOODLE_35_STABLE
+  - PHPVER=7.1 DB=pgsql PGVER=9.3   MOODLE_BRANCH=MOODLE_35_STABLE
  
     # Moodle 3.4
-  - PHPVER=7.0 PGVER=9.2 DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
-  - PHPVER=7.1 PGVER=9.5 DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE COVERALLS=TRUE
+  - PHPVER=7.0 DB=mysqli            MOODLE_BRANCH=MOODLE_34_STABLE
+  - PHPVER=7.1 DB=pgsql PGVER=9.5   MOODLE_BRANCH=MOODLE_34_STABLE COVERALLS=TRUE
 
     # Moodle 3.3
-  - PHPVER=5.6 PGVER=9.2 DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
-  - PHPVER=7.0 PGVER=9.4 DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
-  - PHPVER=7.1 PGVER=9.2 DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
+  - PHPVER=5.6 DB=mysqli            MOODLE_BRANCH=MOODLE_33_STABLE
+  - PHPVER=7.0 DB=pgsql PGVER=9.4   MOODLE_BRANCH=MOODLE_33_STABLE
+  - PHPVER=7.1 DB=mysqli            MOODLE_BRANCH=MOODLE_33_STABLE
 
     # Moodle 3.2
-  - PHPVER=5.6 PGVER=9.3 DB=pgsql MOODLE_BRANCH=MOODLE_32_STABLE
+  - PHPVER=5.6 DB=pgsql PGVER=9.3   MOODLE_BRANCH=MOODLE_32_STABLE
 
     # Moodle Master
-  - PHPVER=7.0 PGVER=9.6 DB=pgsql MOODLE_BRANCH=master
-  - PHPVER=7.0 PGVER=9.2 DB=mysqli MOODLE_BRANCH=master
-  - PHPVER=7.1 PGVER=10.0 DB=pgsql MOODLE_BRANCH=master
-  - PHPVER=7.1 PGVER=9.2 DB=mysqli MOODLE_BRANCH=master
+  - PHPVER=7.0 DB=pgsql PGVER=9.6   MOODLE_BRANCH=master
+  - PHPVER=7.0 DB=mysqli            MOODLE_BRANCH=master
+  - PHPVER=7.1 DB=pgsql PGVER=10.0  MOODLE_BRANCH=master
+  - PHPVER=7.1 DB=mysqli            MOODLE_BRANCH=master
 
 
 before_install:
   - phpenv config-rm xdebug.ini
   - nvm install 8.9
   - nvm use 8.9
+  - if [ -n "$PGVER" ]; then
+      sudo /etc/init.d/postgresql stop
+      sudo /etc/init.d/postgresql start $PGVER
+    fi
   - cd ../..
   - composer create-project -n --no-dev --prefer-dist moodlerooms/moodle-plugin-ci ci ^2
   - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
