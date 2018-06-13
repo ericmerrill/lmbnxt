@@ -86,9 +86,9 @@ class crosslist extends course {
         // TODO - Make a new setting.
         $course->fullname = $this->create_crosslist_title($settings->get('xlstitle'),
                 $settings->get('xlstitlerepeat'), $settings->get('xlstitledivider'));
-        $course->shortname = $this->create_crosslist_title($settings->get('xlsshorttitle'),
+        $shortname = $this->create_crosslist_title($settings->get('xlsshorttitle'),
                 $settings->get('xlsshorttitlerepeat'), $settings->get('xlsshorttitledivider'));
-
+        $course->shortname = $this->deduplicate_shortname($shortname, $course->idnumber);
 
         // We always update dates.
         $course->startdate = $this->get_crosslist_start_date();

@@ -72,7 +72,8 @@ class course extends base {
             $course->fullname = $this->create_course_title($this->settings->get('coursetitle'), $this->data);
         }
         if ($new || (bool)$this->settings->get('forceshorttitle')) {
-            $course->shortname = $this->create_course_title($this->settings->get('courseshorttitle'), $this->data);
+            $shortname = $this->create_course_title($this->settings->get('courseshorttitle'), $this->data);
+            $course->shortname = $this->deduplicate_shortname($shortname, $course->idnumber);
         }
 
         // We always update dates.
@@ -293,5 +294,32 @@ class course extends base {
         }
 
         return $title;
+    }
+
+    public function deduplicate_shortname($shortname, $idnumber) {
+        global $DB;
+
+        $name = $shortname;
+
+        $checked = [];
+
+        do {
+            $select = "shortname = :shortname AND idnumber <> :idnum";
+            $params = ['shortname' => $shortname, 'idnum' => $idnumber];
+
+            $count = $DB->count_records_select('course', $select, $params);
+
+            if (empty($count)) {
+                return $name;
+            }
+
+            do {
+                $rand = rand(2, 999999);
+            } while (isset($checked[$rand]));
+
+            $checked[$rand] = 1;
+            $name = $shortname.'-'.$rand;
+
+        } while (true);
     }
 }
