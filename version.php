@@ -28,6 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->version  = 2018032200;
 $plugin->release = "0.0.1";
 $plugin->maturity = MATURITY_ALPHA;
-$plugin->requires = 2014051200; // Moodle 2.7.
+$plugin->requires = 2016120500; // Moodle 3.2.
 $plugin->component = 'enrol_lmb';
 $plugin->cron = 600;
