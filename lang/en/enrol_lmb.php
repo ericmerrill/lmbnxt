@@ -91,6 +91,11 @@ $string['exception_membershiptype_not_found'] = 'Membership type could not be fo
 $string['exception_update_failure'] = 'Failure updating in database';
 $string['exception_xml_boolean'] = 'Could not convert data "{$a}" into boolean.';
 
+// Bulk settings.
+$string['bannerextractimport'] = 'Banner XML Import';
+$string['dropprecentlimit'] = 'Bulk comprehensive drop limit';
+$string['dropprecentlimit_help'] = 'When doing comprehensive or bulk post-processing, missing enrolments are treated as drops. This setting will cause the module to skip the drop process if more than this percent of total enrolments in a term are set to be dropped';
+
 // Person Settings.
 $string['parseperson'] = 'Person Processing';
 $string['parsepersonxml'] = 'TODO';

@@ -134,6 +134,27 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(17, $count);
 
         $util = new bulk_util();
+
+        // Test the percent limits.
+        settings_helper::temp_set('dropprecentlimit', 10);
+        $log->test_get_flush_buffer();
+
+        $results = $util->drop_old_term_enrols('201730', 1510000000);
+
+        $error = 'WARNING: Term drops exceeds limit in settings. Skipping term.';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        // Make sure nothing has changed.
+        $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 1]);
+        $this->assertEquals(28, $count);
+        $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 0]);
+        $this->assertEquals(6, $count);
+        $count = $DB->count_records('user_enrolments');
+        $this->assertEquals(17, $count);
+
+        // Now do it with a high limit.
+        settings_helper::temp_set('dropprecentlimit', 90);
+
         $results = $util->drop_old_term_enrols('201730', 1510000000);
 
         // Now, we expect that 8 of the enrols to have been deactivated.

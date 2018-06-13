@@ -30,6 +30,7 @@ use enrol_lmb\local\data\term;
 use enrol_lmb\local\data\section;
 use enrol_lmb\local\data\crosslist_member;
 use enrol_lmb\local\data\person_member;
+use enrol_lmb\settings;
 
 /**
  * A tool for working with bulk jobs.
@@ -176,6 +177,22 @@ class bulk_util {
         global $DB;
 
         $log = logging::instance();
+        $settings = settings::get_settings();
+
+        // Check that we aren't exceeding the drop limit.
+        $active = $this->get_term_enrols_active_count($termsdid);
+        $drop = $this->get_term_enrols_to_drop_count($termsdid, $time);
+        $percent = round(($drop / $active) * 100, 1);
+
+        $log->log_line("Processing old drops for Term {$termsdid} using the reference time of ".userdate($time)." ({$time}).");
+        $log->start_level();
+        $log->log_line("Approximately {$drop} enrollments out of {$active} active ({$percent}%) found to drop.");
+
+        if ($percent > $settings->get('dropprecentlimit')) {
+            $log->log_line('Term drops exceeds limit in settings. Skipping term.', logging::ERROR_WARN);
+            $log->end_message();
+            return;
+        }
 
         // We only get the record ids now so that we get the most up to date record when we actually use it.
         $sql = "SELECT enrol.id
@@ -193,8 +210,6 @@ class bulk_util {
                    AND enrol.status = :status";
 
         $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'reftime2' => $time, 'termfind' => '%.'.$termsdid];
-
-        // TODO - drop percent limit/check.
 
         $ids = $DB->get_recordset_sql($sql, $params);
 
@@ -234,5 +249,7 @@ class bulk_util {
         }
 
         $ids->close();
+
+        $log->end_message();
     }
 }
