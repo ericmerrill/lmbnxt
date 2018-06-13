@@ -48,6 +48,12 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(2, $results['201730']['sectionupdate']);
         $this->assertTrue(isset($results['201730']['enrolupdates']));
         $this->assertEquals(12, $results['201730']['enrolupdates']);
+        $this->assertTrue(isset($results['201730']['totalactiveenrols']));
+        $this->assertEquals(28, $results['201730']['totalactiveenrols']);
+        $this->assertTrue(isset($results['201730']['estimatedbulkdrops']));
+        $this->assertEquals(9, $results['201730']['estimatedbulkdrops']);
+        $this->assertTrue(isset($results['201730']['estimatedbulkpercent']));
+        $this->assertEquals(32.14, $results['201730']['estimatedbulkpercent'], '', 0.1);
 
         $this->assertTrue(isset($results['201720']));
         $this->assertFalse(isset($results['201720']['termupdate']));
@@ -55,6 +61,12 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(1, $results['201720']['sectionupdate']);
         $this->assertTrue(isset($results['201720']['enrolupdates']));
         $this->assertEquals(5, $results['201720']['enrolupdates']);
+        $this->assertTrue(isset($results['201720']['totalactiveenrols']));
+        $this->assertEquals(20, $results['201720']['totalactiveenrols']);
+        $this->assertTrue(isset($results['201720']['estimatedbulkdrops']));
+        $this->assertEquals(15, $results['201720']['estimatedbulkdrops']);
+        $this->assertTrue(isset($results['201720']['estimatedbulkpercent']));
+        $this->assertEquals(75, $results['201720']['estimatedbulkpercent'], '', 0.1);
 
         $this->assertFalse(isset($results['201710']));
     }
@@ -74,7 +86,7 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(20, $results);
 
         $results = $util->get_term_enrols_active_count('201730');
-        $this->assertEquals(26, $results);
+        $this->assertEquals(28, $results);
     }
 
     public function test_get_term_enrols_to_drop_count() {
@@ -96,9 +108,9 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(20, $results);
 
         $results = $util->get_term_enrols_to_drop_count('201730', 1510000000);
-        $this->assertEquals(8, $results);
+        $this->assertEquals(9, $results);
         $results = $util->get_term_enrols_to_drop_count('201730', 1520000000);
-        $this->assertEquals(26, $results);
+        $this->assertEquals(28, $results);
     }
 
     public function test_drop_old_term_enrols() {
@@ -113,7 +125,7 @@ class bulk_util_test extends xml_helper {
         // First we want to confirm that some things are true in our tables and Moodle before correcting.
         // There should be 26 active enrols and 6 inactive.
         $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 1]);
-        $this->assertEquals(26, $count);
+        $this->assertEquals(28, $count);
         $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 0]);
         $this->assertEquals(6, $count);
 
@@ -126,9 +138,9 @@ class bulk_util_test extends xml_helper {
 
         // Now, we expect that 8 of the enrols to have been deactivated.
         $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 1]);
-        $this->assertEquals(18, $count);
+        $this->assertEquals(19, $count);
         $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 0]);
-        $this->assertEquals(14, $count);
+        $this->assertEquals(15, $count);
 
         // But only 5 of those could actually be applied to Moodle.
         $count = $DB->count_records('user_enrolments');
@@ -136,6 +148,8 @@ class bulk_util_test extends xml_helper {
     }
 
     protected function setup_bulk($convert = false, $onlyterm = false) {
+        global $DB;
+
         $oldtime = 1500000000;
         $newtime = 1510000000;
 
@@ -219,6 +233,15 @@ class bulk_util_test extends xml_helper {
             for ($i = 9; $i < 13; $i++) {
                 $this->create_lmb_enrol('99999.201730', $users[$i], ['messagetime' => $newtime, 'status' => 0], $convert);
             }
+
+            // Need to update message time and time modified for these.
+            $enrol = $this->create_lmb_enrol('99999.201730', $users[13], [], $convert);
+            $DB->set_field($enrol::TABLE, 'messagetime', null, ['id' => $enrol->id]);
+            $DB->set_field($enrol::TABLE, 'messagetime', $newtime, ['id' => $enrol->id]);
+
+            $enrol = $this->create_lmb_enrol('99999.201730', $users[14], ['messagetime' => null], $convert);
+            $DB->set_field($enrol::TABLE, 'messagetime', null, ['id' => $enrol->id]);
+            $DB->set_field($enrol::TABLE, 'timemodified', $oldtime, ['id' => $enrol->id]);
         }
     }
 

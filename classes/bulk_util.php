@@ -110,6 +110,12 @@ class bulk_util {
             }
         }
 
+        foreach ($output as $termid => &$term) {
+            $term['totalactiveenrols'] = $this->get_term_enrols_active_count($termid);
+            $term['estimatedbulkdrops'] = $this->get_term_enrols_to_drop_count($termid, $start);
+            $term['estimatedbulkpercent'] = round(($term['estimatedbulkdrops'] / $term['totalactiveenrols']) * 100, 2);
+        }
+
         return $output;
     }
 
@@ -151,14 +157,17 @@ class bulk_util {
                   FROM {".person_member::TABLE."} enrol
              LEFT JOIN {".section::TABLE."} section
                     ON enrol.groupsdid = section.sdid
-                 WHERE enrol.messagetime < :reftime
+                 WHERE (enrol.messagetime < :reftime
+                       OR (enrol.messagetime IS NULL
+                           AND
+                           enrol.timemodified < :reftime2))
                    AND (section.termsdid = :term
                        OR (section.termsdid IS NULL -- This catches cases where we don't have the section yet.
                            AND
                            enrol.groupsdid LIKE :termfind))
                    AND enrol.status = :status";
 
-        $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'termfind' => '%.'.$termsdid];
+        $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'reftime2' => $time, 'termfind' => '%.'.$termsdid];
 
         return $DB->count_records_sql($sql, $params);
     }
@@ -173,14 +182,19 @@ class bulk_util {
                   FROM {".person_member::TABLE."} enrol
              LEFT JOIN {".section::TABLE."} section
                     ON enrol.groupsdid = section.sdid
-                 WHERE enrol.messagetime < :reftime
+                 WHERE (enrol.messagetime < :reftime
+                       OR (enrol.messagetime IS NULL
+                           AND
+                           enrol.timemodified < :reftime2))
                    AND (section.termsdid = :term
                        OR (section.termsdid IS NULL -- This catches cases where we don't have the section yet.
                            AND
                            enrol.groupsdid LIKE :termfind))
                    AND enrol.status = :status";
 
-        $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'termfind' => '%.'.$termsdid];
+        $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'reftime2' => $time, 'termfind' => '%.'.$termsdid];
+
+        // TODO - drop percent limit/check.
 
         $ids = $DB->get_recordset_sql($sql, $params);
 
