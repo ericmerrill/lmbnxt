@@ -106,7 +106,7 @@ class bulk_util_test extends xml_helper {
 
         $this->resetAfterTest();
 
-        //$log = new logging_helper();
+        $log = new logging_helper();
 
         $this->setup_bulk(true, '201730');
 
