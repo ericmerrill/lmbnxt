@@ -296,7 +296,14 @@ class course extends base {
         return $title;
     }
 
-    public function deduplicate_shortname($shortname, $idnumber) {
+    /**
+     * Provides a unique shortname for a course by appending a random number of needed.
+     *
+     * @param string $shortname The starting shortname of the course.
+     * @param string $idnumber The idnumber of the course.
+     * @return string The fixed shortname.
+     */
+    protected function deduplicate_shortname($shortname, $idnumber) {
         global $DB;
 
         $name = $shortname;
@@ -305,7 +312,7 @@ class course extends base {
 
         do {
             $select = "shortname = :shortname AND idnumber <> :idnum";
-            $params = ['shortname' => $shortname, 'idnum' => $idnumber];
+            $params = ['shortname' => $name, 'idnum' => $idnumber];
 
             $count = $DB->count_records_select('course', $select, $params);
 
@@ -314,7 +321,7 @@ class course extends base {
             }
 
             do {
-                $rand = rand(2, 999999);
+                $rand = mt_rand(2, 999999);
             } while (isset($checked[$rand]));
 
             $checked[$rand] = 1;

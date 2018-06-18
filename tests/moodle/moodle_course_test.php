@@ -98,6 +98,32 @@ class moodle_course_testcase extends xml_helper {
         $this->assertEquals('Course Title', $result);
     }
 
+    public function test_deduplicate_shortname() {
+        global $CFG, $DB;
+        $this->resetAfterTest(true);
+
+        settings_helper::temp_set('courseshorttitle', 'Short Title');
+
+        // First a LIS 2 based node.
+        $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/data/section_replace.xml');
+        $converter = new lis2\section();
+        $section = $converter->process_xml_to_data($node);
+
+        $moodlecourse = new moodle\course();
+        $moodlecourse->convert_to_moodle($section);
+
+        $section->sdid = '10002.201740';
+
+        $moodlecourse->convert_to_moodle($section);
+
+        $course1 = $DB->get_record('course', ['idnumber' => '10001.201740'], '*', MUST_EXIST);
+        $course2 = $DB->get_record('course', ['idnumber' => '10002.201740'], '*', MUST_EXIST);
+
+        $this->assertEquals('Short Title', $course1->shortname);
+        $this->assertContains('Short Title-', $course2->shortname);
+
+    }
+
     public function test_calculate_visibility() {
         // Set this course section to start 4 days in future.
         $time = time() + (4 * 24 * 3600);
