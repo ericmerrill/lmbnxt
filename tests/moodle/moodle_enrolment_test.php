@@ -167,6 +167,7 @@ class moodle_enrolment_testcase extends xml_helper {
     public function test_convert_to_moodle_dates() {
         global $CFG, $DB;
 
+        $this->setTimezone('America/Detroit');
         $this->resetAfterTest(true);
 
         settings_helper::temp_set('restrictenroldates', 0);
@@ -200,8 +201,8 @@ class moodle_enrolment_testcase extends xml_helper {
         $this->assertCount(1, get_user_roles($context, $user->id));
 
         $record = $DB->get_record('user_enrolments', ['userid' => $user->id]);
-        $this->assertEquals(1504051200, $record->timestart);
-        $this->assertEquals(1513468800, $record->timeend);
+        $this->assertEquals(1504065600, $record->timestart);
+        $this->assertEquals(1513486800, $record->timeend);
 
     }
 

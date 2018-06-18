@@ -34,6 +34,10 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class xml_group_section_testcase extends xml_helper {
     public function test_conversion() {
         global $CFG;
+
+        $this->setTimezone('America/Detroit');
+        $this->resetAfterTest(true);
+
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/section.xml');
 
         $converter = new xml\group();
@@ -47,8 +51,8 @@ class xml_group_section_testcase extends xml_helper {
         $this->assertEquals('English Dept', $section->deptname);
         $this->assertEquals('ENG', $section->deptsdid);
 
-        $this->assertEquals('1504051200', $section->begindate);
-        $this->assertEquals('1513468800', $section->enddate);
+        $this->assertEquals('1504065600', $section->begindate);
+        $this->assertEquals('1513486800', $section->enddate);
 
         $this->assertEquals('Test SCT Banner', $section->termsdidsource);
         $this->assertEquals('201740', $section->termsdid);

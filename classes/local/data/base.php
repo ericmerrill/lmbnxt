@@ -225,7 +225,44 @@ abstract class base {
 
         // TODO This really needs timezone work...
         // Need to convert to straight date in some cases...
-        $time = strtotime($value.' UTC');
+
+        // ILP contains a bug that causes dates to sometimes be reported with incorrect/inconsistent timezone offsets.
+        // Check for a ISO 8601 date with a timezone offset.
+        if (preg_match('|^(\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2})[\+\-]\d{2}\:\d{2}$|', $value)) {
+            // Load into a datetime and get the timezone offset.
+            $dt = new \DateTime($value);
+            $offset = $dt->getOffset();
+
+            // We also need to check if we need to shift to the local timezone, which just compounds problems...
+            $srvdate = new \DateTime();
+            $srvoffset = $srvdate->getOffset();
+            $diff = $offset - $srvoffset;
+            if (!empty($diff)) {
+                if ($diff > 0) {
+                    $int = new \DateInterval('PT'.$diff.'S');
+                    $dt->add($int);
+                } else {
+                    $int = new \DateInterval('PT'.(-1 * $diff).'S');
+                    $dt->sub($int);
+
+                }
+                $dt->setTimezone($srvdate->getTimezone());
+            }
+
+            // Now we need to invert the offset so that we can add it back into time, correcting the bad offset.
+            $offset = $offset * -1;
+            if ($offset > 0) {
+                $int = new \DateInterval('PT'.$offset.'S');
+                $dt->add($int);
+            } else {
+                $int = new \DateInterval('PT'.(-1 * $offset).'S');
+                $dt->sub($int);
+            }
+
+            $time = $dt->getTimestamp();
+        } else {
+            $time = strtotime($value);
+        }
 
         if ($time === false) {
             logging::instance()->log_line("Could not convert time \"{$value}\".", logging::ERROR_WARN);

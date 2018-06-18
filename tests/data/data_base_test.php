@@ -74,10 +74,13 @@ class data_base_testcase extends xml_helper {
     }
 
     public function test_handler_date() {
+        $this->resetAfterTest();
+        $this->setTimezone('America/Detroit');
+
         $obj = new data_test();
 
         $obj->date = "2016-01-10";
-        $this->assertEquals(1452384000, $obj->date);
+        $this->assertEquals(1452402000, $obj->date);
 
         $log = new logging_helper();
         $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
@@ -91,6 +94,28 @@ class data_base_testcase extends xml_helper {
         $obj->date = "2016-45-10";
         $this->assertEquals(0, $obj->date);
         $this->assertRegExp("|WARNING: |", $log->test_get_flush_buffer());
+
+        // Now some specific test cases related to a bad behavior from ILP.
+        $obj->date = "2018-07-01T00:00:00";
+        $this->assertEquals(1530417600, $obj->date);
+
+        // There is a flaw in ILP that causes the date to be reported with an incorrect offset.
+        // We try to correct that. All of these should be July 1, 2018, at midnight, local time.
+        $obj->date = "2018-06-30T20:00:00-04:00";
+        $this->assertEquals(1530417600, $obj->date);
+
+        $obj->date = "2018-06-30T21:00:00-03:00";
+        $this->assertEquals(1530417600, $obj->date);
+
+        $obj->date = "2018-07-01T03:00:00+03:00";
+        $this->assertEquals(1530417600, $obj->date);
+
+        $obj->date = "2018-07-01T00:00:00+00:00";
+        $this->assertEquals(1530417600, $obj->date);
+
+        $obj->date = "2018-07-01T00:00:00-00:00";
+        $this->assertEquals(1530417600, $obj->date);
+
     }
 
     public function test_get() {

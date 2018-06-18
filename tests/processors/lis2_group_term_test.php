@@ -35,6 +35,10 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class lis2_group_term_test extends xml_helper {
     public function test_term_group() {
         global $CFG;
+
+        $this->setTimezone('America/Detroit');
+        $this->resetAfterTest(true);
+
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/term_replace.xml');
 
         $converter = new lis2\group();
@@ -48,8 +52,8 @@ class lis2_group_term_test extends xml_helper {
         $this->assertEquals('ILP', $term->referenceagent);
         $this->assertEquals('201740', $term->messagereference);
 
-        $this->assertEquals('1504051200', $term->begindate);
-        $this->assertEquals('1513468800', $term->enddate);
+        $this->assertEquals('1504065600', $term->begindate);
+        $this->assertEquals('1513486800', $term->enddate);
 
         // TODO restrict settings.
         $this->assertEquals('0', $term->beginrestrict);

@@ -35,6 +35,8 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class lis2_section_test extends xml_helper {
     public function test_section() {
         global $CFG;
+
+        $this->setTimezone('America/Detroit');
         $this->resetAfterTest(true);
 
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lis2/parse/section_replace.xml');
@@ -61,9 +63,9 @@ class lis2_section_test extends xml_helper {
         $this->assertEquals('ENG', $section->deptsdid);
         $this->assertEquals('Active', $section->status);
 
-        $this->assertEquals(1504224000, $section->begindate);
+        $this->assertEquals(1504238400, $section->begindate);
         $this->assertEquals(0, $section->beginrestrict);
-        $this->assertEquals(1514678400, $section->enddate);
+        $this->assertEquals(1514696400, $section->enddate);
         $this->assertEquals(0, $section->endrestrict);
 
         $this->assertEquals('ENG.3705', $section->coursesdid);

@@ -34,6 +34,10 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class xml_person_member_testcase extends xml_helper {
     public function test_conversion() {
         global $CFG;
+
+        $this->setTimezone('America/Detroit');
+        $this->resetAfterTest(true);
+
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/person_member.xml');
 
         $converter = new xml\membership();
@@ -72,9 +76,9 @@ class xml_person_member_testcase extends xml_helper {
         $this->assertEquals(1, $member->recstatus);
         $this->assertFalse(isset($member->subrole));
 
-        $this->assertEquals(1504051200, $member->begindate);
+        $this->assertEquals(1504065600, $member->begindate);
         $this->assertEquals(0, $member->beginrestrict);
-        $this->assertEquals(1513468800, $member->enddate);
+        $this->assertEquals(1513486800, $member->enddate);
         $this->assertEquals(1, $member->endrestrict);
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
@@ -102,6 +106,7 @@ class xml_person_member_testcase extends xml_helper {
     public function test_member_enrol_and_unenrol() {
         global $CFG;
 
+        $this->setTimezone('America/Detroit');
         $this->resetAfterTest(true);
 
         $enrolnode = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/data/member_student.xml');
@@ -124,9 +129,9 @@ class xml_person_member_testcase extends xml_helper {
         $this->assertEquals(1, $member->recstatus);
         $this->assertFalse(isset($member->subrole));
 
-        $this->assertEquals(1504051200, $member->begindate);
+        $this->assertEquals(1504065600, $member->begindate);
         $this->assertEquals(0, $member->beginrestrict);
-        $this->assertEquals(1513468800, $member->enddate);
+        $this->assertEquals(1513486800, $member->enddate);
         $this->assertEquals(1, $member->endrestrict);
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
@@ -145,7 +150,6 @@ class xml_person_member_testcase extends xml_helper {
         $this->assertCount(1, $members);
 
         $member = $members[0];
-//        print "<pre>";var_export($member);print "</pre>";
         $this->assertInstanceOf(data\person_member::class, $member);
         $this->assertEquals('Test SCT Banner', $member->membersdidsource);
         $this->assertEquals('1000001', $member->membersdid);
@@ -155,9 +159,9 @@ class xml_person_member_testcase extends xml_helper {
         $this->assertEquals(3, $member->recstatus);
         $this->assertFalse(isset($member->subrole));
 
-        $this->assertEquals(1504051200, $member->begindate);
+        $this->assertEquals(1504065600, $member->begindate);
         $this->assertEquals(0, $member->beginrestrict);
-        $this->assertEquals(1513468800, $member->enddate);
+        $this->assertEquals(1513486800, $member->enddate);
         $this->assertEquals(1, $member->endrestrict);
 
         $this->assertEquals('Test SCT Banner', $member->groupsdidsource);
@@ -168,6 +172,5 @@ class xml_person_member_testcase extends xml_helper {
         $this->assertEquals('4-Point Grade', $member->finalmode);
         $this->assertEquals(1, $member->gradable);
 
-        //print "<pre>";var_export($members);print "</pre>";
     }
 }

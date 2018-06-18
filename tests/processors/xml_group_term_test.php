@@ -34,6 +34,10 @@ require_once($CFG->dirroot.'/enrol/lmb/tests/helper.php');
 class xml_group_term_testcase extends xml_helper {
     public function test_conversion() {
         global $CFG;
+
+        $this->setTimezone('America/Detroit');
+        $this->resetAfterTest(true);
+
         $node = $this->get_node_for_file($CFG->dirroot.'/enrol/lmb/tests/fixtures/lmb/term.xml');
 
         $converter = new xml\group();
@@ -44,8 +48,8 @@ class xml_group_term_testcase extends xml_helper {
         $this->assertEquals('Test SCT Banner', $term->sdidsource);
         $this->assertEquals('201640', $term->sdid);
 
-        $this->assertEquals('1472515200', $term->begindate);
-        $this->assertEquals('1481932800', $term->enddate);
+        $this->assertEquals('1472529600', $term->begindate);
+        $this->assertEquals('1481950800', $term->enddate);
 
         $this->assertEquals('0', $term->beginrestrict);
         $this->assertEquals('1', $term->endrestrict);
