@@ -27,6 +27,7 @@ namespace enrol_lmb\local\data;
 
 defined('MOODLE_INTERNAL') || die();
 
+use enrol_lmb\date_util;
 use enrol_lmb\logging;
 use enrol_lmb\local\moodle;
 
@@ -226,14 +227,7 @@ abstract class base {
      * @return int The new property value
      */
     protected function handler_date($name, $value) {
-        if (is_int($value) || ctype_digit($value)) {
-            // If this is either an actual integer, or all the characters are ints, then don't convert.
-            return (int)$value;
-        }
-
-        // TODO This really needs timezone work...
-        // Need to convert to straight date in some cases...
-        $time = strtotime($value);
+        $time = date_util::string_to_timestamp($value);
 
         if ($time === false) {
             logging::instance()->log_line("Could not convert time \"{$value}\".", logging::ERROR_WARN);
