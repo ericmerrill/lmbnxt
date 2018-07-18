@@ -343,6 +343,17 @@ if ($ADMIN->fulltree) {
 
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/xlsmergegroups', get_string('xlsmergegroups', 'enrol_lmb'),
             get_string('xlsmergegroups_help', 'enrol_lmb'), 1));
+
+    // LMB Quirks ----------------------------------------------------------------------------------.
+    $settingslmb->add(new admin_setting_heading('enrol_lmb_quirks', get_string('quirks', 'enrol_lmb'), ''));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/quirksectiondatebulk',
+            get_string('quirksectiondatebulk', 'enrol_lmb'),
+            get_string('quirksectiondatebulk_help', 'enrol_lmb'), 1));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/quirktimezoneoffsets',
+            get_string('quirktimezoneoffsets', 'enrol_lmb'),
+            get_string('quirktimezoneoffsets_help', 'enrol_lmb'), 1));
 }
 
 $settings->add('enrolsettingscat', $settingslmb);

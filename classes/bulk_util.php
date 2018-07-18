@@ -252,4 +252,40 @@ class bulk_util {
 
         $log->end_message();
     }
+
+    /**
+     * Based on the supplied time and term, adjust term dates to add one day to the start and end days.
+     *
+     * This is done because of a bug in ILP that supplies incorrect course dates when used with bulk.
+     *
+     * @param string $termsdid The sdid of the term
+     * @param int $time The time that marked the start of the bulk run
+     */
+    public function adjust_term_section_dates($termsdid, $time) {
+        global $DB;
+
+        // Next we want any course sections that were updated.
+        $sql = "SELECT id FROM {".section::TABLE."}
+                 WHERE messagetime >= :start
+                   AND termsdid = :termsdid";
+
+        $params = ['start' => $time, 'termsdid' => $termsdid];
+
+        $sectionids = $DB->get_fieldset_sql($sql, $params);
+
+        if (empty($sectionids)) {
+            return;
+        }
+
+        foreach ($sectionids as $sectionid) {
+            $section = section::get_for_id($sectionid);
+
+            if (empty($section)) {
+                // Missing section.
+                continue;
+            }
+
+
+        }
+    }
 }

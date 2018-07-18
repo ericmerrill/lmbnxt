@@ -260,3 +260,10 @@ $string['xlsmergegroups'] = 'TODO';
 $string['xlsmergegroups_help'] = 'TODO';
 $string['xlsmergecourse'] = 'TODOmerge';
 $string['xlsmetacourse'] = 'TODOmeta';
+
+// Quirk Settings.
+$string['quirks'] = 'ILP/LMB Quirk Settings';
+$string['quirksectiondatebulk'] = 'TODOBulk course dates are incorrect';
+$string['quirksectiondatebulk_help'] = 'When ILP sends courses to Moodle with a bulk job, start and end dates are off by a day. With this setting enabled, the bulk job end tool will attempt to correct this.';
+$string['quirktimezoneoffsets'] = 'Quirky timeframe date timezones';
+$string['quirktimezoneoffsets_help'] = 'Banner and ILP have some quirks with term and course start/end dates when processed through bulk jobs that can cause dates to be off. This setting will attempt to correct them.';

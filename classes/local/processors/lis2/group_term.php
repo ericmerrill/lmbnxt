@@ -27,7 +27,7 @@ namespace enrol_lmb\local\processors\lis2;
 
 defined('MOODLE_INTERNAL') || die();
 
-use enrol_lmb\local\processors\xml\trait_timeframe;
+use enrol_lmb\local\processors\lis2\trait_timeframe;
 
 /**
  * Class for working with message types.

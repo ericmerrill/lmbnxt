@@ -55,6 +55,9 @@ class data_base_testcase extends xml_helper {
 
         $this->assertEquals(2, $obj->single);
         $this->assertEquals(4, $obj->double);
+
+        $this->assertNull($obj->single_raw);
+        $this->assertEquals(2, $obj->double_raw);
     }
 
     public function test_handler_boolean() {
@@ -62,15 +65,19 @@ class data_base_testcase extends xml_helper {
 
         $obj->boolean = true;
         $this->assertEquals(1, $obj->boolean);
+        $this->assertEquals(true, $obj->boolean_raw);
 
         $obj->boolean = false;
         $this->assertEquals(0, $obj->boolean);
+        $this->assertEquals(false, $obj->boolean_raw);
 
         $obj->boolean = "something";
         $this->assertEquals(1, $obj->boolean);
+        $this->assertEquals("something", $obj->boolean_raw);
 
         $obj->boolean = "";
         $this->assertEquals(0, $obj->boolean);
+        $this->assertEquals("", $obj->boolean_raw);
     }
 
     public function test_handler_date() {
@@ -81,41 +88,23 @@ class data_base_testcase extends xml_helper {
 
         $obj->date = "2016-01-10";
         $this->assertEquals(1452402000, $obj->date);
+        $this->assertEquals("2016-01-10", $obj->date_raw);
 
         $log = new logging_helper();
         $log->set_logging_level(\enrol_lmb\logging::ERROR_NONE);
 
         $obj->date = "1552384000";
         $this->assertEquals(1552384000, $obj->date);
+        $this->assertEquals("1552384000", $obj->date_raw);
 
         $obj->date = 1552384000;
         $this->assertEquals(1552384000, $obj->date);
+        $this->assertEquals(1552384000, $obj->date_raw);
 
         $obj->date = "2016-45-10";
         $this->assertEquals(0, $obj->date);
+        $this->assertEquals("2016-45-10", $obj->date_raw);
         $this->assertRegExp("|WARNING: |", $log->test_get_flush_buffer());
-
-        // Now some specific test cases related to a bad behavior from ILP.
-        $obj->date = "2018-07-01T00:00:00";
-        $this->assertEquals(1530417600, $obj->date);
-
-        // There is a flaw in ILP that causes the date to be reported with an incorrect offset.
-        // We try to correct that. All of these should be July 1, 2018, at midnight, local time.
-        $obj->date = "2018-06-30T20:00:00-04:00";
-        $this->assertEquals(1530417600, $obj->date);
-
-        $obj->date = "2018-06-30T21:00:00-03:00";
-        $this->assertEquals(1530417600, $obj->date);
-
-        $obj->date = "2018-07-01T03:00:00+03:00";
-        $this->assertEquals(1530417600, $obj->date);
-
-        $obj->date = "2018-07-01T00:00:00+00:00";
-        $this->assertEquals(1530417600, $obj->date);
-
-        $obj->date = "2018-07-01T00:00:00-00:00";
-        $this->assertEquals(1530417600, $obj->date);
-
     }
 
     public function test_get() {
