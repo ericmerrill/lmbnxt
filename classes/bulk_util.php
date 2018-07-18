@@ -31,6 +31,7 @@ use enrol_lmb\local\data\section;
 use enrol_lmb\local\data\crosslist_member;
 use enrol_lmb\local\data\person_member;
 use enrol_lmb\settings;
+use enrol_lmb\date_util;
 
 /**
  * A tool for working with bulk jobs.
@@ -285,7 +286,36 @@ class bulk_util {
                 continue;
             }
 
+            if (isset($section->begindate_raw)) {
+                $time = date_util::correct_ilp_timeframe_quirk($section->begindate_raw);
 
+                // Add one day, because we are short by 1.
+                $dt = new \DateTime($value);
+                $int = new \DateInterval('PT1D');
+                $dt->add($int);
+
+                $time = $dt->getTimestamp();
+                $section->direct_set('begindate', $time);
+            }
+
+            if (isset($section->enddate_raw)) {
+                $time = date_util::correct_ilp_timeframe_quirk($section->enddate_raw);
+
+                // Add one day, because we are short by 1.
+                $dt = new \DateTime($value);
+                $int = new \DateInterval('PT1D');
+                $dt->add($int);
+
+                $time = $dt->getTimestamp();
+                $section->direct_set('enddate', $time);
+            }
+
+            $section->save_to_db();
+
+            $converter = $section->get_moodle_converter();
+            if ($converter) {
+                $converter->convert_to_moodle($section);
+            }
         }
     }
 }

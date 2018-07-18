@@ -37,6 +37,12 @@ use enrol_lmb\settings;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class date_util {
+    /**
+     * Convert a string to a date the 'normal' way, with no tricks.
+     *
+     * @param string $value The datetime to convert
+     * @return int|false
+     */
     public static function string_to_timestamp($value) {
         if (is_int($value) || ctype_digit($value)) {
             // If this is either an actual integer, or all the characters are ints, then don't convert.
@@ -50,6 +56,12 @@ class date_util {
         return $time;
     }
 
+    /**
+     * Check the quirktimezoneoffsets setting, and if set, apply ILP quirk correction, if not, do standard correction.
+     *
+     * @param string $value The datetime to convert
+     * @return int|false
+     */
     public static function correct_ilp_timeframe_quirk($value) {
         $settings = settings::get_settings();
         if ($settings->get('quirktimezoneoffsets')) {
@@ -59,6 +71,12 @@ class date_util {
         }
     }
 
+    /**
+     * Apply timezone/date correction magic to try and deal with weird dates from some versions of ILP.
+     *
+     * @param string $value The datetime to convert
+     * @return int|false
+     */
     public static function correct_ilp_date($value) {
         if (is_int($value) || ctype_digit($value)) {
             // If this is either an actual integer, or all the characters are ints, then don't convert.
