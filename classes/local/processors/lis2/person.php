@@ -27,7 +27,6 @@ namespace enrol_lmb\local\processors\lis2;
 
 defined('MOODLE_INTERNAL') || die();
 
-use enrol_lmb\local\processors\xml\trait_timeframe;
 use enrol_lmb\local\data\term;
 use enrol_lmb\local\moodle;
 
