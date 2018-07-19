@@ -45,7 +45,7 @@ class bulk_util_test extends xml_helper {
         $this->assertTrue(isset($results['201730']['termupdate']));
         $this->assertEquals(1, $results['201730']['termupdate']);
         $this->assertTrue(isset($results['201730']['sectionupdate']));
-        $this->assertEquals(2, $results['201730']['sectionupdate']);
+        $this->assertEquals(1, $results['201730']['sectionupdate']);
         $this->assertTrue(isset($results['201730']['enrolupdates']));
         $this->assertEquals(12, $results['201730']['enrolupdates']);
         $this->assertTrue(isset($results['201730']['totalactiveenrols']));
@@ -168,6 +168,65 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(12, $count);
     }
 
+    public function test_adjust_term_section_dates() {
+//        adjust_term_section_dates($termsdid, $stime, endtime)
+        global $DB;
+
+        $this->resetAfterTest();
+
+        $this->setup_bulk(true, '201730');
+        $util = new bulk_util();
+
+        // Make sure no error happens with no courses.
+        $results = $util->adjust_term_section_dates('201730', 1, 2);
+
+        // First check the original dates are expected.
+        $course = $DB->get_record('course', ['idnumber' => '10001.201730']);
+        $this->assertEquals(1530288000, $course->startdate);
+        $this->assertEquals(1540828800, $course->enddate);
+
+        $course = $DB->get_record('course', ['idnumber' => '10002.201730']);
+        $this->assertEquals(1530288000, $course->startdate);
+        $this->assertEquals(0, $course->enddate);
+
+        // Now a time that will just change the first course.
+        $results = $util->adjust_term_section_dates('201730', 1510000000);
+
+        $course = $DB->get_record('course', ['idnumber' => '10001.201730']);
+        $this->assertEquals(1530374400, $course->startdate);
+        $this->assertEquals(1540915200, $course->enddate);
+        // Need to set them back.
+        $course->startdate = 1530288000;
+        $course->enddate = 1540828800;
+        $DB->update_record('course', $course);
+
+        $course = $DB->get_record('course', ['idnumber' => '10002.201730']);
+        $this->assertEquals(1530288000, $course->startdate);
+        $this->assertEquals(0, $course->enddate);
+
+        // Now a start and end date that will only update the second course.
+        $results = $util->adjust_term_section_dates('201730', 1500000000, 1500000001);
+
+        $course = $DB->get_record('course', ['idnumber' => '10001.201730']);
+        $this->assertEquals(1530288000, $course->startdate);
+        $this->assertEquals(1540828800, $course->enddate);
+
+        $course = $DB->get_record('course', ['idnumber' => '10002.201730']);
+        $this->assertEquals(1530374400, $course->startdate);
+        $this->assertEquals(0, $course->enddate);
+
+        // Now dates that will update both courses.
+        $results = $util->adjust_term_section_dates('201730', 1500000000);
+
+        $course = $DB->get_record('course', ['idnumber' => '10001.201730']);
+        $this->assertEquals(1530374400, $course->startdate);
+        $this->assertEquals(1540915200, $course->enddate);
+
+        $course = $DB->get_record('course', ['idnumber' => '10002.201730']);
+        $this->assertEquals(1530374400, $course->startdate);
+        $this->assertEquals(0, $course->enddate);
+    }
+
     protected function setup_bulk($convert = false, $onlyterm = false) {
         global $DB;
 
@@ -226,7 +285,9 @@ class bulk_util_test extends xml_helper {
         if (!$onlyterm || $onlyterm === '201730') {
             $term = $this->create_lmb_term(['sdid' => '201730', 'messagetime' => $newtime], $convert);
             $terms['201730'] = $term;
-            $section = $this->create_lmb_section(['termsdid' => '201730', 'messagetime' => $newtime], $convert);
+            $params = ['sdid' => '10001.201730', 'termsdid' => '201730', 'messagetime' => $newtime,
+                       'begindate' => '2018-06-30T00:00:00', 'enddate' => '2018-10-30T00:00:00'];
+            $section = $this->create_lmb_section($params, $convert);
             $sections['201730'][$section->sdid] = $section;
             for ($i = 0; $i < 5; $i++) {
                 $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $oldtime], $convert);
@@ -238,7 +299,9 @@ class bulk_util_test extends xml_helper {
                 $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $newtime, 'status' => 0], $convert);
             }
 
-            $section = $this->create_lmb_section(['termsdid' => '201730', 'messagetime' => $newtime], $convert);
+            $params = ['sdid' => '10002.201730', 'termsdid' => '201730', 'messagetime' => $oldtime,
+                       'begindate' => '2018-06-30T00:00:00'];
+            $section = $this->create_lmb_section($params, $convert);
             $sections['201730'][$section->sdid] = $section;
             for ($i = 0; $i < 7; $i++) {
                 $this->create_lmb_enrol($section, $users[$i], ['messagetime' => $newtime], $convert);
@@ -265,6 +328,4 @@ class bulk_util_test extends xml_helper {
             $DB->set_field($enrol::TABLE, 'timemodified', $oldtime, ['id' => $enrol->id]);
         }
     }
-
-
 }

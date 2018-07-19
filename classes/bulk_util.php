@@ -260,9 +260,10 @@ class bulk_util {
      * This is done because of a bug in ILP that supplies incorrect course dates when used with bulk.
      *
      * @param string $termsdid The sdid of the term
-     * @param int $time The time that marked the start of the bulk run
+     * @param int $starttime The time that marked the start of the bulk run
+     * @param int $endtime If set, limits the end of the bulk run
      */
-    public function adjust_term_section_dates($termsdid, $time) {
+    public function adjust_term_section_dates($termsdid, $starttime, $endtime = false) {
         global $DB;
 
         // Next we want any course sections that were updated.
@@ -270,7 +271,12 @@ class bulk_util {
                  WHERE messagetime >= :start
                    AND termsdid = :termsdid";
 
-        $params = ['start' => $time, 'termsdid' => $termsdid];
+        $params = ['start' => $starttime, 'termsdid' => $termsdid];
+
+        if ($endtime) {
+            $sql .= " AND messagetime < :end";
+            $params['end'] = $endtime;
+        }
 
         $sectionids = $DB->get_fieldset_sql($sql, $params);
 
@@ -290,11 +296,8 @@ class bulk_util {
                 $time = date_util::correct_ilp_timeframe_quirk($section->begindate_raw);
 
                 // Add one day, because we are short by 1.
-                $dt = new \DateTime($value);
-                $int = new \DateInterval('PT1D');
-                $dt->add($int);
+                $time += DAYSECS;
 
-                $time = $dt->getTimestamp();
                 $section->direct_set('begindate', $time);
             }
 
@@ -302,11 +305,8 @@ class bulk_util {
                 $time = date_util::correct_ilp_timeframe_quirk($section->enddate_raw);
 
                 // Add one day, because we are short by 1.
-                $dt = new \DateTime($value);
-                $int = new \DateInterval('PT1D');
-                $dt->add($int);
+                $time += DAYSECS;
 
-                $time = $dt->getTimestamp();
                 $section->direct_set('enddate', $time);
             }
 
