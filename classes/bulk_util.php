@@ -43,7 +43,7 @@ use enrol_lmb\date_util;
  */
 class bulk_util {
 
-    public function get_terms_in_timeframe($start, $end = null) {
+    public function get_terms_in_timeframe($start, $end = false, $limitsource = false) {
         global $DB;
 
         if (empty($end)) {
@@ -56,6 +56,12 @@ class bulk_util {
         $params = ['start' => $start, 'end' => $end];
         $select = 'messagetime >= :start AND messagetime <= :end';
 
+        if ($limitsource) {
+            $select .= " AND sdidsource = :source";
+
+            $params['source'] = $limitsource;
+        }
+
         $terms = $DB->get_fieldset_select(term::TABLE, 'sdid', $select, $params);
 
         if ($terms) {
@@ -67,8 +73,13 @@ class bulk_util {
         // Next we want any course sections that were updated.
         $sql = "SELECT termsdid, COUNT(id) AS cnt
                   FROM {".section::TABLE."}
-                 WHERE messagetime >= :start AND messagetime <= :end
-              GROUP BY termsdid";
+                 WHERE messagetime >= :start AND messagetime <= :end";
+
+        if ($limitsource) {
+            $sql .= " AND sdidsource = :source";
+        }
+
+        $sql .= " GROUP BY termsdid";
 
         $terms = $DB->get_records_sql($sql, $params);
 
@@ -83,8 +94,13 @@ class bulk_util {
                   FROM {".crosslist_member::TABLE."} cm
             INNER JOIN {".section::TABLE."} section
                     ON cm.sdid = section.sdid
-                 WHERE cm.messagetime >= :start AND cm.messagetime <= :end
-              GROUP BY section.termsdid";
+                 WHERE cm.messagetime >= :start AND cm.messagetime <= :end";
+
+        if ($limitsource) {
+            $sql .= " AND cm.sdidsource = :source";
+        }
+
+        $sql .= " GROUP BY section.termsdid";
 
         $terms = $DB->get_records_sql($sql, $params);
 
@@ -100,8 +116,13 @@ class bulk_util {
             INNER JOIN {".section::TABLE."} section
                     ON enrol.groupsdid = section.sdid
                  WHERE enrol.messagetime >= :start AND enrol.messagetime <= :end
-                   AND enrol.status = :status
-              GROUP BY section.termsdid";
+                   AND enrol.status = :status";
+
+        if ($limitsource) {
+            $sql .= " AND enrol.membersdidsource = :source";
+        }
+
+        $sql .= " GROUP BY section.termsdid";
 
         $params['status'] = 1;
         $terms = $DB->get_records_sql($sql, $params);
@@ -113,9 +134,15 @@ class bulk_util {
         }
 
         foreach ($output as $termid => &$term) {
-            $term['totalactiveenrols'] = $this->get_term_enrols_active_count($termid);
-            $term['estimatedbulkdrops'] = $this->get_term_enrols_to_drop_count($termid, $start);
-            $term['estimatedbulkpercent'] = round(($term['estimatedbulkdrops'] / $term['totalactiveenrols']) * 100, 2);
+            $term['totalactiveenrols'] = $this->get_term_enrols_active_count($termid, $limitsource);
+            $term['estimatedbulkdrops'] = $this->get_term_enrols_to_drop_count($termid, $start, $limitsource);
+
+            $estpercent = 0;
+            if (isset($term['totalactiveenrols']) && $term['totalactiveenrols']) {
+                $estpercent = round(($term['estimatedbulkdrops'] / $term['totalactiveenrols']) * 100, 2);
+            }
+
+            $term['estimatedbulkpercent'] = $estpercent;
         }
 
         return $output;
@@ -127,7 +154,7 @@ class bulk_util {
      * @param string $termsdid The term sdid to check
      * @return int
      */
-    public function get_term_enrols_active_count($termsdid) {
+    public function get_term_enrols_active_count($termsdid, $limitsource = false) {
         global $DB;
 
         $sql = "SELECT COUNT(enrol.id) AS cnt
@@ -142,6 +169,12 @@ class bulk_util {
 
         $params = ['term' => $termsdid, 'status' => 1, 'termfind' => '%.'.$termsdid];
 
+        if ($limitsource) {
+            $sql .= " AND enrol.membersdidsource = :source";
+
+            $params['source'] = $limitsource;
+        }
+
         return $DB->count_records_sql($sql, $params);
     }
 
@@ -152,7 +185,7 @@ class bulk_util {
      * @param int $time The time that marked the start of the bulk run
      * @return int
      */
-    public function get_term_enrols_to_drop_count($termsdid, $time) {
+    public function get_term_enrols_to_drop_count($termsdid, $time, $limitsource = false) {
         global $DB;
 
         $sql = "SELECT COUNT(enrol.id) AS cnt
@@ -171,18 +204,30 @@ class bulk_util {
 
         $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'reftime2' => $time, 'termfind' => '%.'.$termsdid];
 
+        if ($limitsource) {
+            $sql .= " AND enrol.membersdidsource = :source";
+
+            $params['source'] = $limitsource;
+        }
+
         return $DB->count_records_sql($sql, $params);
     }
 
-    public function drop_old_term_enrols($termsdid, $time) {
+    /**
+     * Drop enrollments that have not received an update.
+     *
+     * @param string $termsdid The sdid of the term
+     * @param int $time The time that marked the start of the bulk run
+     */
+    public function drop_old_term_enrols($termsdid, $time, $limitsource = false) {
         global $DB;
 
         $log = logging::instance();
         $settings = settings::get_settings();
 
         // Check that we aren't exceeding the drop limit.
-        $active = $this->get_term_enrols_active_count($termsdid);
-        $drop = $this->get_term_enrols_to_drop_count($termsdid, $time);
+        $active = $this->get_term_enrols_active_count($termsdid, $limitsource);
+        $drop = $this->get_term_enrols_to_drop_count($termsdid, $time, $limitsource);
         $percent = round(($drop / $active) * 100, 1);
 
         $log->log_line("Processing old drops for Term {$termsdid} using the reference time of ".userdate($time)." ({$time}).");
@@ -211,6 +256,12 @@ class bulk_util {
                    AND enrol.status = :status";
 
         $params = ['term' => $termsdid, 'status' => 1, 'reftime' => $time, 'reftime2' => $time, 'termfind' => '%.'.$termsdid];
+
+        if ($limitsource) {
+            $sql .= " AND enrol.membersdidsource = :source";
+
+            $params['source'] = $limitsource;
+        }
 
         $ids = $DB->get_recordset_sql($sql, $params);
 
@@ -254,6 +305,10 @@ class bulk_util {
         $log->end_message();
     }
 
+    public function drop_old_crosslist_members($termsdid, $starttime, $limitsource = false) {
+
+    }
+
     /**
      * Based on the supplied time and term, adjust term dates to add one day to the start and end days.
      *
@@ -263,7 +318,7 @@ class bulk_util {
      * @param int $starttime The time that marked the start of the bulk run
      * @param int $endtime If set, limits the end of the bulk run
      */
-    public function adjust_term_section_dates($termsdid, $starttime, $endtime = false) {
+    public function adjust_term_section_dates($termsdid, $starttime, $endtime = false, $limitsource = false) {
         global $DB;
 
         // Next we want any course sections that were updated.
@@ -276,6 +331,12 @@ class bulk_util {
         if ($endtime) {
             $sql .= " AND messagetime < :end";
             $params['end'] = $endtime;
+        }
+
+        if ($limitsource) {
+            $sql .= " AND sdidsource = :source";
+
+            $params['source'] = $limitsource;
         }
 
         $sectionids = $DB->get_fieldset_sql($sql, $params);
@@ -291,6 +352,8 @@ class bulk_util {
                 // Missing section.
                 continue;
             }
+
+            $section->log_id();
 
             if (isset($section->begindate_raw)) {
                 $time = date_util::correct_ilp_timeframe_quirk($section->begindate_raw);

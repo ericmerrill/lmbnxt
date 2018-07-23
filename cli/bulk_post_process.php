@@ -31,8 +31,17 @@ require(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->libdir.'/clilib.php');
 require_once($CFG->dirroot.'/enrol/lmb/upgradelib.php');
 
-list($options, $unrecognized) = cli_get_params(array('starttime' => false, 'termid' => false, 'process' => false, 'help' => false),
-                                               array('s' => 'starttime', 't' => 'termid'));
+list($options, $unrecognized) = cli_get_params(array('starttime' => false,
+                                                     'endtime' => false,
+                                                     'termid' => false,
+                                                     'source' => false,
+                                                     'process' => false,
+                                                     'coursetimes' => false,
+                                                     'help' => false),
+                                               array('s' => 'starttime',
+                                                     'e' => 'endtime',
+                                                     't' => 'termid',
+                                                     'h' => 'help'));
 
 if ($unrecognized) {
     $unrecognized = implode("\n  ", $unrecognized);
@@ -46,9 +55,13 @@ Reports on, and removes, excess enrollments.
 Options:
 -s, --starttime         Required. Time the bulk job started.
                         Accepts a timestamp or anything strtotime accepts.
+-e, --endtime           Optional. The time the bulk job ended. Help limit scope of some cleanup tasks.
+                        Accepts a timestamp or anything strtotime accepts.
 -t, --termid            The term sourcedid to process
+--source                Limit processing to records with the given sdid source.
 --process               If set, then drops will be processed, rather than just
                         an informational display.
+--coursetimes           Adjust course start and end times based on quirk settings to compensate for ILP bugs.
 -h, --help              Print out this help
 
 
@@ -61,30 +74,47 @@ Example:
     die;
 }
 
-$time = $options['starttime'];
-if (!is_numeric($time)) {
-    $time = strtotime($time);
+$starttime = $options['starttime'];
+if (!is_numeric($starttime)) {
+    $starttime = strtotime($starttime);
 }
 
-$timediff = time() - $time;
+$endtime = $options['endtime'];
+if (!is_numeric($endtime)) {
+    $endtime = strtotime($endtime);
+}
+
+$timediff = time() - $starttime;
 if ($timediff > YEARSECS) {
     mtrace("Selected starttime is more than a year in the past. Aborting.");
     exit(1);
 }
 
+if (is_numeric($starttime) && is_numeric($endtime) && ($starttime >= $endtime)) {
+    mtrace("Endtime is before starttime. Aborting.");
+    exit(1);
+}
+
 $termid = $options['termid'];
+$source = $options['source'];
 $process = $options['process'];
+$coursetimes = $options['coursetimes'];
 
 if ($process && empty($termid)) {
     mtrace("The process option requires a termid to be set. Aborting.");
     exit(1);
 }
 
-mtrace("Running with a start time of ".userdate($time).".");
+if ($coursetimes && empty($termid)) {
+    mtrace("The coursetimes option requires a termid to be set. Aborting.");
+    exit(1);
+}
+
+mtrace("Running with a start time of ".userdate($starttime).".");
 
 $util = new bulk_util();
 
-$info = $util->get_terms_in_timeframe($time);
+$info = $util->get_terms_in_timeframe($starttime, $endtime, $source);
 
 if (empty($termid)) {
     foreach ($info as $termkey => $term) {
@@ -100,9 +130,12 @@ if (empty($termid)) {
 }
 
 if ($process && $termid) {
-    $util->get_term_enrols_to_drop_count($termid, $time);
+    $util->drop_old_term_enrols($termid, $starttime, $source);
 }
 
+if ($coursetimes && $termid) {
+    $util->adjust_term_section_dates($termid, $starttime, $endtime, $source);
+}
 
 
 
