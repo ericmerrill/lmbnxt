@@ -184,7 +184,7 @@ class bulk_util_test extends xml_helper {
         $count = $DB->count_records('user_enrolments');
         $this->assertEquals(17, $count);
 
-        $results = $util->drop_old_term_enrols('201730', 1510000000);
+        $results = $util->drop_old_term_enrols('201730', 1510000000, '');
 
         // Now, we expect that 8 of the enrols to have been deactivated.
         $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 1]);
