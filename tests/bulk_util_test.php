@@ -39,7 +39,7 @@ class bulk_util_test extends xml_helper {
         $this->setup_bulk();
 
         $util = new bulk_util();
-        $results = $util->get_terms_in_timeframe(1510000000);
+        $results = $util->get_terms_in_timeframe(1510000000, 1520000000);
 
         $this->assertTrue(isset($results['201730']));
         $this->assertTrue(isset($results['201730']['termupdate']));
@@ -69,6 +69,14 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(75, $results['201720']['estimatedbulkpercent'], '', 0.1);
 
         $this->assertFalse(isset($results['201710']));
+
+        $results = $util->get_terms_in_timeframe(1510000000, 1520000000, 'Not the source');
+
+        $this->assertEmpty($results);
+
+        $results = $util->get_terms_in_timeframe(1510000000, 1520000000, '');
+        $this->assertTrue(isset($results['201720']));
+        $this->assertTrue(isset($results['201730']));
     }
 
     public function test_get_term_enrols_active_count() {
@@ -87,6 +95,9 @@ class bulk_util_test extends xml_helper {
 
         $results = $util->get_term_enrols_active_count('201730');
         $this->assertEquals(28, $results);
+
+        $results = $util->get_term_enrols_active_count('201730', 'Not the source');
+        $this->assertEquals(0, $results);
     }
 
     public function test_get_term_enrols_to_drop_count() {
@@ -111,6 +122,9 @@ class bulk_util_test extends xml_helper {
         $this->assertEquals(9, $results);
         $results = $util->get_term_enrols_to_drop_count('201730', 1520000000);
         $this->assertEquals(28, $results);
+
+        $results = $util->get_term_enrols_to_drop_count('201730', 1520000000, 'Not the source');
+        $this->assertEquals(0, $results);
     }
 
     public function test_drop_old_term_enrols() {
@@ -154,6 +168,21 @@ class bulk_util_test extends xml_helper {
 
         // Now do it with a high limit.
         settings_helper::temp_set('dropprecentlimit', 90);
+
+        // Try with the wrong source.
+        $log->test_get_flush_buffer();
+        $results = $util->drop_old_term_enrols('201730', 1510000000, 'Not the source');
+
+        $error = 'No active enrollments in the selection. Skipping term.';
+        $this->assertContains($error, $log->test_get_flush_buffer());
+
+        // Make sure nothing has changed.
+        $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 1]);
+        $this->assertEquals(28, $count);
+        $count = $DB->count_records_select(data\person_member::TABLE, 'groupsdid LIKE ? AND status = ?', ['%.201730', 0]);
+        $this->assertEquals(6, $count);
+        $count = $DB->count_records('user_enrolments');
+        $this->assertEquals(17, $count);
 
         $results = $util->drop_old_term_enrols('201730', 1510000000);
 

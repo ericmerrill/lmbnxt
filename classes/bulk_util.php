@@ -227,6 +227,11 @@ class bulk_util {
 
         // Check that we aren't exceeding the drop limit.
         $active = $this->get_term_enrols_active_count($termsdid, $limitsource);
+        if (empty($active)) {
+            $log->log_line('No active enrollments in the selection. Skipping term.', logging::ERROR_WARN);
+            $log->end_message();
+            return;
+        }
         $drop = $this->get_term_enrols_to_drop_count($termsdid, $time, $limitsource);
         $percent = round(($drop / $active) * 100, 1);
 
