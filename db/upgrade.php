@@ -795,4 +795,23 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2018032200, 'enrol', 'lmb');
     }
 
+    if ($oldversion < 2018080800) {
+        // We are updating customchar1 to always have the sdid of the group it represents.
+        $sql = "SELECT id, customchar2 FROM {enrol}
+                 WHERE enrol = 'lmb'
+                   AND customchar1 IS NULL
+                   AND customchar2 IS NOT NULL";
+
+        $records = $DB->get_recordset_sql($sql);
+
+        foreach ($records as $record) {
+            $DB->set_field('enrol', 'customchar1', $record->customchar2, ['id' => $record->id]);
+        }
+
+        $records->close();
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018080800, 'enrol', 'lmb');
+    }
+
 }

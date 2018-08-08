@@ -96,7 +96,6 @@ class enrolment extends base {
 
 
         foreach ($instances as $instance) {
-            $extra = '';
             if ($data->status) {
                 $starttime = 0;
                 $endtime = 0;
@@ -132,17 +131,13 @@ class enrolment extends base {
                 }
 
                 // TODO - Recover grades.
-                if (!empty($instance->customchar2)) {
-                    $extra = ' in '.$instance->customchar2;
-                }
-                logging::instance()->log_line("Enrolling user {$this->data->membersdid}".$extra);
+
+                logging::instance()->log_line("Enrolling user {$this->data->membersdid} in course ".$instance->customchar2);
                 $enrol->enrol_user($instance, $user->id, $roleid, $starttime, $endtime, ENROL_USER_ACTIVE, true);
             } else {
                 // TODO - We need to handle multiple overlapping role assign/unassign. Unenroll and unassign are different...
-                if (!empty($instance->customchar2)) {
-                    $extra = ' from '.$instance->customchar2;
-                }
-                logging::instance()->log_line("Unenrolling user {$this->data->membersdid}".$extra);
+
+                logging::instance()->log_line("Unenrolling user {$this->data->membersdid} from course ".$instance->customchar2);
                 $enrol->unenrol_user($instance, $user->id);
             }
         }

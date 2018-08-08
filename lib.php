@@ -107,11 +107,16 @@ class enrol_lmb_plugin extends enrol_plugin {
             return false;
         }
 
+        // Customchar1 represents the sdid of the group for this lmb.
+        // Customchar2 represents the idnumber of the course.
+
         $fields = [];
         $fields['customchar2'] = $course->idnumber;
         if ($customid) {
             $fields['name'] = get_string('enrolcustomname', 'enrol_lmb', $customid);
             $fields['customchar1'] = $customid;
+        } else {
+            $fields['customchar1'] = $fields['customchar2'];
         }
 
         $instanceid = $this->add_instance($course, $fields);
