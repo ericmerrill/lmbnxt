@@ -29,6 +29,7 @@ require_once('enrollib.php');
 
 use enrol_lmb\local\data;
 use enrol_lmb\logging;
+use enrol_lmb\lock_factory;
 
 class enrol_lmb_plugin extends enrol_plugin {
 
@@ -72,7 +73,27 @@ class enrol_lmb_plugin extends enrol_plugin {
                 $course = $DB->get_record('course', ['id' => $courseid]);
             }
 
-            $instance = $this->create_instance($course, $customid);
+            $key = 'instance-'.$courseid;
+            if ($customid) {
+                $key .= '-'.$customid;
+            }
+
+            // We use a lock to prevent duplicate instances when ILP bulk sends.
+            // It's ok if we fail to get the lock.
+            // This lock should be held almost no time, so if we fail to get it, something broke.
+            $lock = lock_factory::get_lock($key, 10, 60);
+
+            // Now that we have a lock, try to get it again.
+            $instance = $DB->get_record('enrol', $params);
+
+            // Now it really doesn't exist, so we can make it.
+            if (!$instance) {
+                $instance = $this->create_instance($course, $customid);
+            }
+
+            if ($lock) {
+                $lock->release();
+            }
         }
 
         return $instance;
