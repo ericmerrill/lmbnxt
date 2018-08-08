@@ -249,7 +249,6 @@ function enrol_lmb_upgrade_migrate_old_enrols($progress = false) {
 
         $member->migrated = 1;
 
-        //print "<pre>";var_export($member);print "</pre>";
         $member->save_to_db();
     }
 
@@ -464,4 +463,13 @@ function enrol_lmb_upgrade_migrate_old_terms($progress = false) {
     }
 
     $records->close();
+}
+
+function enrol_lmb_upgrade_clean_duplicate_enrols() {
+    $sql = "SELECT sub.* FROM
+                (SELECT courseid, customchar1, count(*) AS cnt
+                   FROM mdl_enrol
+                  WHERE enrol = 'lmb'
+               GROUP BY courseid, customchar1) sub
+            WHERE sub.cnt > 1";
 }
