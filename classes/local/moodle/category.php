@@ -28,7 +28,9 @@ namespace enrol_lmb\local\moodle;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/coursecatlib.php');
+if (!class_exists('\\core_course_category')) {
+    require_once($CFG->libdir.'/coursecatlib.php');
+}
 
 use enrol_lmb\logging;
 use enrol_lmb\settings;
@@ -144,7 +146,12 @@ class category extends base {
         }
 
         try {
-            $cat = \coursecat::create($cat);
+            // For depreciation of coursecat in Moodle 3.6. Remove at a later date.
+            if (class_exists('\\core_course_category')) {
+                $cat = \core_course_category::create($cat);
+            } else {
+                $cat = \coursecat::create($cat);
+            }
         } catch (\moodle_exception $e) {
             $error = "Exception while trying to create category: ".$e->getMessage();
             logging::instance()->log_line($error, logging::ERROR_MAJOR);

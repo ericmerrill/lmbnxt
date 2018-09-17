@@ -247,7 +247,12 @@ if ($ADMIN->fulltree) {
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/cattype', get_string('categorytype', 'enrol_lmb'),
             get_string('categorytype_help', 'enrol_lmb'), settings::COURSE_CATS_TERMS, $options));
 
-    $displaylist = coursecat::make_categories_list();
+    // For depreciation of coursecat in Moodle 3.6. Remove at a later date.
+    if (class_exists('\\core_course_category')) {
+        $displaylist = core_course_category::make_categories_list();
+    } else {
+        $displaylist = coursecat::make_categories_list();
+    }
 
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/catselect', get_string('catselect', 'enrol_lmb'),
             get_string('catselect_help', 'enrol_lmb'), 1, $displaylist));
