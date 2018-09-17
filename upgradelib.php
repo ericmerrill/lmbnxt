@@ -466,10 +466,119 @@ function enrol_lmb_upgrade_migrate_old_terms($progress = false) {
 }
 
 function enrol_lmb_upgrade_clean_duplicate_enrols() {
+    global $DB;
+
+    $log = logging::instance();
+
     $sql = "SELECT sub.* FROM
                 (SELECT courseid, customchar1, count(*) AS cnt
-                   FROM mdl_enrol
-                  WHERE enrol = 'lmb'
+                   FROM {enrol}
+                  WHERE enrol = 'lmb' AND customchar2 IS NOT NULL
                GROUP BY courseid, customchar1) sub
             WHERE sub.cnt > 1";
+
+    $courses = $DB->get_recordset_sql($sql);
+
+    foreach ($courses as $course) {
+        $log->start_message("Working on course {$course->courseid}, charid {$course->customchar1}");
+        $params = ['courseid' => $course->courseid, 'enrol' => 'lmb', 'customchar1' => $course->customchar1];
+        $enrols = $DB->get_recordset('enrol', $params);
+
+        // We are going to get the first enrol and use that as the 'main' one.
+        $goodenrol = $enrols->current();
+        $enrols->next(); // Move the pointer forward one.
+
+        foreach ($enrols as $badenrol) {
+            $badenrolments = $DB->get_recordset('user_enrolments', ['enrolid' => $badenrol->id]);
+
+            foreach ($badenrolments as $badenrolment) {
+                // Check if the record already exists.
+                if ($DB->record_exists('user_enrolments', ['enrolid' => $goodenrol->id, 'userid' => $badenrolment->userid])) {
+                    // If the user already exists in the destination enrol, we don't want to duplicate them.
+
+                    // Check and move the role assignments.
+                    $params = ['component' => 'enrol_lmb', 'itemid' => $badenrol->id, 'userid' => $badenrolment->userid];
+                    if ($roleassigns = $DB->get_records('role_assignments', $params)) {
+                        if (count($roleassigns) > 1) {
+                            // There are already multiple role assigns, so who knows what is going on. Just move them all.
+                            $DB->set_field('role_assignments', 'itemid', $goodenrol->id, $params);
+                        } else {
+                            $roleassign = reset($roleassigns);
+
+                            // Check if the assign for this role already exists.
+                            $params['roleid'] = $roleassign->roleid;
+                            $params['itemid'] = $goodenrol->id;
+                            if ($DB->record_exists('role_assignments', $params)) {
+                                // If the destination record exists, we are just going to remove the old one.
+                                $DB->delete_records('role_assignments', ['id' => $roleassign->id]);
+                            } else {
+                                // If it doesn't, we will move it, and the user will have two for some reason
+                                $DB->set_field('role_assignments', 'itemid', $goodenrol->id, ['id' => $roleassign->id]);
+                            }
+                        }
+                    }
+
+                    // Check and move group memberships.
+                    $params = ['component' => 'enrol_lmb', 'itemid' => $badenrol->id, 'userid' => $badenrolment->userid];
+                    if ($groupmembers = $DB->get_records('groups_members', $params)) {
+                        if (count($groupmembers) > 1) {
+                            // There are already multiple group assigns, so who knows what is going on. Just move them all.
+                            $DB->set_field('groups_members', 'itemid', $goodenrol->id, $params);
+                        } else {
+                            $groupmember = reset($groupmembers);
+
+                            $params['groupid'] = $groupmember->groupid;
+                            $params['itemid'] = $goodenrol->id;
+                            if ($DB->record_exists('groups_members', $params)) {
+                                // If the destination record exists, we are just going to remove the old one.
+                                $DB->delete_records('groups_members', ['id' => $groupmember->id]);
+                            } else {
+                                // If it doesn't, we will move it, and the user will have two.
+                                $DB->set_field('groups_members', 'itemid', $goodenrol->id, ['id' => $groupmember->id]);
+                            }
+                        }
+                    }
+
+                    // Delete the user enrolment record.
+                    $DB->delete_records('user_enrolments', ['id' => $badenrolment->id]);
+                } else {
+                    // If the user doesn't exist in the target enrol, then we will move them.
+
+                    // Move the enrolment.
+                    $params = ['enrolid' => $badenrol->id, 'userid' => $badenrolment->userid];
+                    $DB->set_field('user_enrolments', 'enrolid', $goodenrol->id, ['id' => $badenrolment->id]);
+
+                    // Move the role.
+                    $params = ['component' => 'enrol_lmb', 'itemid' => $badenrol->id, 'userid' => $badenrolment->userid];
+                    $DB->set_field('role_assignments', 'itemid', $goodenrol->id, $params);
+
+                    // Move group memberships.
+                    $DB->set_field('groups_members', 'itemid', $goodenrol->id, $params);
+                }
+            }
+
+            $log->log_line("Deleting enrol id {$badenrol->id}");
+            $DB->delete_records('enrol', ['id' => $badenrol->id]);
+        }
+
+        $enrols->close();
+
+        // Mark the course as dirty just in case.
+        $context = context_course::instance($course->courseid);
+        $context->mark_dirty();
+
+        // TODO - reprocess enrollments.
+        if (empty($goodenrol->customchar1)) {
+            $sdid = $DB->get_field('course', 'idnumber', ['id' => $goodenrol->courseid]);
+        } else {
+            $sdid = $goodenrol->customchar1;
+        }
+        if (!empty($sdid)) {
+            moodle\course_enrolments::reprocess_enrolments_for_section_sdid($sdid, 0);
+        }
+
+        $log->end_level();
+    }
+
+    $courses->close();
 }
