@@ -814,11 +814,11 @@ function xmldb_enrol_lmb_upgrade($oldversion=0) {
         upgrade_plugin_savepoint(true, 2018080800, 'enrol', 'lmb');
     }
 
-//     if ($oldversion < 2018091700) {
-//         enrol_lmb_upgrade_clean_duplicate_enrols();
-//
-//         // Lmb savepoint reached.
-//         upgrade_plugin_savepoint(true, 2018091700, 'enrol', 'lmb');
-//     }
+    if ($oldversion < 2018081800) {
+        enrol_lmb_upgrade_clean_duplicate_enrols();
+
+        // Lmb savepoint reached.
+        upgrade_plugin_savepoint(true, 2018081800, 'enrol', 'lmb');
+    }
 
 }
