@@ -29,6 +29,7 @@ use enrol_lmb\local\processors\lis2;
 use enrol_lmb\local\processors\xml;
 use enrol_lmb\local\data;
 use enrol_lmb\local\moodle;
+use enrol_lmb\local\exception\idnumber_mismatch_exception;
 use enrol_lmb\settings;
 use enrol_lmb\logging;
 
@@ -411,7 +412,13 @@ class moodle_user_testcase extends xml_helper {
         // Now we want to set the ID number to something else, so we get an error.
         $DB->set_field('user', 'idnumber', 'Something', ['id' => $dbuser1->id]);
 
-        $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
+        $dbuser2 = false;
+        try {
+            $dbuser2 = $this->run_protected_method($moodleuser, 'find_existing_user');
+            $this->fail('Expected idnumber_mismatch_exception exception did not happen.');
+        } catch (idnumber_mismatch_exception $e) {
+            $this->assertInstanceOf(idnumber_mismatch_exception::class, $e);
+        }
         $error = "NOTICE: Existing user with username testuser found, but has non-matching ID Number.";
         $this->assertContains($error, $log->test_get_flush_buffer());
         $this->assertFalse($dbuser2);

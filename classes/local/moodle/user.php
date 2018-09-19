@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 use enrol_lmb\logging;
 use enrol_lmb\settings;
 use enrol_lmb\local\data;
+use enrol_lmb\local\exception\idnumber_mismatch_exception;
 
 require_once($CFG->dirroot.'/user/lib.php');
 
@@ -75,7 +76,12 @@ class user extends base {
 
         // See if we are going to be working with an existing or new user.
         $new = false;
-        $user = $this->find_existing_user();
+        try {
+            $user = $this->find_existing_user();
+        } catch (idnumber_mismatch_exception $e) {
+            logging::instance()->log_line('Could not create or update user because of a idnumber mismatch.', logging::ERROR_WARN);
+            return;
+        }
         if (empty($user)) {
             if (!(bool)$settings->get('createnewusers')) {
                 // Don't create a new user if not enabled.
@@ -230,6 +236,7 @@ class user extends base {
      * Find an existing user record for this instance.
      *
      * @return false|\stdClass User object or false if not found.
+     * @throws idnumber_mismatch_exception
      */
     protected function find_existing_user() {
         global $DB;
@@ -262,6 +269,7 @@ class user extends base {
         if (!empty($existing->idnumber)) {
             $error = "Existing user with username {$username} found, but has non-matching ID Number.";
             logging::instance()->log_line($error, logging::ERROR_NOTICE);
+            throw new idnumber_mismatch_exception();
             return false;
         }
 
