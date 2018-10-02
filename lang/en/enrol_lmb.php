@@ -80,6 +80,7 @@ $string['exception_bad_person'] = 'Person object has no id';
 $string['exception_bad_term'] = 'Term object has no id';
 $string['exception_bad_section'] = 'Section object has no id';
 $string['exception_insert_failure'] = 'Failure inserting in database';
+$string['exception_id_number_mismatch'] = 'ID Number does not match for found user.';
 $string['exception_grouptype_not_found'] = 'Group type not found';
 $string['exception_lis_namespace'] = 'LIS message namespace incorrect';
 $string['exception_member_roletype_unknown'] = 'Membership role type value "{$a}" unknown.';
