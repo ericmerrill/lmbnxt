@@ -224,9 +224,9 @@ if ($ADMIN->fulltree) {
 
     unset($options);
     $options = array();
-    $options[settings::CREATE_COURSE_VISIBLE] = get_string('coursehiddenhidden', 'enrol_lmb');
+    $options[settings::CREATE_COURSE_VISIBLE] = get_string('coursehiddenvisible', 'enrol_lmb');
     $options[settings::CREATE_COURSE_CRON] = get_string('coursehiddencron', 'enrol_lmb');
-    $options[settings::CREATE_COURSE_HIDDEN] = get_string('coursehiddenvisible', 'enrol_lmb');
+    $options[settings::CREATE_COURSE_HIDDEN] = get_string('coursehiddenhidden', 'enrol_lmb');
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/coursehidden', get_string('coursehidden', 'enrol_lmb'),
             get_string('coursehidden_help', 'enrol_lmb'), settings::CREATE_COURSE_VISIBLE, $options));
 
