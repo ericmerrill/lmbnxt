@@ -107,7 +107,6 @@ class course extends base {
 
         // Here we set the category
         if ($new || $this->settings->get('forcecat')) {
-            // TODO Category finder.
             $course->category = $this->get_category_id();
         }
 

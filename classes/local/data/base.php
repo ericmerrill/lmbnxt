@@ -112,7 +112,6 @@ abstract class base {
             return $this->defaults[$name];
         }
         return $this->additionaldata->$name;
-
     }
 
     protected function export_additional() {

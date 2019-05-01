@@ -135,6 +135,10 @@ if ($ADMIN->fulltree) {
     $modules = \core\plugininfo\auth::get_enabled_plugins();
     $options = array();
     foreach ($modules as $module => $path) {
+        if (empty($module)) {
+            // In some cases we may get a blank module back.
+            continue;
+        }
         $options[$module] = get_string("pluginname", "auth_".$module);
     }
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/auth', get_string('authmethod', 'enrol_lmb'),
@@ -254,11 +258,19 @@ if ($ADMIN->fulltree) {
         $displaylist = coursecat::make_categories_list();
     }
 
+    $firstkey = key($displaylist);
+
     $settingslmb->add(new admin_setting_configselect('enrol_lmb/catselect', get_string('catselect', 'enrol_lmb'),
-            get_string('catselect_help', 'enrol_lmb'), 1, $displaylist));
+            get_string('catselect_help', 'enrol_lmb'), $firstkey, $displaylist));
+
+    $settingslmb->add(new admin_setting_configselect('enrol_lmb/unknowncat', get_string('unknowncat', 'enrol_lmb'),
+            get_string('unknowncat_help', 'enrol_lmb'), $firstkey, $displaylist));
 
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/cathidden', get_string('cathidden', 'enrol_lmb'),
             get_string('cathidden_help', 'enrol_lmb'), 0));
+
+    $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/catinselected', get_string('catinselected', 'enrol_lmb'),
+            get_string('catinselected_help', 'enrol_lmb'), 0));
 
     $settingslmb->add(new admin_setting_configcheckbox('enrol_lmb/forcecat', get_string('forcecat', 'enrol_lmb'),
             get_string('forcecat_help', 'enrol_lmb'), 1));

@@ -114,7 +114,7 @@ class crosslist extends course {
             if (!empty($this->firstsection)) {
                 $course->category = category::get_category_id($this->firstsection);
             } else {
-                $course->category = 1;
+                $course->category = category::get_default_category_id();
             }
         }
 

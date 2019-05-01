@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use enrol_lmb\settings;
 use enrol_lmb\local\data;
+use enrol_lmb\local\moodle;
 
 /**
  * A base testcase for XML tests.
@@ -43,7 +44,12 @@ abstract class xml_helper extends advanced_testcase {
     protected $termidnum = 201700;
 
     public function setUp() {
+        // Reset settings.
         settings_helper::reset();
+
+        // Reset some static caches.
+        $this->set_protected_property(moodle\category::class, 'termcatids', []);
+        $this->set_protected_property(moodle\category::class, 'confirmedcatids', []);
     }
 
     /**
@@ -347,6 +353,20 @@ abstract class xml_helper extends advanced_testcase {
         }
 
         return $enrol;
+    }
+
+    protected function setup_unknown_category() {
+        global $DB;
+
+        if ($field = $DB->get_field('course_categories', 'id', array('idnumber' => 'unk'))) {
+            return $field;
+        }
+
+        $category = $this->getDataGenerator()->create_category(['name' => 'Unknown Cat', 'idnumber' => 'unk']);
+
+        settings_helper::temp_set('unknowncat', 1000);
+
+        return $category->id;
     }
 }
 

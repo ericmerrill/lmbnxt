@@ -216,6 +216,10 @@ $string['categorytype_help'] = 'This allows you select what categories you would
 </ul>';
 $string['catselect'] = 'Selected Category';
 $string['catselect_help'] = '';
+$string['unknowncat'] = 'Unknown Course Category';
+$string['unknowncat_help'] = 'If the category for a course cannot be determined, place the course in this category';
+$string['catinselected'] = 'Create Categories in Selected Category';
+$string['catinselected_help'] = 'If using a Categories setting that creates new categories (such as terms), new root level categories will be created inside of the Selected Category above.';
 $string['termcat'] = 'Terms';
 $string['deptcat'] = 'Departments - TODO';
 $string['termdeptcat'] = 'Terms then Departments - TODO';

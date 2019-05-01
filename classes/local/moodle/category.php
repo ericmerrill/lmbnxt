@@ -45,6 +45,10 @@ use enrol_lmb\local\data;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class category extends base {
+    protected static $confirmedcatids = [];
+
+    protected static $termcatids = [];
+
     public function convert_to_moodle(data\base $data) {
         // TODO - We need to updating any existing categories based on this term.
         // TODO - We need also should try to update department names and such...
@@ -73,7 +77,7 @@ class category extends base {
                 // TODO.
                 break;
             case (settings::COURSE_CATS_SELECTED):
-                return settings::get_settings()->get('catselect');
+                return static::get_effective_category_id(settings::get_settings()->get('catselect'));
                 break;
 
         }
@@ -90,10 +94,13 @@ class category extends base {
     protected static function get_term_category_id($termsdid) {
         global $DB;
 
-        // TODO caching.
+        if (isset(static::$termcatids[$termsdid])) {
+            return static::$termcatids[$termsdid];
+        }
 
         // First find by idnumber.
         if ($field = $DB->get_field('course_categories', 'id', array('idnumber' => $termsdid))) {
+            static::$termcatids[$termsdid] = $field;
             return $field;
         }
 
@@ -112,7 +119,7 @@ class category extends base {
                 if (empty($catrecord->idnumber)) {
                     // Save the idnumber of future use.
                     $DB->set_field('course_categories', 'idnumber', $termsdid, array('id' => $catrecord->id));
-
+                    static::$termcatids[$termsdid] = $catrecord->id;
                     return $catrecord->id;
                 }
             }
@@ -121,9 +128,12 @@ class category extends base {
         $cat = static::create_new_category($term->description, $term->sdid);
 
         if (empty($cat)) {
+            $text = "Could not create category for term {$termsdid}. Using default category.";
+            logging::instance()->log_line($text, logging::ERROR_WARN);
             return static::get_default_category_id();
         }
 
+        static::$termcatids[$termsdid] = $cat->id;
         return $cat->id;
     }
 
@@ -143,6 +153,10 @@ class category extends base {
             $cat->visible = 0;
         } else {
             $cat->visible = 1;
+        }
+
+        if ($catid = settings::get_settings()->get('catinselected')) {
+            $cat->parent = static::get_effective_category_id($catid);
         }
 
         try {
@@ -167,12 +181,47 @@ class category extends base {
      *
      * @return int
      */
-    protected static function get_default_category_id() {
+    public static function get_default_category_id() {
         global $DB;
+
+        $catid = settings::get_settings()->get('unknowncat');
+
+        if (isset(static::$confirmedcatids[$catid])) {
+            return static::$confirmedcatids[$catid];
+        }
+
+        if ($DB->record_exists('course_categories', ['id' => $catid])) {
+            static::$confirmedcatids[$catid] = $catid;
+            return $catid;
+        }
 
         $cats = $DB->get_records('course_categories', null, 'id ASC', 'id', 0, 1);
         $cat = array_pop($cats);
 
+        // Store the mismatch id so we don't have to try again later.
+        static::$confirmedcatids[$catid] = $cat->id;
+
         return $cat->id;
+    }
+
+    /**
+     * Returns the true category id to use, in case it doesn't really exist.
+     *
+     * @param int $catid The category id to check
+     * @return int
+     */
+    protected static function get_effective_category_id($catid) {
+        global $DB;
+
+        if (isset(static::$confirmedcatids[$catid])) {
+            return static::$confirmedcatids[$catid];
+        }
+
+        if ($DB->record_exists('course_categories', ['id' => $catid])) {
+            static::$confirmedcatids[$catid] = $catid;
+            return $catid;
+        }
+
+        return static::get_default_category_id();
     }
 }
