@@ -59,4 +59,18 @@ class lock_factory {
         return $lock;
     }
 
+    /**
+     * Get a lock to protect the creation and editing of courses. This is because course-sort-order updating may
+     * cause key collision in mdl_course.
+     *
+     * @param int $timeout - The number of seconds to wait for a lock before giving up.
+     * @param int $maxlifetime - The number of seconds to wait before reclaiming a stale lock.
+     * @return \core\lock\lock|boolean - An instance of \core\lock\lock if the lock was obtained, or false.
+     */
+    public static function get_course_modify_lock($timeout = 30, $maxlifetime = 600) {
+        $key = 'coursemod';
+
+        return static::get_lock($key, $timeout, $maxlifetime);
+    }
+
 }
