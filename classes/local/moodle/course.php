@@ -30,6 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 use enrol_lmb\logging;
 use enrol_lmb\settings;
 use enrol_lmb\local\data;
+use enrol_lmb\local\exception;
+use enrol_lmb\lock_factory;
 
 require_once($CFG->dirroot.'/course/lib.php');
 
@@ -113,14 +115,8 @@ class course extends base {
         // TODO - Recalculate visibility based on changes in start date.
 
         try {
-            if ($new) {
-                logging::instance()->log_line('Creating new Moodle course');
-                $course = create_course($course);
+            $course = $this->create_or_modify_course($course);
 
-            } else {
-                logging::instance()->log_line('Updating Moodle course');
-                update_course($course);
-            }
             // Update the count of sections.
             // We can just use the presense of numsections to tell us if we need to do this or not.
             if (!empty($course->numsections)) {
@@ -327,5 +323,28 @@ class course extends base {
             $name = $shortname.'-'.$rand;
 
         } while (true);
+    }
+
+    protected function create_or_modify_course($course) {
+        // We need a lock because course sortorder can cause collisions while lots of concurent inserts.
+        if (!$lock = lock_factory::get_course_modify_lock()) {
+            logging::instance()->log_line("Course not aquire course modification lock.", logging::ERROR_WARN);
+
+            throw new exception\course_lock_exception();
+        }
+
+        try {
+            if (empty($course->id)) {
+                logging::instance()->log_line('Creating new Moodle course');
+                $course = create_course($course);
+            } else {
+                logging::instance()->log_line('Updating Moodle course');
+                update_course($course);
+            }
+        } finally {
+            $lock->release();
+        }
+
+        return $course;
     }
 }

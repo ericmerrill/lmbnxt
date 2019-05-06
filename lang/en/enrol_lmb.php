@@ -91,6 +91,7 @@ $string['exception_membershiptype_no_members'] = 'Membership has no members';
 $string['exception_membershiptype_not_found'] = 'Membership type could not be found';
 $string['exception_update_failure'] = 'Failure updating in database';
 $string['exception_xml_boolean'] = 'Could not convert data "{$a}" into boolean.';
+$string['exception_course_lock'] = 'Could not aquire course modification lock.';
 
 // Bulk settings.
 $string['bannerextractimport'] = 'Banner XML Import';
