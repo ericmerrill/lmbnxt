@@ -118,7 +118,7 @@ class xml_node_testcase extends xml_helper {
         $this->assertEquals('v2', $node->N1->get_attributes()['A2']);
 
         $this->assertInternalType('array', $node->N2->get_attributes());
-        $this->assertEmpty(0, $node->N2->get_attributes());
+        $this->assertEmpty($node->N2->get_attributes());
     }
 
     public function test_name() {

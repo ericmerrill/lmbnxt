@@ -121,25 +121,7 @@ class crosslist extends course {
         // TODO - Recalculate visibility based on changes in start date.
 
         try {
-            if ($new) {
-                logging::instance()->log_line('Creating new Moodle course');
-                $course = create_course($course);
-
-            } else {
-                logging::instance()->log_line('Updating Moodle course');
-                update_course($course);
-            }
-            // Update the count of sections.
-            // We can just use the presense of numsections to tell us if we need to do this or not.
-            if (!empty($course->numsections)) {
-                $sectioncount = $DB->count_records('course_sections', array('course' => $course->id));
-                // Remove 1 to account for the general section.
-                $sectioncount -= 1;
-
-                if ($course->numsections > $sectioncount) {
-                    course_create_sections_if_missing($course->id, range(0, $course->numsections));
-                }
-            }
+            $course = $this->create_or_modify_course($course);
         } catch (\moodle_exception $e) {
             // TODO - catch exception and pass back up to message.
             $error = 'Fatal exception while inserting/updating course. '.$e->getMessage();
