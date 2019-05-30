@@ -147,6 +147,7 @@ class category extends base {
      * @return \stdClass
      */
     protected static function create_new_category($title, $idnumber) {
+        global $DB;
 
         // We need a lock because sometimes creating a category can cause collisions.
         // Use use the course lock, because in some cases another create course process can see the created
@@ -155,6 +156,13 @@ class category extends base {
             logging::instance()->log_line("Course not aquire course lock for category creation.", logging::ERROR_WARN);
 
             throw new exception\category_lock_exception();
+        }
+
+        // Now make sure it wasn't created since we aquired the lock.
+        if ($record = $DB->get_record('course_categories', ['idnumber' => $idnumber])) {
+            $lock->release();
+
+            return $record;
         }
 
         $cat = new \stdClass();
