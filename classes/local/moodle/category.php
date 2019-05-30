@@ -33,8 +33,10 @@ if (!class_exists('\\core_course_category')) {
 }
 
 use enrol_lmb\logging;
+use enrol_lmb\lock_factory;
 use enrol_lmb\settings;
 use enrol_lmb\local\data;
+use enrol_lmb\local\exception;
 
 /**
  * Abstract object for converting a data object to Moodle.
@@ -145,6 +147,16 @@ class category extends base {
      * @return \stdClass
      */
     protected static function create_new_category($title, $idnumber) {
+
+        // We need a lock because sometimes creating a category can cause collisions.
+        // Use use the course lock, because in some cases another create course process can see the created
+        // category before it has been fully setup and had its context created, causing... problems.
+        if (!$lock = lock_factory::get_course_modify_lock()) {
+            logging::instance()->log_line("Course not aquire course lock for category creation.", logging::ERROR_WARN);
+
+            throw new exception\category_lock_exception();
+        }
+
         $cat = new \stdClass();
         $cat->name = \core_text::substr($title, 0, 255);
         $cat->idnumber = $idnumber;
@@ -170,6 +182,8 @@ class category extends base {
             $error = "Exception while trying to create category: ".$e->getMessage();
             logging::instance()->log_line($error, logging::ERROR_MAJOR);
         }
+
+        $lock->release();
 
         return $cat->get_db_record();
 

@@ -92,6 +92,7 @@ $string['exception_membershiptype_not_found'] = 'Membership type could not be fo
 $string['exception_update_failure'] = 'Failure updating in database';
 $string['exception_xml_boolean'] = 'Could not convert data "{$a}" into boolean.';
 $string['exception_course_lock'] = 'Could not aquire course modification lock.';
+$string['exception_category_lock'] = 'Could not aquite category creation lock.';
 
 // Bulk settings.
 $string['bannerextractimport'] = 'Banner XML Import';
