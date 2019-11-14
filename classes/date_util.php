@@ -94,6 +94,7 @@ class date_util {
             $srvdate = new \DateTime();
             $srvoffset = $srvdate->getOffset();
             $diff = $offset - $srvoffset;
+
             if (!empty($diff)) {
                 if ($diff > 0) {
                     $int = new \DateInterval('PT'.$diff.'S');
@@ -101,9 +102,13 @@ class date_util {
                 } else {
                     $int = new \DateInterval('PT'.(-1 * $diff).'S');
                     $dt->sub($int);
-
                 }
                 $dt->setTimezone($srvdate->getTimezone());
+            }
+
+            // Correct for some logic error that seems to happen when not on DST.
+            if (!(bool)date('I')) {
+                $offset += 3600;
             }
 
             // Now we need to invert the offset so that we can add it back into time, correcting the bad offset.
