@@ -1,6 +1,6 @@
 language: php
 
-sudo: false
+sudo: true
 
 services:
   - mysql
@@ -11,32 +11,10 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.npm
 
-#php:
-# - $PHPVER
-
 env:
  global:
   - PHPUNIT_IGNORE_PATHS=cli,db,settings.php,version.php,ws_endpoint.php
   - COVERALLS=FALSE
-
-# matrix:
-#    # Moodle 3.7  COVERALLS=TRUE
-#  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=MOODLE_37_STABLE
-#  - PHPVER=7.3 DB=pgsql     PGVER=10   MOODLE_BRANCH=MOODLE_37_STABLE
-#  
-#    # Moodle 3.6
-#  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=MOODLE_36_STABLE
-#  - PHPVER=7.2 DB=pgsql     PGVER=9.5   MOODLE_BRANCH=MOODLE_36_STABLE
-#
-#    # Moodle 3.5
-#  - PHPVER=7.0 DB=mysqli                MOODLE_BRANCH=MOODLE_35_STABLE
-#  - PHPVER=7.1 DB=pgsql     PGVER=9.4   MOODLE_BRANCH=MOODLE_35_STABLE
-#
-#    # Moodle Master
-#  - PHPVER=7.3 DB=pgsql     PGVER=9.6   MOODLE_BRANCH=master
-#  - PHPVER=7.3 DB=mysqli                MOODLE_BRANCH=master
-#  - PHPVER=7.2 DB=pgsql     PGVER=9.6   MOODLE_BRANCH=master
-#  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=master
 
 jobs:
   include:
@@ -44,11 +22,34 @@ jobs:
     - php: 7.3
       env: MOODLE_BRANCH=master DB=pgsql
       addons:
-        postgresql: "10"
-
+        postgresql: "11"
     - php: 7.3
       env: MOODLE_BRANCH=master DB=mysqli
-
+    - php: 7.1
+      env: MOODLE_BRANCH=master DB=pgsql
+    - php: 7.2
+      env: MOODLE_BRANCH=master DB=mysqli
+      # Moodle 3.7
+    - php: 7.1
+      env: MOODLE_BRANCH=MOODLE_37_STABLE DB=mysqli
+    - php: 7.3
+      env: MOODLE_BRANCH=MOODLE_37_STABLE DB=pgsql COVERALLS=TRUE
+      addons:
+        postgresql: "10"
+      # Moodle 3.6
+    - php: 7.1
+      env: MOODLE_BRANCH=MOODLE_36_STABLE DB=mysqli
+    - php: 7.2
+      env: MOODLE_BRANCH=MOODLE_36_STABLE DB=pgsql
+      addons:
+        postgresql: "9.5"
+      # Moodle 3.5
+    - php: 7.0
+      env: MOODLE_BRANCH=MOODLE_35_STABLE DB=mysqli
+    - php: 7.1
+      env: MOODLE_BRANCH=MOODLE_35_STABLE DB=pgsql
+      addons:
+        postgresql: "9.4"
 
 before_install:
   - phpenv config-rm xdebug.ini
