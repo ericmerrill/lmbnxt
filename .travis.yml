@@ -2,38 +2,53 @@ language: php
 
 sudo: false
 
+services:
+  - mysql
+  - postgresql
+
 cache:
   directories:
     - $HOME/.composer/cache
     - $HOME/.npm
 
-php:
- - $PHPVER
+#php:
+# - $PHPVER
 
 env:
  global:
   - PHPUNIT_IGNORE_PATHS=cli,db,settings.php,version.php,ws_endpoint.php
   - COVERALLS=FALSE
 
- matrix:
-    # Moodle 3.7  COVERALLS=TRUE
-  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=MOODLE_37_STABLE
-  - PHPVER=7.3 DB=pgsql     PGVER=10   MOODLE_BRANCH=MOODLE_37_STABLE
-  
-    # Moodle 3.6
-  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=MOODLE_36_STABLE
-  - PHPVER=7.2 DB=pgsql     PGVER=9.5   MOODLE_BRANCH=MOODLE_36_STABLE
+# matrix:
+#    # Moodle 3.7  COVERALLS=TRUE
+#  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=MOODLE_37_STABLE
+#  - PHPVER=7.3 DB=pgsql     PGVER=10   MOODLE_BRANCH=MOODLE_37_STABLE
+#  
+#    # Moodle 3.6
+#  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=MOODLE_36_STABLE
+#  - PHPVER=7.2 DB=pgsql     PGVER=9.5   MOODLE_BRANCH=MOODLE_36_STABLE
+#
+#    # Moodle 3.5
+#  - PHPVER=7.0 DB=mysqli                MOODLE_BRANCH=MOODLE_35_STABLE
+#  - PHPVER=7.1 DB=pgsql     PGVER=9.4   MOODLE_BRANCH=MOODLE_35_STABLE
+#
+#    # Moodle Master
+#  - PHPVER=7.3 DB=pgsql     PGVER=9.6   MOODLE_BRANCH=master
+#  - PHPVER=7.3 DB=mysqli                MOODLE_BRANCH=master
+#  - PHPVER=7.2 DB=pgsql     PGVER=9.6   MOODLE_BRANCH=master
+#  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=master
 
-    # Moodle 3.5
-  - PHPVER=7.0 DB=mysqli                MOODLE_BRANCH=MOODLE_35_STABLE
-  - PHPVER=7.1 DB=pgsql     PGVER=9.4   MOODLE_BRANCH=MOODLE_35_STABLE
-
-    # Moodle Master
-  - PHPVER=7.3 DB=pgsql     PGVER=9.6   MOODLE_BRANCH=master
-  - PHPVER=7.3 DB=mysqli                MOODLE_BRANCH=master
-  - PHPVER=7.2 DB=pgsql     PGVER=9.6   MOODLE_BRANCH=master
-  - PHPVER=7.1 DB=mysqli                MOODLE_BRANCH=master
-
+jobs:
+  include:
+    - php: 7.1
+      env: MOODLE_BRANCH=MOODLE_37_STABLE DB=mysqli
+    - php: 7.3
+      env: MOODLE_BRANCH=MOODLE_37_STABLE DB=pgsql
+      addons:
+        postgresql: "10"
+        apt:
+          packages:
+          - postgresql-10
 
 before_install:
   - phpenv config-rm xdebug.ini
