@@ -81,11 +81,10 @@ class lock_factory {
      * @param int $maxlifetime - The number of seconds to wait before reclaiming a stale lock.
      * @return \core\lock\lock|boolean - An instance of \core\lock\lock if the lock was obtained, or false.
      */
-     // TODO - Remove. 2019-05-30.
-//     public static function get_category_create_lock($timeout = 30, $maxlifetime = 600) {
-//         $key = 'catcreate';
-//
-//         return static::get_lock($key, $timeout, $maxlifetime);
-//     }
+    public static function get_category_create_lock($timeout = 30, $maxlifetime = 600) {
+        $key = 'catcreate';
+
+        return static::get_lock($key, $timeout, $maxlifetime);
+    }
 
 }

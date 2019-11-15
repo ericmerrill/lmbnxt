@@ -152,8 +152,8 @@ class category extends base {
         // We need a lock because sometimes creating a category can cause collisions.
         // Use use the course lock, because in some cases another create course process can see the created
         // category before it has been fully setup and had its context created, causing... problems.
-        if (!$lock = lock_factory::get_course_modify_lock()) {
-            logging::instance()->log_line("Course not aquire course lock for category creation.", logging::ERROR_WARN);
+        if (!$lock = lock_factory::get_category_create_lock()) {
+            logging::instance()->log_line("Could not aquire lock for category creation.", logging::ERROR_WARN);
 
             throw new exception\category_lock_exception();
         }
