@@ -31,6 +31,7 @@ use enrol_lmb\logging;
 use enrol_lmb\settings;
 use enrol_lmb\local\data;
 use enrol_lmb_plugin;
+use enrol_lmb\lock_factory;
 
 require_once($CFG->dirroot.'/course/lib.php');
 
@@ -63,70 +64,81 @@ class crosslist extends course {
             throw new \coding_exception('Expected instance of data\section to be passed.');
         }
 
-        $this->data = $data;
-        $this->sections = $this->get_member_sections();
-        if (!empty($this->sections)) {
-            $this->firstsection = reset($this->sections);
+        // We need a lock because course sortorder can cause collisions while lots of concurent inserts.
+        if (!$lock = lock_factory::get_course_modify_lock()) {
+            logging::instance()->log_line("Course not aquire course modification lock.", logging::ERROR_WARN);
+
+            throw new exception\course_lock_exception();
         }
-
-        $settings = $this->settings;
-
-        // First see if we are going to be working with an existing or new course.
-        $new = false;
-        $course = $this->find_existing_course();
-        if (empty($course)) {
-            $new = true;
-            $course = $this->create_new_course_object();
-            if ($this->firstsection) {
-                $course->visible = $this->calculate_visibility($this->firstsection->begindate);
-            }
-        }
-
-        // We always force the title on crosslists, because they are subject to a lot of change.
-        // TODO - Make a new setting.
-        $course->fullname = $this->create_crosslist_title($settings->get('xlstitle'),
-                $settings->get('xlstitlerepeat'), $settings->get('xlstitledivider'));
-        $shortname = $this->create_crosslist_title($settings->get('xlsshorttitle'),
-                $settings->get('xlsshorttitlerepeat'), $settings->get('xlsshorttitledivider'));
-        $course->shortname = $this->deduplicate_shortname($shortname, $course->idnumber);
-
-        // We always update dates.
-        $course->startdate = $this->get_crosslist_start_date();
-
-        // A course can only have an end date if it has a start date.
-        if (empty($course->startdate)) {
-            $course->enddate = 0;
-        } else {
-            $course->enddate = $this->get_crosslist_end_date();
-        }
-
-        // Here we update the number of sections.
-        if ($new || $this->settings->get('forcecomputesections')) {
-            $newsectioncount = $this->calculate_section_count($course->startdate, $course->enddate);
-            if ($newsectioncount !== false) {
-                $course->numsections = $newsectioncount;
-            }
-        }
-
-        // Here we set the category
-        if ($new || $this->settings->get('forcecat')) {
-            // TODO Category finder.
-            if (!empty($this->firstsection)) {
-                $course->category = category::get_category_id($this->firstsection);
-            } else {
-                $course->category = category::get_default_category_id();
-            }
-        }
-
-        // TODO - Recalculate visibility based on changes in start date.
 
         try {
-            $course = $this->create_or_modify_course($course);
-        } catch (\moodle_exception $e) {
-            // TODO - catch exception and pass back up to message.
-            $error = 'Fatal exception while inserting/updating course. '.$e->getMessage();
-            logging::instance()->log_line($error, logging::ERROR_MAJOR);
-            throw $e;
+            $this->data = $data;
+            $this->sections = $this->get_member_sections();
+            if (!empty($this->sections)) {
+                $this->firstsection = reset($this->sections);
+            }
+
+            $settings = $this->settings;
+
+            // First see if we are going to be working with an existing or new course.
+            $new = false;
+            $course = $this->find_existing_course();
+            if (empty($course)) {
+                $new = true;
+                $course = $this->create_new_course_object();
+                if ($this->firstsection) {
+                    $course->visible = $this->calculate_visibility($this->firstsection->begindate);
+                }
+            }
+
+            // We always force the title on crosslists, because they are subject to a lot of change.
+            // TODO - Make a new setting.
+            $course->fullname = $this->create_crosslist_title($settings->get('xlstitle'),
+                    $settings->get('xlstitlerepeat'), $settings->get('xlstitledivider'));
+            $shortname = $this->create_crosslist_title($settings->get('xlsshorttitle'),
+                    $settings->get('xlsshorttitlerepeat'), $settings->get('xlsshorttitledivider'));
+            $course->shortname = $this->deduplicate_shortname($shortname, $course->idnumber);
+
+            // We always update dates.
+            $course->startdate = $this->get_crosslist_start_date();
+
+            // A course can only have an end date if it has a start date.
+            if (empty($course->startdate)) {
+                $course->enddate = 0;
+            } else {
+                $course->enddate = $this->get_crosslist_end_date();
+            }
+
+            // Here we update the number of sections.
+            if ($new || $this->settings->get('forcecomputesections')) {
+                $newsectioncount = $this->calculate_section_count($course->startdate, $course->enddate);
+                if ($newsectioncount !== false) {
+                    $course->numsections = $newsectioncount;
+                }
+            }
+
+            // Here we set the category
+            if ($new || $this->settings->get('forcecat')) {
+                // TODO Category finder.
+                if (!empty($this->firstsection)) {
+                    $course->category = category::get_category_id($this->firstsection);
+                } else {
+                    $course->category = category::get_default_category_id();
+                }
+            }
+
+            // TODO - Recalculate visibility based on changes in start date.
+
+            try {
+                $course = $this->create_or_modify_course($course);
+            } catch (\moodle_exception $e) {
+                // TODO - catch exception and pass back up to message.
+                $error = 'Fatal exception while inserting/updating course. '.$e->getMessage();
+                logging::instance()->log_line($error, logging::ERROR_MAJOR);
+                throw $e;
+            }
+        } finally {
+            $lock->release();
         }
 
         $this->course = $course;
