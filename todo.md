@@ -65,3 +65,7 @@ Things to migrate
 * When receiving a new message, like a person, check to see if we need to processes any missed enrollments
 * Possibly track if enrolment was successful in DB like old LMB
 
+
+
+# Future version
+* When 3.7.3 is the lowest supported version, resource can be removed from lock factory (MDL-66935).

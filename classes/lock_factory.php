@@ -53,7 +53,7 @@ class lock_factory {
             self::$factory = lock_config::get_lock_factory('enrol_lmb');
         }
 
-        // We shouldn't need the prefix, but core poorly defined the API.
+        // We shouldn't need the prefix, but core poorly defined the API. (Fixed in 3.6.7 abd 3.7.3, can remove later.)
         $lock = self::$factory->get_lock('enrol_lmb'.$resource, $timeout, $maxlifetime);
 
         return $lock;
