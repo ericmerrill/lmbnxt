@@ -67,5 +67,6 @@ Things to migrate
 
 
 
+
 # Future version
 * When 3.7.3 is the lowest supported version, resource can be removed from lock factory (MDL-66935).
